@@ -2,15 +2,18 @@ import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SocialNetwork extends RemoteObject implements ServerRemoteInterface {
 
     private ConcurrentHashMap<Long, Post> posts;
     private ConcurrentHashMap<String, User> users;
+    private volatile AtomicLong postId;
 
     public SocialNetwork() {
         posts = new ConcurrentHashMap<>();
         users = new ConcurrentHashMap<>();
+        postId = new AtomicLong(0);
     }
 
     public boolean register(String username, String password, String tags) throws RemoteException {
@@ -40,6 +43,13 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public void logout(String username) {
         User user = users.get(username);
         user.logout();
+    }
+
+    public boolean createPost(String author, String title, String content) {
+        long id = postId.addAndGet(1);
+        Post post = new Post(postId, author, title, content);
+
+        return true;
     }
 
     // metodi getter

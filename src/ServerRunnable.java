@@ -7,6 +7,7 @@ import java.net.Socket;
 public class ServerRunnable implements Runnable {
     Socket clientSocket;
     SocialNetwork winsome;
+    String clientUsername;
 
     public ServerRunnable(Socket socket, SocialNetwork winsome) {
         this.clientSocket = socket;
@@ -38,6 +39,7 @@ public class ServerRunnable implements Runnable {
                 if (!user.isLogged()) {
                     if (winsome.login(param[1], param[2])) {
                         response = "< SUCCESS: log in terminated with success";
+                        clientUsername = param[1];
                     } else {
                         response = "< ERROR: wrong password for this username";
                     }
@@ -52,7 +54,7 @@ public class ServerRunnable implements Runnable {
         }
 
         if (param[0].equals("logout")) {
-            User user = winsome.getUser(param[1]);
+            User user = winsome.getUser(clientUsername);
             user.logout();
 
         }

@@ -1,11 +1,13 @@
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Post {
     private final long id;
     private final String author;
     private final String title;
     private final String content;
 
-    public Post(long id, String author, String title, String content) {
-        this.id = id;
+    public Post(AtomicLong postId, String author, String title, String content) {
+        this.id = postId;
         this.author = author;
         this.title = title;
         this.content = content;

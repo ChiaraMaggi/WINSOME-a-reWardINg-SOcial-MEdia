@@ -160,7 +160,6 @@ public class Client {
 
                         // client ufficialmente in uso da un utente
                         if (serverResponse.startsWith("< SUCCESS")) {
-                            System.out.println("qui");
                             someoneLogged = true;
                             username = request[1];
                         }
@@ -178,7 +177,7 @@ public class Client {
 
                     if (someoneLogged) {
                         // invio richiesta al server
-                        outWriter.writeUTF(line + " " + username);
+                        outWriter.writeUTF(line);
                         outWriter.flush();
 
                         System.out.println("< SUCCESS: logout teminated with success");
@@ -225,7 +224,7 @@ public class Client {
 
                     if (someoneLogged) {
                         // invio richiesta al server
-                        outWriter.writeUTF(line + " " + username);
+                        outWriter.writeUTF(line);
                         outWriter.flush();
 
                     } else {
@@ -234,40 +233,50 @@ public class Client {
                     break;
 
                 case "post":
-                    if (request.length == 1 || !request[1].startsWith("\"")) {
-                        System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
-                        break;
-                    }
-
-                    // ricompongo titolo e testo e conto se ho un numero pari di virgolette
-                    String str = request[1];
-                    for (int i = 2; i < request.length; i++) {
-                        str = str.concat(" " + request[i]);
-                    }
-
-                    char temp;
-                    int occ = 0;
-                    for (int i = 0; i < str.length(); i++) {
-                        temp = str.charAt(i);
-                        if (temp == '\"') {
-                            occ++;
+                    if (someoneLogged) {
+                        if (request.length == 1 || !request[1].startsWith("\"")) {
+                            System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
+                            break;
                         }
-                    }
 
-                    String info[] = str.split("\"");
-                    if (info.length != 4 || occ != 4) {
-                        System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
-                        break;
-                    }
+                        // ricompongo titolo e testo e conto se ho un numero pari di virgolette
+                        String str = request[1];
+                        for (int i = 2; i < request.length; i++) {
+                            str = str.concat(" " + request[i]);
+                        }
 
-                    if (info[1].length() >= 20) {
-                        System.out.println("< ERROR: title too long. Max 20 characters");
-                        break;
-                    }
+                        char temp;
+                        int occ = 0;
+                        for (int i = 0; i < str.length(); i++) {
+                            temp = str.charAt(i);
+                            if (temp == '\"') {
+                                occ++;
+                            }
+                        }
 
-                    if (info[3].length() >= 500) {
-                        System.out.println("< ERROR: content too long. Max 500 characters");
-                        break;
+                        String info[] = str.split("\"");
+                        if (info.length != 4 || occ != 4) {
+                            System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
+                            break;
+                        }
+
+                        if (info[1].length() >= 20) {
+                            System.out.println("< ERROR: title too long. Max 20 characters");
+                            break;
+                        }
+
+                        if (info[3].length() >= 500) {
+                            System.out.println("< ERROR: content too long. Max 500 characters");
+                            break;
+                        }
+
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        serverResponse = inReader.readUTF();
+                        System.out.println(serverResponse);
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
