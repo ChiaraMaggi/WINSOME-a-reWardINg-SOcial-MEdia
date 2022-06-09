@@ -47,7 +47,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     public boolean createPost(String author, String title, String content) {
         long id = postId.addAndGet(1);
-        Post post = new Post(postId, author, title, content);
+        Post post = new Post(id, author, title, content);
 
         return true;
     }

@@ -6,7 +6,7 @@ public class Post {
     private final String title;
     private final String content;
 
-    public Post(AtomicLong postId, String author, String title, String content) {
+    public Post(long postId, String author, String title, String content) {
         this.id = postId;
         this.author = author;
         this.title = title;
