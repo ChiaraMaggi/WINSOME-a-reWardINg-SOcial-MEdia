@@ -156,10 +156,10 @@ public class Client {
 
                         // lettura risposta e stampa esito
                         serverResponse = inReader.readUTF();
-                        System.out.println(serverResponse);
+                        System.out.println("< " + serverResponse);
 
                         // client ufficialmente in uso da un utente
-                        if (serverResponse.startsWith("< SUCCESS")) {
+                        if (serverResponse.startsWith("SUCCESS")) {
                             someoneLogged = true;
                             username = request[1];
                         }
@@ -274,7 +274,7 @@ public class Client {
                         outWriter.flush();
 
                         serverResponse = inReader.readUTF();
-                        System.out.println(serverResponse);
+                        System.out.println("< " + serverResponse);
                     } else {
                         System.out.println(LOGIN_ERROR_MSG);
                     }

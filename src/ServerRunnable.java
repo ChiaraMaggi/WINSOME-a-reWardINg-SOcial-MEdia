@@ -38,25 +38,35 @@ public class ServerRunnable implements Runnable {
             if (user != null) {
                 if (!user.isLogged()) {
                     if (winsome.login(param[1], param[2])) {
-                        response = "< SUCCESS: log in terminated with success";
+                        response = "SUCCESS: log in terminated with success";
                         clientUsername = param[1];
                     } else {
-                        response = "< ERROR: wrong password for this username";
+                        response = "ERROR: wrong password for this username";
                     }
                 } else {
-                    response = "< ERROR: user already logged in another device";
+                    response = "ERROR: user already logged in another device";
                 }
             } else {
-                response = "< ERROR: user with this username doesn't exist";
+                response = "ERROR: user with this username doesn't exist";
             }
             outWriter.writeUTF(response);
             outWriter.flush();
         }
 
         if (param[0].equals("logout")) {
-            User user = winsome.getUser(clientUsername);
-            user.logout();
+            winsome.getUser(clientUsername).logout();
+        }
 
+        if (param[0].equals("post")) {
+            long id;
+            if ((id = winsome.createPost(clientUsername, param[1], param[2])) > 0) {
+                response = "SUCCESS: post created (ID = " + id + ")";
+            } else {
+                System.out.println(id);
+                response = "ERROR: something goes wrong in creating the new post";
+            }
+            outWriter.writeUTF(response);
+            outWriter.flush();
         }
     }
 

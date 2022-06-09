@@ -43,4 +43,8 @@ public class User {
         logged = false;
         return;
     }
+
+    public void addPostToBlog(Post p) {
+        blog.putIfAbsent(p.getId(), p);
+    }
 }

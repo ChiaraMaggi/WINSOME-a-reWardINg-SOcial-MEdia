@@ -8,6 +8,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     private ConcurrentHashMap<Long, Post> posts;
     private ConcurrentHashMap<String, User> users;
+    // valore univoco per i post che vengono creati
     private volatile AtomicLong postId;
 
     public SocialNetwork() {
@@ -45,20 +46,20 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         user.logout();
     }
 
-    public boolean createPost(String author, String title, String content) {
+    public long createPost(String author, String title, String content) {
         long id = postId.addAndGet(1);
         Post post = new Post(id, author, title, content);
-
-        return true;
+        User user = users.get(author);
+        if (posts.putIfAbsent(id, post) == null) {
+            user.addPostToBlog(post);
+            // TO-DO: modificare il feed dei followers
+            return id;
+        } else
+            return 0;
     }
 
-    // metodi getter
     public User getUser(String username) {
         return users.get(username);
-    }
-
-    public Post getPostById(long id) {
-        return posts.get(id);
     }
 
 }
