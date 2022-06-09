@@ -47,4 +47,8 @@ public class User {
     public void addPostToBlog(Post p) {
         blog.putIfAbsent(p.getId(), p);
     }
+
+    public HashMap<Long, Post> getBlog() {
+        return blog;
+    }
 }

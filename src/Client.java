@@ -170,7 +170,9 @@ public class Client {
                     break;
 
                 case "logout":
+                    // controllo notazione della richiesta
                     if (request.length != 1) {
+
                         System.out.println("< ERROR: wrong notation. Usage: logout");
                         break;
                     }
@@ -217,15 +219,21 @@ public class Client {
                     break;
 
                 case "blog":
-                    if (request.length != 1) {
-                        System.out.println("< ERROR: wrong notation. Usage: blog");
-                        break;
-                    }
-
                     if (someoneLogged) {
+                        // controllo notazione della richiesta
+                        if (request.length != 1) {
+                            System.out.println("< ERROR: wrong notation. Usage: blog");
+                            break;
+                        }
+
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
+
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< Id      | Author        | Title     ");
+                        System.out.println("< -----------------------------------------------------");
+                        System.out.println(serverResponse);
 
                     } else {
                         System.out.println(LOGIN_ERROR_MSG);
@@ -281,21 +289,34 @@ public class Client {
                     break;
 
                 case "show":
-                    if (request.length == 1) {
-                        System.out.println("< ERROR: wrong notation. Usage: show feed or show post <id>");
-                        break;
-                    }
+                    if (someoneLogged) {
+                        // controllo notazione della richiesta
+                        if (request.length == 1) {
+                            System.out.println("< ERROR: wrong notation. Usage: show feed or show post <id>");
+                            break;
+                        }
 
-                    if (((request.length == 2 || request.length > 3) && request[1].equals("post"))
-                            || (request.length == 3 && !request[1].equals("post"))) {
-                        System.out.println("< ERROR: wrong notation. Usage: show post <id>");
-                        break;
-                    }
+                        if (((request.length == 2 || request.length > 3) && request[1].equals("post"))
+                                || (request.length == 3 && !request[1].equals("post"))) {
+                            System.out.println("< ERROR: wrong notation. Usage: show post <id>");
+                            break;
+                        }
 
-                    if ((request.length == 2 && !request[1].equals("feed"))
-                            || (request.length > 2 && request[1].equals("feed"))) {
-                        System.out.println("< ERROR: wrong notation. Usage: show feed");
-                        break;
+                        if ((request.length == 2 && !request[1].equals("feed"))
+                                || (request.length > 2 && request[1].equals("feed"))) {
+                            System.out.println("< ERROR: wrong notation. Usage: show feed");
+                            break;
+                        }
+
+                        // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        serverResponse = inReader.readUTF();
+                        System.out.print(serverResponse);
+
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
@@ -314,41 +335,62 @@ public class Client {
                     break;
 
                 case "rate":
-                    if (request.length != 3) {
-                        System.out.println("< ERROR: wrong notation. Usage: rate <idPost <vote>");
+                    if (someoneLogged) {
+                        // controllo notazione della richiesta
+                        if (request.length != 3) {
+                            System.out.println("< ERROR: wrong notation. Usage: rate <idPost> <vote>");
+                            break;
+                        }
+                        if (Integer.parseInt(request[2]) != 1 || Integer.parseInt(request[2]) != -1) {
+                            System.out.println("< ERROR: vote must be 1 or -1");
+                            break;
+                        }
+
+                        // invio richiesta al server
+
                         break;
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
-                    break;
 
                 case "comment":
-                    if (request.length <= 2 || !request[2].startsWith("\"")) {
-                        System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
-                        break;
-                    }
-
-                    String str2 = request[2];
-                    for (int i = 3; i < request.length; i++) {
-                        str2 = str2.concat(" " + request[i]);
-                    }
-
-                    char temp2;
-                    int occ2 = 0;
-                    for (int i = 0; i < str2.length(); i++) {
-                        temp2 = str2.charAt(i);
-                        if (temp2 == '\"') {
-                            occ2++;
+                    if (someoneLogged) {
+                        // Controllo notazione della richiesta
+                        if (request.length <= 2 || !request[2].startsWith("\"")) {
+                            System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
+                            break;
                         }
-                    }
+                        String str2 = request[2];
+                        for (int i = 3; i < request.length; i++) {
+                            str2 = str2.concat(" " + request[i]);
+                        }
+                        char temp2;
+                        int occ2 = 0;
+                        for (int i = 0; i < str2.length(); i++) {
+                            temp2 = str2.charAt(i);
+                            if (temp2 == '\"') {
+                                occ2++;
+                            }
+                        }
+                        String info2[] = str2.split("\"");
+                        if (info2.length != 2 || occ2 != 2) {
+                            System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
+                            break;
+                        }
+                        if (info2[1].length() >= 200) {
+                            System.out.println("< ERROR: comment too long. Max 200 charachters");
+                            break;
+                        }
 
-                    String info2[] = str2.split("\"");
-                    if (info2.length != 2 || occ2 != 2) {
-                        System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
-                        break;
-                    }
+                        // invio richietsa al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
 
-                    if (info2[1].length() >= 200) {
-                        System.out.println("< ERROR: comment too long. Max 200 charachters");
-                        break;
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< " + serverResponse);
+
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
@@ -374,6 +416,7 @@ public class Client {
                     System.out.println("< ERROR: operation " + operation + " not permitted");
                     break;
             }
+
         } while (!request[0].equals("quit"));
 
         scanner.close();

@@ -3,6 +3,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class ServerRunnable implements Runnable {
     Socket clientSocket;
@@ -55,6 +56,33 @@ public class ServerRunnable implements Runnable {
 
         if (param[0].equals("logout")) {
             winsome.getUser(clientUsername).logout();
+        }
+
+        if (param[0].equals("show")) {
+            if (param[1].equals("post")) {
+                String post;
+                if ((post = winsome.showPost(Long.parseLong(param[2]))) != null) {
+                    response = "SUCCESS:\n" + post;
+                } else {
+                    response = "ERROR: no post found for that id";
+                }
+                outWriter.writeUTF(response);
+                outWriter.flush();
+            }
+            // TODO caso con show feed
+        }
+
+        if (param[0].equals("comment")) {
+            String str;
+            response = winsome.addComment(clientUsername, Long.parseLong(param[1]), param[2]);
+            outWriter.writeUTF(response);
+            outWriter.flush();
+        }
+
+        if (param[0].equals("blog")) {
+            response = winsome.viewBlog(clientUsername);
+            outWriter.writeUTF(response);
+            outWriter.flush();
         }
 
         if (param[0].equals("post")) {

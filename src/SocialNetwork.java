@@ -1,6 +1,7 @@
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -56,6 +57,42 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             return id;
         } else
             return 0;
+    }
+
+    public String showPost(Long id) {
+        Post post;
+        String printedPost = "";
+        if ((post = posts.get(id)) != null) {
+            printedPost = "< Title: " + post.getTitle() + "\n< Content: " + post.getContent() + "\n< Votes: "
+                    + "\n<    Positive: " + post.getPositiveVotes() + "\n<    Negative: " + post.getNegativeVotes()
+                    + "\n< Comments: " + post.getNumComments() + "\n" + post.getComments();
+            return printedPost;
+        }
+        return null;
+    }
+
+    public String addComment(String username, Long id, String comment) {
+        String str = "";
+        Post post;
+        if ((post = posts.get(id)) != null) {
+            // TODO: aggiungere tutti i controlli mancanti
+            post.addComment(username, comment);
+            str = "SUCCESS: comment created";
+        }
+        return str;
+    }
+
+    public String viewBlog(String username) {
+        User user = users.get(username);
+        HashMap<Long, Post> blog = user.getBlog();
+        String blogInString = "";
+        for (Long key : blog.keySet()) {
+            blogInString = blogInString
+                    .concat("< " + key + "       | " + blog.get(key).getAuthor() + "        | "
+                            + blog.get(key).getTitle()
+                            + "\n");
+        }
+        return blogInString;
     }
 
     public User getUser(String username) {
