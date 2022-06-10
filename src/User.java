@@ -1,6 +1,10 @@
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class User {
@@ -11,6 +15,9 @@ public class User {
 
     private final HashMap<Long, Post> blog;
     private final HashMap<Long, Post> feed;
+
+    private final LinkedList<String> followers;
+    private final LinkedList<String> followed;
 
     private boolean logged = false;
 
@@ -26,7 +33,17 @@ public class User {
 
         blog = new HashMap<>();
         feed = new HashMap<>();
+
+        followers = new LinkedList<>();
+        followed = new LinkedList<>();
     }
+
+    // costruttore in caso di ripristino utenti
+    /*
+     * public User() {
+     * 
+     * }
+     */
 
     public boolean isLogged() {
         return logged;
@@ -48,7 +65,35 @@ public class User {
         blog.putIfAbsent(p.getId(), p);
     }
 
+    public void addPostToFeed(Post p) {
+        feed.putIfAbsent(p.getId(), p);
+    }
+
     public HashMap<Long, Post> getBlog() {
         return blog;
+    }
+
+    public HashMap<Long, Post> getFeed() {
+        return feed;
+    }
+
+    public void addFollowers(String username) {
+        followers.add(username);
+    }
+
+    public void addFollowed(String username) {
+        followed.add(username);
+    }
+
+    public LinkedList<String> getFollowers() {
+        return followers;
+    }
+
+    public LinkedList<String> getFollowed() {
+        return followed;
+    }
+
+    public void removePostFromFeed(Long id) {
+        feed.remove(id);
     }
 }

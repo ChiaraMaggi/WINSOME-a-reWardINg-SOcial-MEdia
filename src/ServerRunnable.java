@@ -58,6 +58,7 @@ public class ServerRunnable implements Runnable {
         }
 
         if (param[0].equals("show")) {
+            // caso con show post id
             if (param[1].equals("post")) {
                 String post;
                 if ((post = winsome.showPost(Long.parseLong(param[2]))) != null) {
@@ -68,12 +69,20 @@ public class ServerRunnable implements Runnable {
                 outWriter.writeUTF(response);
                 outWriter.flush();
             }
-            // TODO caso con show feed
+            // caso con show feed
+            if (param[1].equals("feed")) {
+                response = winsome.showFeed(clientUsername);
+                outWriter.writeUTF(response);
+                outWriter.flush();
+            }
         }
 
         if (param[0].equals("comment")) {
-            String str;
-            response = winsome.addComment(clientUsername, Long.parseLong(param[1]), param[2]);
+            if (winsome.addComment(clientUsername, Long.parseLong(param[1]), param[2])) {
+                response = "SUCCESS: comment created";
+            } else {
+                response = "ERROR: somenthing goes wrong. Comment not created";
+            }
             outWriter.writeUTF(response);
             outWriter.flush();
         }
@@ -87,10 +96,46 @@ public class ServerRunnable implements Runnable {
         if (param[0].equals("post")) {
             long id;
             if ((id = winsome.createPost(clientUsername, param[1], param[2])) > 0) {
-                response = "SUCCESS: post created (ID = " + id + ")";
+                response = "SUCCESS: post created (id = " + id + ")";
             } else {
                 System.out.println(id);
                 response = "ERROR: something goes wrong in creating the new post";
+            }
+            outWriter.writeUTF(response);
+            outWriter.flush();
+        }
+
+        if (param[0].equals("follow")) {
+            if (clientUsername == param[1]) {
+                response = "ERROR: you can't follow yourself";
+            } else {
+                if (winsome.getUser(param[1]) != null) {
+                    if (winsome.followUser(clientUsername, param[1])) {
+                        response = "SUCCESS: you are now following user " + param[1];
+                    } else {
+                        response = "ERROR: user " + param[1] + " already followed";
+                    }
+                } else {
+                    response = "ERROR: the user you want to follow does not exist";
+                }
+            }
+            outWriter.writeUTF(response);
+            outWriter.flush();
+        }
+
+        if (param[0].equals("unfollow")) {
+            if (clientUsername == param[1]) {
+                response = "ERROR: you can't unfollow yourself";
+            } else {
+                if (winsome.getUser(param[1]) != null) {
+                    if (winsome.unfollowUser(clientUsername, param[1])) {
+                        response = "SUCCESS: you have unfollowed user " + param[1];
+                    } else {
+                        response = "ERROR: user " + param[1] + " already not followed";
+                    }
+                } else {
+                    response = "ERROR: the user you want to unfollow does not exist";
+                }
             }
             outWriter.writeUTF(response);
             outWriter.flush();

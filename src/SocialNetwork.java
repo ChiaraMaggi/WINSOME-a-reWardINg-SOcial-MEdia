@@ -52,8 +52,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         Post post = new Post(id, author, title, content);
         User user = users.get(author);
         if (posts.putIfAbsent(id, post) == null) {
+            // TODO: gestione delle lock
+
+            // modifico il blog dell'autore
             user.addPostToBlog(post);
-            // TO-DO: modificare il feed dei followers
+            // modifico il feed dei followers
+            for (String s : user.getFollowers()) {
+                users.get(s).addPostToFeed(post);
+            }
             return id;
         } else
             return 0;
@@ -71,15 +77,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return null;
     }
 
-    public String addComment(String username, Long id, String comment) {
-        String str = "";
+    public boolean addComment(String username, Long id, String comment) {
         Post post;
         if ((post = posts.get(id)) != null) {
             // TODO: aggiungere tutti i controlli mancanti
             post.addComment(username, comment);
-            str = "SUCCESS: comment created";
+            return true;
         }
-        return str;
+        return false;
     }
 
     public String viewBlog(String username) {
@@ -93,6 +98,56 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                             + "\n");
         }
         return blogInString;
+    }
+
+    public String showFeed(String username) {
+        User user = users.get(username);
+        HashMap<Long, Post> feed = user.getFeed();
+        String feedInString = "";
+        for (Long key : feed.keySet()) {
+            feedInString = feedInString
+                    .concat("< " + key + "       | " + feed.get(key).getAuthor() + "        | "
+                            + feed.get(key).getTitle()
+                            + "\n");
+        }
+        return feedInString;
+    }
+
+    public boolean followUser(String username, String usernameToFollow) {
+        User userToFollow = users.get(usernameToFollow);
+        User user = users.get(username);
+        // controllo se l'utente segue già userFollowed
+        if (userToFollow.getFollowers().contains(username))
+            return false;
+        else {
+            // TO DO: gestire lock e callback
+            user.addFollowed(usernameToFollow);
+            userToFollow.addFollowers(username);
+
+            // aggiunta di tutti i post di userToFollow al feed di user
+            for (Post p : userToFollow.getBlog().values()) {
+                user.addPostToFeed(p);
+            }
+        }
+        return true;
+    }
+
+    public boolean unfollowUser(String username, String usernameToUnfollow) {
+        User userToUnfollow = users.get(usernameToUnfollow);
+        User user = users.get(username);
+        // controllo se l'utente segue userToUnfollow
+        if (userToUnfollow.getFollowers().contains(username)) {
+            // TO DO: gestire lock e callback
+            user.getFollowed().remove(usernameToUnfollow);
+            userToUnfollow.getFollowers().remove(username);
+
+            for (Long id : userToUnfollow.getBlog().keySet()) {
+                user.removePostFromFeed(id);
+            }
+        } else {
+            return false;
+        }
+        return true;
     }
 
     public User getUser(String username) {

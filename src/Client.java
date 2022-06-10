@@ -208,13 +208,24 @@ public class Client {
                     break;
 
                 case "follow", "unfollow":
-                    if (request[0].equals("follow") && request.length != 2) {
-                        System.out.println("< ERROR: wrong notation. Usage: follow <username>");
-                        break;
-                    }
-                    if (request[0].equals("unfollow") && request.length != 2) {
-                        System.out.println("< ERROR: wrong notation. Usage: unfollow <username>");
-                        break;
+                    if (someoneLogged) {
+                        if (request[0].equals("follow") && request.length != 2) {
+                            System.out.println("< ERROR: wrong notation. Usage: follow <username>");
+                            break;
+                        }
+                        if (request[0].equals("unfollow") && request.length != 2) {
+                            System.out.println("< ERROR: wrong notation. Usage: unfollow <username>");
+                            break;
+                        }
+
+                        // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< " + serverResponse);
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
