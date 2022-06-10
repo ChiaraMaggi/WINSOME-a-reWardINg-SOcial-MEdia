@@ -19,6 +19,9 @@ public class User {
     private final LinkedList<String> followers;
     private final LinkedList<String> followed;
 
+    // elenco dei post votati
+    private final LinkedList<Long> votes;
+
     private boolean logged = false;
 
     // costruttore nel caso di nuovi utenti
@@ -36,6 +39,8 @@ public class User {
 
         followers = new LinkedList<>();
         followed = new LinkedList<>();
+
+        votes = new LinkedList<>();
     }
 
     // costruttore in caso di ripristino utenti
@@ -91,6 +96,18 @@ public class User {
 
     public LinkedList<String> getFollowed() {
         return followed;
+    }
+
+    public LinkedList<Long> getListVotes() {
+        return votes;
+    }
+
+    public void addIdToListVotes(Long id) {
+        votes.add(id);
+    }
+
+    public void removePostFromBlog(Long id) {
+        blog.remove(id);
     }
 
     public void removePostFromFeed(Long id) {

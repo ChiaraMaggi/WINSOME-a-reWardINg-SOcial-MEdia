@@ -79,10 +79,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     public boolean addComment(String username, Long id, String comment) {
         Post post;
+        User user = users.get(username);
         if ((post = posts.get(id)) != null) {
-            // TODO: aggiungere tutti i controlli mancanti
-            post.addComment(username, comment);
-            return true;
+            // controllo se il commentante non è l'autore del
+            // post e se ha il post nel proprio feed
+            if (post.getAuthor() != username && user.getFeed().get(id) != null) {
+                post.addComment(username, comment);
+                return true;
+            }
         }
         return false;
     }
@@ -144,14 +148,83 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             for (Long id : userToUnfollow.getBlog().keySet()) {
                 user.removePostFromFeed(id);
             }
-        } else {
-            return false;
+            return true;
         }
-        return true;
+        return false;
+
+    }
+
+    public boolean deletePost(Long id, String username) {
+        Post post;
+        if ((post = posts.get(id)) != null) {
+            if ((post.getAuthor()).equals(username)) {
+                // rimozione dall'insieme generale dei post
+                posts.remove(id);
+
+                User userAuthor = users.get(post.getAuthor());
+                // rimozione dal blog dell'autore
+                userAuthor.removePostFromBlog(id);
+                // TO DO: risolvere problema che se una persona che seguo ricondivide un mio
+                // post ed elimino il post per lui tutto apposto ma io continuo a vedere il
+                // postricondiviso nel mio feed -> controllare
+                userAuthor.removePostFromFeed(id);
+
+                // rimozione dal feed e blog(in caso di rewin) di tutti i follower
+                for (String u : userAuthor.getFollowers()) {
+                    users.get(u).removePostFromBlog(id);
+                    users.get(u).removePostFromFeed(id);
+                }
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean ratePost(Long id, int vote, String username) {
+        Post post;
+        User user = users.get(username);
+        if ((post = posts.get(id)) != null) { // il post deve esistere
+            // controllo che il votante non sia l'autore del post, che abbia il post nel
+            // feed e che non abbia già votato
+            if (post.getAuthor() != username && user.getFeed().containsKey(id) && !user.getListVotes().contains(id)) {
+                if (vote == 1) {
+                    post.addPostiveVote();
+                }
+                if (vote == -1) {
+                    post.addNegativeVotes();
+                }
+                user.addIdToListVotes(id);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean rewinPost(Long id, String username) {
+        Post post;
+        User user = users.get(username);
+        if ((post = posts.get(id)) != null) {
+            // controllo che il post sia nel feed dell'utente che vuole ricondividere
+            if (user.getFeed().containsKey(id)) {
+
+                // aggiungo il post al blog dell'utente
+                user.addPostToBlog(post);
+
+                // TODO: aggiungo il post al feed dei followers dell'utente
+
+                return true;
+            }
+        }
+        return false;
     }
 
     public User getUser(String username) {
         return users.get(username);
+    }
+
+    public Post getPost(Long id) {
+        return posts.get(id);
     }
 
 }

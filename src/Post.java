@@ -66,4 +66,12 @@ public class Post {
         comments.add(comment);
         numComments++;
     }
+
+    public void addPostiveVote() {
+        positiveVotes++;
+    }
+
+    public void addNegativeVotes() {
+        negativeVotes++;
+    }
 }

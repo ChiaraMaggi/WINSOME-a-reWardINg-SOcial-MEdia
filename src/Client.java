@@ -128,6 +128,7 @@ public class Client {
 
             switch (operation) {
                 case "register":
+                    // controllo notazione della richiesta
                     if (request.length < 4 || request.length > 8) {
                         System.out.println(
                                 "< ERROR: wrong notation. Usage: register <username> <password> <tags> (max 5)");
@@ -145,6 +146,7 @@ public class Client {
                     break;
 
                 case "login":
+                    // controllo notazione della richiesta
                     if (request.length != 3) {
                         System.out.println("< ERROR: wrong notation. Usage: login <username> <password>");
                         break;
@@ -163,6 +165,7 @@ public class Client {
                             someoneLogged = true;
                             username = request[1];
                         }
+
                     } else {
                         System.out.println("< ERROR: a user is already logged in from this device");
                     }
@@ -172,7 +175,6 @@ public class Client {
                 case "logout":
                     // controllo notazione della richiesta
                     if (request.length != 1) {
-
                         System.out.println("< ERROR: wrong notation. Usage: logout");
                         break;
                     }
@@ -209,6 +211,7 @@ public class Client {
 
                 case "follow", "unfollow":
                     if (someoneLogged) {
+                        // controllo notazione della richiesta
                         if (request[0].equals("follow") && request.length != 2) {
                             System.out.println("< ERROR: wrong notation. Usage: follow <username>");
                             break;
@@ -222,6 +225,7 @@ public class Client {
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
+                        // lettura risposta e stampa esito
                         serverResponse = inReader.readUTF();
                         System.out.println("< " + serverResponse);
                     } else {
@@ -241,6 +245,7 @@ public class Client {
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
+                        // lettura risposta e stampa esito
                         serverResponse = inReader.readUTF();
                         System.out.println("< Id      | Author        | Title     ");
                         System.out.println("< -----------------------------------------------------");
@@ -253,6 +258,7 @@ public class Client {
 
                 case "post":
                     if (someoneLogged) {
+                        // controllo notazione della richiesta
                         if (request.length == 1 || !request[1].startsWith("\"")) {
                             System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
                             break;
@@ -289,9 +295,11 @@ public class Client {
                             break;
                         }
 
+                        // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
+                        // lettura risposta e stampa esito
                         serverResponse = inReader.readUTF();
                         System.out.println("< " + serverResponse);
                     } else {
@@ -323,6 +331,7 @@ public class Client {
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
+                        // lettura risposta e stampa esito
                         serverResponse = inReader.readUTF();
                         System.out.print(serverResponse);
 
@@ -332,16 +341,42 @@ public class Client {
                     break;
 
                 case "delete":
-                    if (request.length != 2) {
-                        System.out.println("< ERROR: wrong notation. Usage: delete <idPost>");
-                        break;
+                    if (someoneLogged) {
+                        // controllo notazione della richiesta
+                        if (request.length != 2) {
+                            System.out.println("< ERROR: wrong notation. Usage: delete <idPost>");
+                            break;
+                        }
+
+                        // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        // lettura risposta e stampa esito
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< " + serverResponse);
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
                 case "rewin":
-                    if (request.length != 2) {
-                        System.out.println("< ERROR: wrong notation. Usage: rewin <idPost>");
-                        break;
+                    if (someoneLogged) {
+                        // controllo notazione della richiesta
+                        if (request.length != 2) {
+                            System.out.println("< ERROR: wrong notation. Usage: rewin <idPost>");
+                            break;
+                        }
+
+                        // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        // lettura risposta e stampa esito
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< " + serverResponse);
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
@@ -352,12 +387,18 @@ public class Client {
                             System.out.println("< ERROR: wrong notation. Usage: rate <idPost> <vote>");
                             break;
                         }
-                        if (Integer.parseInt(request[2]) != 1 || Integer.parseInt(request[2]) != -1) {
+                        if (Integer.parseInt(request[2]) != 1 && Integer.parseInt(request[2]) != -1) {
                             System.out.println("< ERROR: vote must be 1 or -1");
                             break;
                         }
 
                         // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        // lettura risposta e stampa esito
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< " + serverResponse);
 
                         break;
                     } else {
@@ -397,6 +438,7 @@ public class Client {
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
+                        // lettura risposta e stampa esito
                         serverResponse = inReader.readUTF();
                         System.out.println("< " + serverResponse);
 
@@ -406,6 +448,7 @@ public class Client {
                     break;
 
                 case "wallet":
+                    // controllo notazione della richiesta
                     if (request.length > 2 || (request.length == 2 && !request[1].equals("btc"))) {
                         System.out.println("< ERROR: wrong notation. Usage: wallet or wallet btc");
                         break;
@@ -417,6 +460,7 @@ public class Client {
                     break;
 
                 case "quit":
+                    // controllo notazione della richiesta
                     if (request.length != 1) {
                         System.out.println("< ERROR: wrong notation. Usage: quit");
                         break;

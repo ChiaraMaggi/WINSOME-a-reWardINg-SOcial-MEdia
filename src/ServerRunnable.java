@@ -38,8 +38,8 @@ public class ServerRunnable implements Runnable {
             if (user != null) {
                 if (!user.isLogged()) {
                     if (winsome.login(param[1], param[2])) {
-                        response = "SUCCESS: log in terminated with success";
                         clientUsername = param[1];
+                        response = "SUCCESS: " + clientUsername + " is now logged in";
                     } else {
                         response = "ERROR: wrong password for this username";
                     }
@@ -54,7 +54,8 @@ public class ServerRunnable implements Runnable {
         }
 
         if (param[0].equals("logout")) {
-            winsome.getUser(clientUsername).logout();
+            winsome.logout(clientUsername);
+            clientUsername = null;
         }
 
         if (param[0].equals("show")) {
@@ -81,7 +82,7 @@ public class ServerRunnable implements Runnable {
             if (winsome.addComment(clientUsername, Long.parseLong(param[1]), param[2])) {
                 response = "SUCCESS: comment created";
             } else {
-                response = "ERROR: somenthing goes wrong. Comment not created";
+                response = "ERROR: comment not created. Something goes wrong";
             }
             outWriter.writeUTF(response);
             outWriter.flush();
@@ -136,6 +137,50 @@ public class ServerRunnable implements Runnable {
                 } else {
                     response = "ERROR: the user you want to unfollow does not exist";
                 }
+            }
+            outWriter.writeUTF(response);
+            outWriter.flush();
+        }
+
+        if (param[0].equals("delete")) {
+            Long id = Long.parseLong(param[1]);
+            if (winsome.getPost(id) != null) {
+                if (winsome.deletePost(id, clientUsername)) {
+                    response = "SUCCESS: post (id = " + id + ") deleted";
+                } else {
+                    response = "ERROR: you can't delete this post. You are not the author";
+                }
+            } else {
+                response = "ERROR: post (id = " + id + ") doesn't exist";
+            }
+            outWriter.writeUTF(response);
+            outWriter.flush();
+
+        }
+
+        if (param[0].equals("rate")) {
+            Long id = Long.parseLong(param[1]);
+            int vote = Integer.parseInt(param[2]);
+            if (winsome.ratePost(id, vote, clientUsername)) {
+                response = "SUCCESS: post (id = " + id + ") voted";
+            } else {
+                response = "ERROR: impossible to vote this post";
+
+            }
+            outWriter.writeUTF(response);
+            outWriter.flush();
+        }
+
+        if (param[0].equals("rewin")) {
+            Long id = Long.parseLong(param[1]);
+            if (winsome.getPost(id) != null) {
+                if (winsome.rewinPost(id, clientUsername)) {
+                    response = "SUCCESS: post (id = " + id + ") rewinned";
+                } else {
+                    response = "ERROR: you can't rewin this post";
+                }
+            } else {
+                response = "ERROR: post (id = " + id + ") doesn't exist";
             }
             outWriter.writeUTF(response);
             outWriter.flush();
