@@ -10,6 +10,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Client {
@@ -134,9 +135,9 @@ public class Client {
                                 "< ERROR: wrong notation. Usage: register <username> <password> <tags> (max 5)");
                         break;
                     }
-                    String tags = request[3];
-                    for (int i = 4; i < request.length; i++) {
-                        tags = tags.concat(" " + request[i]);
+                    LinkedList<String> tags = new LinkedList<>();
+                    for (int i = 3; i < request.length; i++) {
+                        tags.add(request[i]);
                     }
                     if (!someoneLogged)
                         register(request[1], request[2], tags);
@@ -206,6 +207,12 @@ public class Client {
                     // invio richiesta al server
                     outWriter.writeUTF(line);
                     outWriter.flush();
+
+                    serverResponse = inReader.readUTF();
+
+                    System.out.println("<    User       |   Tags    ");
+                    System.out.println("<------------------------------------");
+                    System.out.println(serverResponse);
 
                     break;
 
@@ -502,7 +509,7 @@ public class Client {
                 "   -> quit\n");
     }
 
-    private static void register(String username, String password, String tags) {
+    private static void register(String username, String password, LinkedList<String> tags) {
         try {
             remote = (ServerRemoteInterface) registry.lookup(REGISTRY_HOST);
             if (remote.register(username, password, tags)) {

@@ -2,6 +2,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -18,7 +19,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         postId = new AtomicLong(0);
     }
 
-    public boolean register(String username, String password, String tags) throws RemoteException {
+    public boolean register(String username, String password, LinkedList<String> tags) throws RemoteException {
         if (password.length() > 16 || password.length() < 8) {
             throw new IllegalArgumentException();
         }
@@ -145,8 +146,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             user.getFollowed().remove(usernameToUnfollow);
             userToUnfollow.getFollowers().remove(username);
 
+            // rimozione di tutti i post dell'utente che è stato smesso di seguire
+            // almeno che il post non sia stato ricondiviso da un altro utente seguito
             for (Long id : userToUnfollow.getBlog().keySet()) {
-                user.removePostFromFeed(id);
+                for (String u : user.getFollowed()) {
+                    User followed = users.get(u);
+                    if (!followed.getBlog().containsKey(id))
+                        user.removePostFromFeed(id);
+                }
             }
             return true;
         }
@@ -211,12 +218,35 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 // aggiungo il post al blog dell'utente
                 user.addPostToBlog(post);
 
-                // TODO: aggiungo il post al feed dei followers dell'utente
+                // aggiungo il post al feed dei followers dell'utente che fa il rewin
+                User follower;
+                for (String u : user.getFollowers()) {
+                    follower = users.get(u);
+                    follower.addPostToFeed(post);
+                }
 
                 return true;
             }
         }
         return false;
+    }
+
+    public String listUsers(String username) {
+        User user = users.get(username);
+        String listUsers = "";
+        LinkedList<String> tags = user.getTags();
+        for (String s : users.keySet()) {
+            if (!s.equals(username)) {// non può seguire se stesso
+                User u = users.get(s);
+                for (String tag : tags) {
+                    if (u.getTags().contains(tag)) {
+                        // TODO: incolonnare bene i campi
+                        listUsers = listUsers.concat("<   " + s + "     |   " + u.printTags(u.getTags()) + "\n");
+                    }
+                }
+            }
+        }
+        return listUsers;
     }
 
     public User getUser(String username) {

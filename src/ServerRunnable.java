@@ -185,6 +185,16 @@ public class ServerRunnable implements Runnable {
             outWriter.writeUTF(response);
             outWriter.flush();
         }
+
+        if (param[0].equals("list")) {
+            if (param[1].equals("users")) {
+                response = winsome.listUsers(clientUsername);
+                outWriter.writeUTF(response);
+                outWriter.flush();
+            }
+
+            // TODO: list followers e list followed
+        }
     }
 
 }

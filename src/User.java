@@ -9,9 +9,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class User {
     private final String username;
-    private final String tags;
     private final String seed;
     private final String hashedPassword;
+    private final LinkedList<String> tags;
 
     private final HashMap<Long, Post> blog;
     private final HashMap<Long, Post> feed;
@@ -25,7 +25,7 @@ public class User {
     private boolean logged = false;
 
     // costruttore nel caso di nuovi utenti
-    public User(String username, String password, String tags) throws NoSuchAlgorithmException {
+    public User(String username, String password, LinkedList<String> tags) throws NoSuchAlgorithmException {
         byte[] array = new byte[32];
         ThreadLocalRandom.current().nextBytes(array);
 
@@ -102,6 +102,10 @@ public class User {
         return votes;
     }
 
+    public LinkedList<String> getTags() {
+        return tags;
+    }
+
     public void addIdToListVotes(Long id) {
         votes.add(id);
     }
@@ -112,5 +116,15 @@ public class User {
 
     public void removePostFromFeed(Long id) {
         feed.remove(id);
+    }
+
+    public String printTags(LinkedList<String> tags) {
+        String print = "";
+        int i;
+        for (i = 0; i < tags.size() - 1; i++) {
+            print = print.concat(tags.get(i) + ", ");
+        }
+        print = print.concat(tags.get(tags.size() - 1));
+        return print;
     }
 }
