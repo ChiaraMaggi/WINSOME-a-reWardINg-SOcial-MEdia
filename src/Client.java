@@ -10,6 +10,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -34,6 +35,11 @@ public class Client {
     private static ServerRemoteInterface remote;
     private static Registry registry;
 
+    private static NotifyClientInterface obj;
+    private static NotifyClientInterface stub;
+
+    private static LinkedList<String> followers;
+
     public static void main(String[] args) {
 
         if (args.length == 0) {
@@ -43,14 +49,20 @@ public class Client {
             configClient(CONFIG_FILE);
         }
 
+        followers = new LinkedList<>();
+
         try {
             // configurazione tcp
             Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), TCP_SERVER_PORT);
             socket.setSoTimeout(SOCKET_TIMEOUT);
 
-            // configurazione RMI
+            // configurazione RMI:
+            // registeazione con metodo remoto
             registry = LocateRegistry.getRegistry(RMI_PORT);
             remote = (ServerRemoteInterface) registry.lookup(REGISTRY_HOST);
+            // servizio di notifiche
+            obj = new NotifyClient(followers);
+            stub = (NotifyClientInterface) UnicastRemoteObject.exportObject(obj, 0);
 
             System.out.println("--------- WELCOME TO WINSOME ----------");
 
@@ -165,6 +177,9 @@ public class Client {
                         if (serverResponse.startsWith("SUCCESS")) {
                             someoneLogged = true;
                             username = request[1];
+                            followers.clear();
+                            followers.addAll(remote.backupFollowers(username));
+                            remote.registerForCallback(stub, username);
                         }
 
                     } else {
@@ -187,6 +202,7 @@ public class Client {
 
                         System.out.println("< SUCCESS: logout teminated with success");
                         someoneLogged = false;
+                        remote.unregisterForCallback(stub, username);
                         username = null;
                     } else {
                         System.out.println(LOGIN_ERROR_MSG);
@@ -204,15 +220,23 @@ public class Client {
                         break;
                     }
 
+                    if (request[1].equals("followers")) {
+                        System.out.println("< Followers:");
+                        for (String s : followers) {
+                            System.out.println("<   user: " + s);
+                        }
+                        break;
+                    }
+
                     // invio richiesta al server
                     outWriter.writeUTF(line);
                     outWriter.flush();
 
                     serverResponse = inReader.readUTF();
 
-                    System.out.println("<    User       |   Tags    ");
+                    System.out.println("<    User       |   Tags");
                     System.out.println("<------------------------------------");
-                    System.out.println(serverResponse);
+                    System.out.print(serverResponse);
 
                     break;
 
@@ -256,7 +280,7 @@ public class Client {
                         serverResponse = inReader.readUTF();
                         System.out.println("< Id      | Author        | Title     ");
                         System.out.println("< -----------------------------------------------------");
-                        System.out.println(serverResponse);
+                        System.out.print(serverResponse);
 
                     } else {
                         System.out.println(LOGIN_ERROR_MSG);

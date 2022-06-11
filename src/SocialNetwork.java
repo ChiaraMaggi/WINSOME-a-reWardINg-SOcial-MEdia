@@ -10,12 +10,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     private ConcurrentHashMap<Long, Post> posts;
     private ConcurrentHashMap<String, User> users;
+    private ConcurrentHashMap<String, NotifyClientInterface> callbacksRegistration; // utenti registrati alle callback
     // valore univoco per i post che vengono creati
     private volatile AtomicLong postId;
 
     public SocialNetwork() {
         posts = new ConcurrentHashMap<>();
         users = new ConcurrentHashMap<>();
+        callbacksRegistration = new ConcurrentHashMap<>();
         postId = new AtomicLong(0);
     }
 
@@ -32,6 +34,53 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 return false;
         } catch (NoSuchAlgorithmException e) {
             return false;
+        }
+    }
+
+    // utilizzata quando un certo utente si riconette sul client, per recuperare la
+    // lista dei followers gestita lato client
+    public LinkedList<String> backupFollowers(String username) throws RemoteException {
+        User user;
+        LinkedList<String> followers;
+        if ((user = users.get(username)) != null) {
+            followers = new LinkedList<>(user.getFollowers());
+            return followers;
+        }
+        return new LinkedList<>();
+
+    }
+
+    public synchronized void registerForCallback(NotifyClientInterface ClientInterface, String username)
+            throws RemoteException {
+        callbacksRegistration.putIfAbsent(username, ClientInterface);
+    }
+
+    public synchronized void unregisterForCallback(NotifyClientInterface ClientInterface, String username)
+            throws RemoteException {
+        callbacksRegistration.remove(username, ClientInterface);
+    }
+
+    public synchronized boolean doCallbackFollow(String usernameFollowed, String follower) {
+        NotifyClientInterface client = callbacksRegistration.get(usernameFollowed);
+        try {
+            client.notifyNewFollower(follower);
+            return true;
+        } catch (RemoteException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return true;
+        }
+    }
+
+    public synchronized boolean doCallbackUnfollow(String usernameUnfollowed, String unfollower) {
+        NotifyClientInterface client = callbacksRegistration.get(usernameUnfollowed);
+        try {
+            client.notifyNewUnfollower(unfollower);
+            return true;
+        } catch (RemoteException e) {
+            return false;
+        } catch (NullPointerException e) {
+            return true;
         }
     }
 
@@ -118,33 +167,34 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return feedInString;
     }
 
-    public boolean followUser(String username, String usernameToFollow) {
+    public boolean followUser(String follower, String usernameToFollow) {
         User userToFollow = users.get(usernameToFollow);
-        User user = users.get(username);
+        User user = users.get(follower);
         // controllo se l'utente segue già userFollowed
-        if (userToFollow.getFollowers().contains(username))
+        if (userToFollow.getFollowers().contains(follower))
             return false;
         else {
             // TO DO: gestire lock e callback
             user.addFollowed(usernameToFollow);
-            userToFollow.addFollowers(username);
+            userToFollow.addFollowers(follower);
 
             // aggiunta di tutti i post di userToFollow al feed di user
             for (Post p : userToFollow.getBlog().values()) {
                 user.addPostToFeed(p);
             }
+            doCallbackFollow(usernameToFollow, follower);
         }
         return true;
     }
 
-    public boolean unfollowUser(String username, String usernameToUnfollow) {
+    public boolean unfollowUser(String unfollower, String usernameToUnfollow) {
         User userToUnfollow = users.get(usernameToUnfollow);
-        User user = users.get(username);
+        User user = users.get(unfollower);
         // controllo se l'utente segue userToUnfollow
-        if (userToUnfollow.getFollowers().contains(username)) {
+        if (userToUnfollow.getFollowers().contains(unfollower)) {
             // TO DO: gestire lock e callback
             user.getFollowed().remove(usernameToUnfollow);
-            userToUnfollow.getFollowers().remove(username);
+            userToUnfollow.getFollowers().remove(unfollower);
 
             // rimozione di tutti i post dell'utente che è stato smesso di seguire
             // almeno che il post non sia stato ricondiviso da un altro utente seguito
@@ -155,6 +205,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                         user.removePostFromFeed(id);
                 }
             }
+            doCallbackUnfollow(usernameToUnfollow, unfollower);
             return true;
         }
         return false;
@@ -247,6 +298,16 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             }
         }
         return listUsers;
+    }
+
+    public String listFollowing(String username) {
+        User user = users.get(username);
+        String listFollowing = "";
+        for (String s : user.getFollowed()) {
+            User u = users.get(s);
+            listFollowing = listFollowing.concat("<   " + s + "     |   " + u.printTags(u.getTags()) + "\n");
+        }
+        return listFollowing;
     }
 
     public User getUser(String username) {

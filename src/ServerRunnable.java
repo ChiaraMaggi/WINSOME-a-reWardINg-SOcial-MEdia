@@ -193,7 +193,13 @@ public class ServerRunnable implements Runnable {
                 outWriter.flush();
             }
 
-            // TODO: list followers e list followed
+            // TODO: list followers
+
+            if (param[1].equals("following")) {
+                response = winsome.listFollowing(clientUsername);
+                outWriter.writeUTF(response);
+                outWriter.flush();
+            }
         }
     }
 
