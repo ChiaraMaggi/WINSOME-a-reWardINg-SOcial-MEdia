@@ -3,6 +3,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.List;
 
 public class ServerRunnable implements Runnable {
     Socket clientSocket;
@@ -73,8 +75,17 @@ public class ServerRunnable implements Runnable {
             // caso con show feed
             if (param[1].equals("feed")) {
                 response = winsome.showFeed(clientUsername);
-                outWriter.writeUTF(response);
+                String[] feed = response.split("\n");
+                Integer dim = feed.length;
+
+                outWriter.writeUTF(dim.toString());
                 outWriter.flush();
+
+                for (int i = 0; i < dim; i++) {
+                    response = feed[i];
+                    outWriter.writeUTF(response);
+                    outWriter.flush();
+                }
             }
         }
 
@@ -90,8 +101,17 @@ public class ServerRunnable implements Runnable {
 
         if (param[0].equals("blog")) {
             response = winsome.viewBlog(clientUsername);
-            outWriter.writeUTF(response);
+            String[] blog = response.split("\n");
+            Integer dim = blog.length;
+
+            outWriter.writeUTF(dim.toString());
             outWriter.flush();
+
+            for (int i = 0; i < dim; i++) {
+                response = blog[i];
+                outWriter.writeUTF(response);
+                outWriter.flush();
+            }
         }
 
         if (param[0].equals("post")) {
@@ -189,14 +209,64 @@ public class ServerRunnable implements Runnable {
         if (param[0].equals("list")) {
             if (param[1].equals("users")) {
                 response = winsome.listUsers(clientUsername);
-                outWriter.writeUTF(response);
-                outWriter.flush();
-            }
+                String[] listUsers = response.split("\n");
+                Integer dim = listUsers.length;
 
-            // TODO: list followers
+                outWriter.writeUTF(dim.toString());
+                outWriter.flush();
+
+                for (int i = 0; i < dim; i++) {
+                    response = listUsers[i];
+                    outWriter.writeUTF(response);
+                    outWriter.flush();
+                }
+            }
 
             if (param[1].equals("following")) {
                 response = winsome.listFollowing(clientUsername);
+                String[] listFollowing = response.split("\n");
+                Integer dim = listFollowing.length;
+
+                outWriter.writeUTF(dim.toString());
+                outWriter.flush();
+
+                for (int i = 0; i < dim; i++) {
+                    response = listFollowing[i];
+                    outWriter.writeUTF(response);
+                    outWriter.flush();
+                }
+            }
+        }
+
+        if (param[0].equals("wallet")) {
+            if (param.length == 1) {
+                Wallet wallet = winsome.getUser(clientUsername).getWallet();
+                response = "Total (winsoin): " + wallet.getTotal();
+                outWriter.writeUTF(response);
+                outWriter.flush();
+
+                Integer dim = wallet.getTransaction().size();
+                outWriter.writeUTF(dim.toString());
+                outWriter.flush();
+
+                List<String> transactions = wallet.getTransaction();
+                Iterator<String> it = transactions.iterator();
+                int i = 1;
+
+                while (it.hasNext()) {
+                    response = it.next();
+                    outWriter.writeUTF("Transaction " + i + ": " + " response");
+                    outWriter.flush();
+                }
+            }
+
+            if (param.length == 2) {
+                try {
+                    Wallet wallet = winsome.getUser(clientUsername).getWallet();
+                    response = "Total (bitcoin): " + winsome.toBitcoin(wallet.getTotal());
+                } catch (IOException e) {
+                    response = "ERROR: problem with the calculation of wallet. Try again later";
+                }
                 outWriter.writeUTF(response);
                 outWriter.flush();
             }

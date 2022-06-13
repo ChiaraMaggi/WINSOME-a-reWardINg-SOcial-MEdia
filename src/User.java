@@ -22,6 +22,8 @@ public class User {
     // elenco dei post votati
     private final LinkedList<Long> votes;
 
+    private final Wallet wallet;
+
     private boolean logged = false;
 
     // costruttore nel caso di nuovi utenti
@@ -41,6 +43,9 @@ public class User {
         followed = new LinkedList<>();
 
         votes = new LinkedList<>();
+
+        wallet = new Wallet();
+
     }
 
     // costruttore in caso di ripristino utenti
@@ -104,6 +109,10 @@ public class User {
 
     public LinkedList<String> getTags() {
         return tags;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
     }
 
     public void addIdToListVotes(Long id) {

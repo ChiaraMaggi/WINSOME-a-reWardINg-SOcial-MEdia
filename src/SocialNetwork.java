@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +15,8 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     private ConcurrentHashMap<Long, Post> posts;
     private ConcurrentHashMap<String, User> users;
-    private ConcurrentHashMap<String, NotifyClientInterface> callbacksRegistration; // utenti registrati alle callback
+    private final ConcurrentHashMap<String, NotifyClientInterface> callbacksRegistration; // utenti registrati alle
+                                                                                          // callback
     // valore univoco per i post che vengono creati
     private volatile AtomicLong postId;
 
@@ -147,7 +153,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String blogInString = "";
         for (Long key : blog.keySet()) {
             blogInString = blogInString
-                    .concat("< " + key + "       | " + blog.get(key).getAuthor() + "        | "
+                    .concat(key + "       | " + blog.get(key).getAuthor() + "        | "
                             + blog.get(key).getTitle()
                             + "\n");
         }
@@ -160,7 +166,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String feedInString = "";
         for (Long key : feed.keySet()) {
             feedInString = feedInString
-                    .concat("< " + key + "       | " + feed.get(key).getAuthor() + "        | "
+                    .concat(key + "       | " + feed.get(key).getAuthor() + "        | "
                             + feed.get(key).getTitle()
                             + "\n");
         }
@@ -292,7 +298,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 for (String tag : tags) {
                     if (u.getTags().contains(tag)) {
                         // TODO: incolonnare bene i campi
-                        listUsers = listUsers.concat("<   " + s + "     |   " + u.printTags(u.getTags()) + "\n");
+                        listUsers = listUsers.concat(s + "     |   " + u.printTags(u.getTags()) + "\n");
                     }
                 }
             }
@@ -305,9 +311,21 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String listFollowing = "";
         for (String s : user.getFollowed()) {
             User u = users.get(s);
-            listFollowing = listFollowing.concat("<   " + s + "     |   " + u.printTags(u.getTags()) + "\n");
+            listFollowing = listFollowing.concat(s + "     |   " + u.printTags(u.getTags()) + "\n");
         }
         return listFollowing;
+    }
+
+    public double toBitcoin(double total) throws IOException {
+        URL randomOrg = new URL("https://www.random.org/decimal-fractions/?num=1&dec=10&col=2&format=plain&rnd=new");
+        InputStream urlReader = randomOrg.openStream();
+        BufferedReader buffReader = new BufferedReader(new InputStreamReader(urlReader));
+        String randomValue;
+        randomValue = buffReader.readLine();
+        buffReader.close();
+        urlReader.close();
+
+        return Double.parseDouble(randomValue) * total;
     }
 
     public User getUser(String username) {

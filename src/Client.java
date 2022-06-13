@@ -232,11 +232,15 @@ public class Client {
                     outWriter.writeUTF(line);
                     outWriter.flush();
 
-                    serverResponse = inReader.readUTF();
-
                     System.out.println("<    User       |   Tags");
                     System.out.println("<------------------------------------");
-                    System.out.print(serverResponse);
+                    serverResponse = inReader.readUTF();
+                    int dim = Integer.parseInt(serverResponse);
+
+                    for (int i = 0; i < dim; i++) {
+                        serverResponse = inReader.readUTF();
+                        System.out.println("<     " + serverResponse);
+                    }
 
                     break;
 
@@ -277,10 +281,15 @@ public class Client {
                         outWriter.flush();
 
                         // lettura risposta e stampa esito
-                        serverResponse = inReader.readUTF();
                         System.out.println("< Id      | Author        | Title     ");
                         System.out.println("< -----------------------------------------------------");
-                        System.out.print(serverResponse);
+                        serverResponse = inReader.readUTF();
+                        int dim2 = Integer.parseInt(serverResponse);
+
+                        for (int i = 0; i < dim2; i++) {
+                            serverResponse = inReader.readUTF();
+                            System.out.println("< " + serverResponse);
+                        }
 
                     } else {
                         System.out.println(LOGIN_ERROR_MSG);
@@ -362,9 +371,20 @@ public class Client {
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
-                        // lettura risposta e stampa esito
-                        serverResponse = inReader.readUTF();
-                        System.out.print(serverResponse);
+                        if (request[1].equals("post")) {
+                            // lettura risposta e stampa esito
+                            serverResponse = inReader.readUTF();
+                            System.out.print(serverResponse);
+                        }
+                        if (request[1].equals("feed")) {
+                            serverResponse = inReader.readUTF();
+                            int dim3 = Integer.parseInt(serverResponse);
+
+                            for (int i = 0; i < dim3; i++) {
+                                serverResponse = inReader.readUTF();
+                                System.out.println("< " + serverResponse);
+                            }
+                        }
 
                     } else {
                         System.out.println(LOGIN_ERROR_MSG);
@@ -479,10 +499,38 @@ public class Client {
                     break;
 
                 case "wallet":
-                    // controllo notazione della richiesta
-                    if (request.length > 2 || (request.length == 2 && !request[1].equals("btc"))) {
-                        System.out.println("< ERROR: wrong notation. Usage: wallet or wallet btc");
-                        break;
+                    if (someoneLogged) {
+                        // controllo notazione della richiesta
+                        if (request.length > 2 || (request.length == 2 && !request[1].equals("btc"))) {
+                            System.out.println("< ERROR: wrong notation. Usage: wallet or wallet btc");
+                            break;
+                        }
+
+                        // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+
+                        // richiesta = wallet
+                        if (request.length == 1) {
+                            serverResponse = inReader.readUTF();
+                            System.out.println("< " + serverResponse);
+
+                            int dim4 = Integer.parseInt(inReader.readUTF());
+                            for (int i = 0; i < dim4; i++) {
+                                serverResponse = inReader.readUTF();
+                                System.out.println("< " + serverResponse);
+                            }
+                            break;
+                        }
+
+                        // richiesta = wallet btc
+                        if (request.length == 2) {
+                            serverResponse = inReader.readUTF();
+                            System.out.println("< " + serverResponse);
+                        }
+
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
                     break;
 
