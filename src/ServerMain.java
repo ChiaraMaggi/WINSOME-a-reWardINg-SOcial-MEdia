@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,16 +51,16 @@ public class ServerMain {
             configServer(CONFIG_FILE);
         }
 
-        System.out.println("SERVER VALUES:");
-        System.out.println("\nSERVER ADDRESS -> " + SERVER_ADDRESS + "\nTCP PORT -> "
-                + TCP_SERVER_PORT + "\nUDP PORFT ->" + UDP_SERVER_PORT +
-                "\nMULTICAST ADDRESS -> "
-                + MULTICAST_ADDRESS + "\nMULTICAST PORT -> " + MULTICAST_PORT +
-                "\nREGISTRY HOST -> "
-                + REGISTRY_HOST + "\nREGISTRY PORT -> " + RMI_PORT + "\nSOCKET TIMEOUT -> " +
+        System.out.print("SERVER VALUES:");
+        System.out.println("\n      SERVER ADDRESS -> " + SERVER_ADDRESS + "\n      TCP PORT -> "
+                + TCP_SERVER_PORT + "\n     UDP PORFT ->" + UDP_SERVER_PORT +
+                "\n     MULTICAST ADDRESS -> "
+                + MULTICAST_ADDRESS + "\n       MULTICAST PORT -> " + MULTICAST_PORT +
+                "\n     REGISTRY HOST -> "
+                + REGISTRY_HOST + "\n       REGISTRY PORT -> " + RMI_PORT + "\n     SOCKET TIMEOUT -> " +
                 SOCKET_TIMEOUT
-                + "\nREWARD TIMEOUT -> " + REWARD_TIMEOUT + "\nBACKUP TIMEOUT -> " + BACKUP_TIMEOUT
-                + "\nAUTHRO PERCENTAGE -> " +
+                + "\n       REWARD TIMEOUT -> " + REWARD_TIMEOUT + "\n      BACKUP TIMEOUT -> " + BACKUP_TIMEOUT
+                + "\n       AUTHROR PERCENTAGE -> " +
                 AUTHOR_PERCENTAGE);
 
         File backupUsers = new File("..//backupServer//backupUsers.json");
@@ -217,7 +218,7 @@ public class ServerMain {
 
     private static void deserializePosts(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
         ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
-        Type typeOfComments = new TypeToken<ArrayList<String>>() {
+        Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
         }.getType();
 
         reader.beginArray();
@@ -276,7 +277,7 @@ public class ServerMain {
         }.getType();
         Type typeOfVotes = new TypeToken<LinkedList<Long>>() {
         }.getType();
-        Type typeOfMap = new TypeToken<LinkedList<Long>>() {
+        Type typeOfBlogAndFeed = new TypeToken<Set<Long>>() {
         }.getType();
 
         reader.beginArray();
@@ -298,7 +299,7 @@ public class ServerMain {
                 String next = reader.nextName();
                 if (next.equals("username"))
                     username = reader.nextString();
-                else if (next.equals("hashedpassword"))
+                else if (next.equals("hashedPassword"))
                     hashedPassword = reader.nextString();
                 else if (next.equals("seed"))
                     seed = reader.nextString();
@@ -311,13 +312,13 @@ public class ServerMain {
                 else if (next.equals("votes"))
                     votes = gson.fromJson(reader.nextString(), typeOfVotes);
                 else if (next.equals("blog")) {
-                    LinkedList<Long> list = gson.fromJson(reader.nextString(), typeOfMap);
-                    for (Long id : list) {
+                    Set<Long> set = gson.fromJson(reader.nextString(), typeOfBlogAndFeed);
+                    for (Long id : set) {
                         blog.putIfAbsent(id, winsome.getPost(id));
                     }
                 } else if (next.equals("feed")) {
-                    LinkedList<Long> list = gson.fromJson(reader.nextString(), typeOfMap);
-                    for (Long id : list) {
+                    Set<Long> set = gson.fromJson(reader.nextString(), typeOfBlogAndFeed);
+                    for (Long id : set) {
                         feed.putIfAbsent(id, winsome.getPost(id));
                     }
                 } else if (next.equals("wallet"))

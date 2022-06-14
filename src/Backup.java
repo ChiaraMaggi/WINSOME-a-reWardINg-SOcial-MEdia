@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -101,24 +102,18 @@ public class Backup extends Thread {
         writer.name("hashedPassword").value(user.getHashedPassword());
         writer.name("seed").value(user.getSeed());
 
-        Type typeTags = new TypeToken<LinkedList<String>>() {
+        Type typeOfFollowAndTags = new TypeToken<LinkedList<String>>() {
         }.getType();
-        writer.name("tags").value(gson.toJson(user.getTags(), typeTags));
-        Type typeFollowers = new TypeToken<LinkedList<String>>() {
+        writer.name("tags").value(gson.toJson(user.getTags(), typeOfFollowAndTags));
+        writer.name("followers").value(gson.toJson(user.getFollowers(), typeOfFollowAndTags));
+        writer.name("followed").value(gson.toJson(user.getFollowed(), typeOfFollowAndTags));
+        Type typeOfVotes = new TypeToken<LinkedList<Long>>() {
         }.getType();
-        writer.name("followers").value(gson.toJson(user.getFollowers(), typeFollowers));
-        Type typeFollowed = new TypeToken<LinkedList<String>>() {
+        writer.name("votes").value(gson.toJson(user.getListVotes(), typeOfVotes));
+        Type typeOfBlogAndFeed = new TypeToken<Set<Long>>() {
         }.getType();
-        writer.name("followed").value(gson.toJson(user.getFollowed(), typeFollowed));
-        Type typeVotes = new TypeToken<LinkedList<Long>>() {
-        }.getType();
-        writer.name("votes").value(gson.toJson(user.getListVotes(), typeVotes));
-        Type typeBlog = new TypeToken<HashMap<Long, Post>>() {
-        }.getType();
-        writer.name("blog").value(gson.toJson(user.getBlog(), typeBlog));
-        Type typeFeed = new TypeToken<HashMap<Long, Post>>() {
-        }.getType();
-        writer.name("feed").value(gson.toJson(user.getFeed(), typeFeed));
+        writer.name("blog").value(gson.toJson(user.getBlog().keySet(), typeOfBlogAndFeed));
+        writer.name("feed").value(gson.toJson(user.getFeed().keySet(), typeOfBlogAndFeed));
         writer.name("wallet").value(gson.toJson(user.getWallet()));
 
         writer.endObject();

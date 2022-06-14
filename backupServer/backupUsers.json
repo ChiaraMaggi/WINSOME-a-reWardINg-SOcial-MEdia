@@ -1,14 +1,26 @@
 [
       {
-            "username": "andrea",
-            "hashedPassword": "c6b1bdd915aa81aac9cefedf8d907746cbe4a942a86cb635e410aceffa6548ce",
-            "seed": "?????y???}\u0003|\u0014?w???9?L\r?&\u0013?Y~c?",
-            "tags": "[\n  \"defe\"\n]",
-            "followers": "[]",
-            "followed": "[]",
+            "username": "Chiara",
+            "hashedPassword": "72e5cead080580ee8bc7d17e44c61ba90cb5e4829b7b96ac4160f3ea364218e5",
+            "seed": "5\u0003??Q?e???\u0004?-??\u000f,?F?Q?5C?H?\u0003?'",
+            "tags": "[\n  \"pallavolo\",\n  \"calcio\",\n  \"informatica\"\n]",
+            "followers": "[\n  \"Andrea\"\n]",
+            "followed": "[\n  \"Andrea\"\n]",
+            "votes": "[\n  3\n]",
+            "blog": "[\n  1,\n  2,\n  3\n]",
+            "feed": "[\n  3\n]",
+            "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
+      },
+      {
+            "username": "Andrea",
+            "hashedPassword": "2dd652cc70f7a2fa5a8a22dd4b7a35f53915e47e8551da3e3c57150f6d7654d2",
+            "seed": "???z?\u0019g?Z?\u0014???\u000f*??N(?}??????!?\u0011",
+            "tags": "[\n  \"calcio\",\n  \"comunicazione\"\n]",
+            "followers": "[\n  \"Chiara\"\n]",
+            "followed": "[\n  \"Chiara\"\n]",
             "votes": "[]",
-            "blog": "{\n  \"3\": {\n    \"id\": 3,\n    \"author\": \"andrea\",\n    \"title\": \"\\\"jnonon\\\"\",\n    \"content\": \"\\\"mkmpol\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 0,\n    \"comments\": [],\n    \"lastTimeReward\": 0\n  },\n  \"4\": {\n    \"id\": 4,\n    \"author\": \"andrea\",\n    \"title\": \"\\\"jnonon\\\"\",\n    \"content\": \"\\\"mkmpolsddfwee\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 0,\n    \"comments\": [],\n    \"lastTimeReward\": 0\n  }\n}",
-            "feed": "{}",
+            "blog": "[\n  3\n]",
+            "feed": "[\n  1,\n  2,\n  3\n]",
             "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
       }
 ]
