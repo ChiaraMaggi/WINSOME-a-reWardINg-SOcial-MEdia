@@ -127,7 +127,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         if ((post = posts.get(id)) != null) {
             printedPost = "< Title: " + post.getTitle() + "\n< Content: " + post.getContent() + "\n< Votes: "
                     + "\n<    Positive: " + post.getPositiveVotes() + "\n<    Negative: " + post.getNegativeVotes()
-                    + "\n< Comments: " + post.getNumComments() + "\n" + post.getComments();
+                    + "\n< Comments: " + post.getNumComments() + "\n" + post.getCommentsInString();
             return printedPost;
         }
         return null;
@@ -298,7 +298,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 for (String tag : tags) {
                     if (u.getTags().contains(tag)) {
                         // TODO: incolonnare bene i campi
-                        listUsers = listUsers.concat(s + "     |   " + u.printTags(u.getTags()) + "\n");
+                        listUsers = listUsers.concat(s + "      |   " + u.printTags(u.getTags()) + "\n");
                     }
                 }
             }
@@ -311,7 +311,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String listFollowing = "";
         for (String s : user.getFollowed()) {
             User u = users.get(s);
-            listFollowing = listFollowing.concat(s + "     |   " + u.printTags(u.getTags()) + "\n");
+            listFollowing = listFollowing.concat(s + "      |   " + u.printTags(u.getTags()) + "\n");
         }
         return listFollowing;
     }
@@ -319,10 +319,10 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public double toBitcoin(double total) throws IOException {
         URL randomOrg = new URL("https://www.random.org/decimal-fractions/?num=1&dec=10&col=2&format=plain&rnd=new");
         InputStream urlReader = randomOrg.openStream();
-        BufferedReader buffReader = new BufferedReader(new InputStreamReader(urlReader));
+        BufferedReader buff = new BufferedReader(new InputStreamReader(urlReader));
         String randomValue;
-        randomValue = buffReader.readLine();
-        buffReader.close();
+        randomValue = buff.readLine();
+        buff.close();
         urlReader.close();
 
         return Double.parseDouble(randomValue) * total;
@@ -336,4 +336,11 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return posts.get(id);
     }
 
+    public ConcurrentHashMap<String, User> getAllUsers() {
+        return users;
+    }
+
+    public ConcurrentHashMap<Long, Post> getAllPosts() {
+        return posts;
+    }
 }

@@ -26,9 +26,13 @@ public class ServerRunnable implements Runnable {
                 requestHandler(request, outWriter);
             }
         } catch (IOException e) {
-            System.out.println("ERROR: closing client connection");
+            System.out.println("SERVER: closing client connection");
+            try {
+                clientSocket.close();
+            } catch (IOException ex) {
+                System.err.println("ERROR: problems in closing clientSocket");
+            }
         }
-
     }
 
     private void requestHandler(String request, DataOutputStream outWriter) throws IOException {
@@ -270,6 +274,10 @@ public class ServerRunnable implements Runnable {
                 outWriter.writeUTF(response);
                 outWriter.flush();
             }
+        }
+
+        if (param[0].equals("quit")) {
+            winsome.getUser(clientUsername).logout();
         }
     }
 

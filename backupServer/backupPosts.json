@@ -1,0 +1,35 @@
+[
+      {
+            "id": 1,
+            "author": "chiara",
+            "title": "\"ciao\"",
+            "content": "\"ciao a tutti, sono nuova\"",
+            "positiveVotes": 1,
+            "negativeVotes": 0,
+            "numComment": 1,
+            "comments": "[\n  {\n    \"author\": \"andrea\",\n    \"comment\": \"\\\"ciao chiara, benevenuta!\\\"\"\n  }\n]",
+            "lastTimeReward": 0
+      },
+      {
+            "id": 2,
+            "author": "chiara",
+            "title": "\"opinioni\"",
+            "content": "\"cosa ne pensate di questo social\"",
+            "positiveVotes": 0,
+            "negativeVotes": 0,
+            "numComment": 1,
+            "comments": "[\n  {\n    \"author\": \"andrea\",\n    \"comment\": \"\\\"a me piace molto\\\"\"\n  }\n]",
+            "lastTimeReward": 0
+      },
+      {
+            "id": 3,
+            "author": "andrea",
+            "title": "\"inter\"",
+            "content": "\"forza inter per sempre\"",
+            "positiveVotes": 0,
+            "negativeVotes": 0,
+            "numComment": 0,
+            "comments": "[]",
+            "lastTimeReward": 0
+      }
+]

@@ -1,25 +1,21 @@
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class User {
     private final String username;
     private final String seed;
     private final String hashedPassword;
-    private final LinkedList<String> tags;
 
     private final HashMap<Long, Post> blog;
     private final HashMap<Long, Post> feed;
 
+    private final LinkedList<String> tags;
     private final LinkedList<String> followers;
     private final LinkedList<String> followed;
-
-    // elenco dei post votati
+    // elenco dei post votati dall'utente
     private final LinkedList<Long> votes;
 
     private final Wallet wallet;
@@ -79,20 +75,28 @@ public class User {
         feed.putIfAbsent(p.getId(), p);
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public String getSeed() {
+        return seed;
+    }
+
+    public String getHashedPassword() {
+        return hashedPassword;
+    }
+
+    public LinkedList<String> getTags() {
+        return tags;
+    }
+
     public HashMap<Long, Post> getBlog() {
         return blog;
     }
 
     public HashMap<Long, Post> getFeed() {
         return feed;
-    }
-
-    public void addFollowers(String username) {
-        followers.add(username);
-    }
-
-    public void addFollowed(String username) {
-        followed.add(username);
     }
 
     public LinkedList<String> getFollowers() {
@@ -107,12 +111,16 @@ public class User {
         return votes;
     }
 
-    public LinkedList<String> getTags() {
-        return tags;
-    }
-
     public Wallet getWallet() {
         return wallet;
+    }
+
+    public void addFollowers(String username) {
+        followers.add(username);
+    }
+
+    public void addFollowed(String username) {
+        followed.add(username);
     }
 
     public void addIdToListVotes(Long id) {

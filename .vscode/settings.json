@@ -2,6 +2,7 @@
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "lib/**/*.jar",
+        "d:\\ChiaraMaggi\\Documents\\Università\\3° ANNO\\RCL\\EsempiLab\\gson-2.8.2.jar"
     ]
 }

@@ -1,6 +1,8 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -8,9 +10,15 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.stream.JsonReader;
 
 public class ServerMain {
     private static File CONFIG_FILE;
@@ -21,11 +29,12 @@ public class ServerMain {
 
     private static int TCP_SERVER_PORT = 9999;
     private static int UDP_SERVER_PORT = 33333;
-    private static int MULTICAST_PORT = 44444;
     private static int RMI_PORT = 7777;
-    private static int AUTHOR_PERCENTAGE = 70;
-    private static int SOCKET_TIMEOUT = 100000;
-    private static int REWARD_TIMEOUT = 100000;
+    private static int MULTICAST_PORT = 44444;
+    private static long SOCKET_TIMEOUT = 100000;
+    private static long REWARD_TIMEOUT = 100000;
+    private static long BACKUP_TIMEOUT = 60000;
+    private static double AUTHOR_PERCENTAGE = 0.75;
 
     public static void main(String[] args) {
         // Se non viene passato alcun config_file viene avviata la
@@ -37,20 +46,42 @@ public class ServerMain {
             configServer(CONFIG_FILE);
         }
 
-        /*
-         * System.out.println("\naddress -> " + SERVER_ADDRESS + "\ntcp port -> "
-         * + TCP_SERVER_PORT + "\nudp port ->" + UDP_SERVER_PORT +
-         * "\nmulticast address -> "
-         * + MULTICAST_ADDRESS + "\nmulticast port -> " + MULTICAST_PORT +
-         * "\nresgistry host -> "
-         * + REGISTRY_HOST + "\nregistry port -> " + RMI_PORT + "\nsocket timeout -> " +
-         * SOCKET_TIMEOUT
-         * + "\nreward timeout -> " + REWARD_TIMEOUT + "\nauthor percentage -> " +
-         * AUTHOR_PERCENTAGE);
-         */
+        System.out.println("SERVER VALUES:");
+        System.out.println("\nSERVER ADDRESS -> " + SERVER_ADDRESS + "\nTCP PORT -> "
+                + TCP_SERVER_PORT + "\nUDP PORFT ->" + UDP_SERVER_PORT +
+                "\nMULTICAST ADDRESS -> "
+                + MULTICAST_ADDRESS + "\nMULTICAST PORT -> " + MULTICAST_PORT +
+                "\nREGISTRY HOST -> "
+                + REGISTRY_HOST + "\nREGISTRY PORT -> " + RMI_PORT + "\nSOCKET TIMEOUT -> " +
+                SOCKET_TIMEOUT
+                + "\nREWARD TIMEOUT -> " + REWARD_TIMEOUT + "\nBACKUP TIMEOUT -> " + BACKUP_TIMEOUT
+                + "\nAUTHRO PERCENTAGE -> " +
+                AUTHOR_PERCENTAGE);
+
+        File backupUsers = new File("..//backupServer//backupUsers.json");
+        File backupPosts = new File("..//backupServer//backupPosts.json");
+        try {
+            backupUsers.createNewFile();
+        } catch (IOException e1) {
+            System.out.println("ERROR: error in creating backupUsers file");
+            System.exit(-1);
+        }
+        try {
+            backupPosts.createNewFile();
+        } catch (IOException e1) {
+            System.out.println("ERROR: error in creating backupUsers file");
+            System.exit(-1);
+        }
 
         // Creazione social network winsome
         SocialNetwork winsome = new SocialNetwork();
+        // Ripristino le informazioni del social se presenti
+
+        // avvio il thread di backup
+        Backup backupThread = new Backup(winsome, backupUsers, backupPosts, BACKUP_TIMEOUT);
+        backupThread.setDaemon(true);
+        backupThread.start();
+
         // Threadpool per gestire richieste dei client
         ExecutorService threadPool = Executors.newCachedThreadPool();
 
@@ -78,7 +109,7 @@ public class ServerMain {
         while (true) {
             try {
                 Socket socket = listener.accept();
-                socket.setSoTimeout(SOCKET_TIMEOUT);
+                socket.setSoTimeout((int) SOCKET_TIMEOUT);
                 System.out.println("SERVER: new connection arrived");
 
                 threadPool.execute(new ServerRunnable(socket, winsome));
@@ -99,44 +130,106 @@ public class ServerMain {
                     if (!line.isEmpty() && !line.startsWith("#")) {
                         String[] split_line = line.split("=");
 
-                        if (line.startsWith("SERVER"))
+                        if (line.startsWith("SERVER ADDRESS"))
                             SERVER_ADDRESS = split_line[1];
 
-                        else if (line.startsWith("TCPPORT"))
+                        else if (line.startsWith("TCP PORT"))
                             TCP_SERVER_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("UDPPORT"))
+                        else if (line.startsWith("UDP PORT"))
                             UDP_SERVER_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("MULTICAST"))
+                        else if (line.startsWith("MULTICAST ADDRESS"))
                             MULTICAST_ADDRESS = split_line[1];
 
-                        else if (line.startsWith("MCASTPORT"))
+                        else if (line.startsWith("MULTICAST PORT"))
                             MULTICAST_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("REGHOST"))
+                        else if (line.startsWith("REGISTRY HOST"))
                             REGISTRY_HOST = split_line[1];
 
-                        else if (line.startsWith("REGPORT"))
+                        else if (line.startsWith("RMI PORT"))
                             RMI_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("TIMEOUTSOCK"))
-                            SOCKET_TIMEOUT = Integer.parseInt(split_line[1]);
+                        else if (line.startsWith("SOCKET TIMEOUT"))
+                            SOCKET_TIMEOUT = Long.parseLong(split_line[1]);
 
-                        else if (line.startsWith("TIMEOUTREW"))
-                            REWARD_TIMEOUT = Integer.parseInt(split_line[1]);
+                        else if (line.startsWith("REWARD TIMEOUT")) {
+                            REWARD_TIMEOUT = Long.parseLong(split_line[1]);
+                            if (REWARD_TIMEOUT <= 0) {
+                                REWARD_TIMEOUT = 100000;
+                                throw new NumberFormatException();
+                            }
+                        }
 
-                        else if (line.startsWith("AUTHORPERCENT"))
-                            AUTHOR_PERCENTAGE = Integer.parseInt(split_line[1]);
+                        else if (line.startsWith("BACKUP TIMEOUT")) {
+                            BACKUP_TIMEOUT = Long.parseLong(split_line[1]);
+                            if (BACKUP_TIMEOUT <= 0) {
+                                BACKUP_TIMEOUT = 120000;
+                                throw new NumberFormatException();
+                            }
+                        }
+
+                        else if (line.startsWith("AUTHOR PERCENTAGE")) {
+                            AUTHOR_PERCENTAGE = Double.parseDouble(split_line[1]);
+                            if (AUTHOR_PERCENTAGE <= 0 || AUTHOR_PERCENTAGE >= 1) {
+                                AUTHOR_PERCENTAGE = 0.75;
+                                throw new NumberFormatException();
+                            }
+                        }
 
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("SERVER: wrong parsing of some parameters. Use default value for them");
+                    System.out.println(
+                            "SERVER: wrong parsing or wrong value of some parameters. Use default value for them");
                 }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("SERVER: configuration file not found. Server stars with default configuration");
         }
+    }
+
+    private static void deserializeSocial(SocialNetwork winsome, File backupUsers, File backupPosts)
+            throws IOException {
+        JsonReader usersReader = new JsonReader(new InputStreamReader(new FileInputStream(backupUsers)));
+        JsonReader postsReader = new JsonReader(new InputStreamReader(new FileInputStream(backupPosts)));
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        if (backupPosts.length() > 0) {
+            deserializePosts(winsome, postsReader, gson);
+        }
+        if (backupUsers.length() > 0) {
+            deserializeUsers(winsome, usersReader, gson);
+        }
+
+    }
+
+    private static void deserializeUsers(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
+        ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            reader.beginObject();
+            // parametri post
+            long id = 0;
+            String author = null;
+            String title = null;
+            String content = null;
+            int positiveVotes = 0;
+            int negativeVotes = 0;
+            int numComments = 0;
+            ArrayList<Comment> comments = null;
+            long lastTimeReward = 0;
+
+            while (reader.hasNext()) {
+                String next = reader.nextName();
+                if (next.equals("id"))
+                    id = reader.nextLong();
+            }
+        }
+    }
+
+    private static void deserializePosts(SocialNetwork winsome, JsonReader Reader, Gson gson) {
     }
 }

@@ -29,7 +29,6 @@ public class Client {
 
     // variabile che tiene traccia dell'utenete loggato in quel momento sul client
     private static String username;
-    private static String password;
     private static String LOGIN_ERROR_MSG = "< ERROR: nobody is logged in";
 
     private static ServerRemoteInterface remote;
@@ -68,6 +67,8 @@ public class Client {
 
             // gestione richieste
             requestsHandler(socket);
+            socket.close();
+            System.exit(0);
 
         } catch (IOException | NotBoundException e) {
             System.out.println("ERROR: connection with server failed");
@@ -544,6 +545,10 @@ public class Client {
                         System.out.println("< ERROR: wrong notation. Usage: quit");
                         break;
                     }
+                    if (someoneLogged) {
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
+                    }
                     break;
 
                 default:
@@ -554,6 +559,8 @@ public class Client {
         } while (!request[0].equals("quit"));
 
         scanner.close();
+        outWriter.close();
+        inReader.close();
         return true;
 
     }

@@ -1,29 +1,33 @@
 #   Indirizzo del server
-SERVER=127.0.0.1
+SERVER ADDRESS=127.0.0.1
 #
 #   Porta TCP del server
-TCPPORT=9999
+TCP PORT=9999
 #
 #   Porta UDP del server
-UDPPORT=3333
+UDP PORT=3333
 #
 #   Indirizzo di multicast
-MULTICAST=239.255.32.32
+MULTICAST ADDRESS=239.255.32.32
 #
 #   Porta di multicast
-MCASTPORT=44444
+MULTICAST PORT=44444
 #
 #   Host su cui si trova il registry
-REGHOST=localhost
+REGISTRY HOST=localhost
 #
 #   Porta del registry RMI
-REGPORT=7777
+REGISTRY PORT=7777
 #
 #   Timeout della socket
-TIMEOUTSOCK=200000
+SOCKET TIMEOUT=200000
 #
 #   Timeout calcolo ricompensa
-TIMEOUTREW=200000
+REWARD TIMEOUT=200000
+#
+#
+#   Timeout del backup
+BACKUP TIMEOUT=120000
 #
 #   Percentuale guadagno autore
-AUTHORPERCENT=70
+AUTHOR PERCENTAGE=-0.75
