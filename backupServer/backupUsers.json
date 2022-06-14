@@ -1,0 +1,14 @@
+[
+      {
+            "username": "Chiara",
+            "hashedPassword": "c927788d2656606f3b649dcc804ba12b7a3e1d24829ce64db59591eb3a0b28c2",
+            "seed": "??o<?l?v?>?v\b???b????u??\u0003???G??",
+            "tags": "[\n  \"calcio\",\n  \"pallavolo\",\n  \"tech\"\n]",
+            "followers": "[]",
+            "followed": "[]",
+            "votes": "[]",
+            "blog": "[\n  1\n]",
+            "feed": "[]",
+            "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
+      }
+]

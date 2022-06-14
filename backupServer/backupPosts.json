@@ -1,0 +1,13 @@
+[
+      {
+            "id": 1,
+            "author": "Chiara",
+            "title": "\"ciao\"",
+            "content": "\"ciao a tutti\"",
+            "positiveVotes": 0,
+            "negativeVotes": 0,
+            "numComment": 0,
+            "comments": "[]",
+            "lastTimeReward": 0
+      }
+]
