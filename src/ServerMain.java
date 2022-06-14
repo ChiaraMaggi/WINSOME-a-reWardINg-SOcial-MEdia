@@ -113,15 +113,20 @@ public class ServerMain {
             listener = new ServerSocket(TCP_SERVER_PORT, 50, InetAddress.getByName(SERVER_ADDRESS));
             System.out.println("SERVER: server ready on port " + TCP_SERVER_PORT);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("ERROR: problem with server socket. Closing server");
+            System.exit(-1);
         }
+
+        // Avvio il thread che si occupa della chiusura del server
+        ServerCloser closerThread = new ServerCloser(listener, threadPool, backupThread);
+        closerThread.setDaemon(true);
+        closerThread.start();
 
         // Server in ascolto. Attende richiese e le inoltra al threadpool
         while (true) {
             try {
                 Socket socket = listener.accept();
                 socket.setSoTimeout((int) SOCKET_TIMEOUT);
-                System.out.println("SERVER: new connection arrived");
 
                 threadPool.execute(new ServerRunnable(socket, winsome));
             } catch (IOException e) {

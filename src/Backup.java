@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -46,7 +45,7 @@ public class Backup extends Thread {
 
     }
 
-    private synchronized void savePosts() throws IOException, FileNotFoundException {
+    public synchronized void savePosts() throws IOException, FileNotFoundException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(backupPosts)));
         writer.setIndent("      ");
@@ -79,7 +78,7 @@ public class Backup extends Thread {
         writer.endObject();
     }
 
-    private synchronized void saveUsers() throws IOException, FileNotFoundException {
+    public synchronized void saveUsers() throws IOException, FileNotFoundException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(backupUsers)));
 

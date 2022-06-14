@@ -561,6 +561,7 @@ public class Client {
         scanner.close();
         outWriter.close();
         inReader.close();
+        socket.close();
         return true;
 
     }

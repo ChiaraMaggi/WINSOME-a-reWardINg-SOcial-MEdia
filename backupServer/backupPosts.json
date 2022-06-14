@@ -7,6 +7,28 @@
             "positiveVotes": 0,
             "negativeVotes": 0,
             "numComment": 0,
+            "comments": "[\n  {\n    \"author\": \"Andrea\",\n    \"comment\": \"\\\"ciao Chiara!\\\"\"\n  }\n]",
+            "lastTimeReward": 0
+      },
+      {
+            "id": 2,
+            "author": "Andrea",
+            "title": "\"giornalismo\"",
+            "content": "\"adoro il giornalismo\"",
+            "positiveVotes": 0,
+            "negativeVotes": 0,
+            "numComment": 0,
+            "comments": "[]",
+            "lastTimeReward": 0
+      },
+      {
+            "id": 3,
+            "author": "Andrea",
+            "title": "\"inter\"",
+            "content": "\"forza inter\"",
+            "positiveVotes": 0,
+            "negativeVotes": 0,
+            "numComment": 0,
             "comments": "[]",
             "lastTimeReward": 0
       }

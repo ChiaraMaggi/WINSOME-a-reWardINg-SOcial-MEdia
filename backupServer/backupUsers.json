@@ -4,11 +4,23 @@
             "hashedPassword": "c927788d2656606f3b649dcc804ba12b7a3e1d24829ce64db59591eb3a0b28c2",
             "seed": "??o<?l?v?>?v\b???b????u??\u0003???G??",
             "tags": "[\n  \"calcio\",\n  \"pallavolo\",\n  \"tech\"\n]",
-            "followers": "[]",
+            "followers": "[\n  \"Andrea\"\n]",
             "followed": "[]",
             "votes": "[]",
             "blog": "[\n  1\n]",
             "feed": "[]",
+            "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
+      },
+      {
+            "username": "Andrea",
+            "hashedPassword": "fe407df8c645402e80f2c286f690f82c7dd997b810ba2550998c36a0598650c5",
+            "seed": "H???\u0005??,=???\u001cm??H??g??L?f???,@?",
+            "tags": "[\n  \"calcio\",\n  \"pallavolo\",\n  \"giornalismo\"\n]",
+            "followers": "[]",
+            "followed": "[\n  \"Chiara\"\n]",
+            "votes": "[]",
+            "blog": "[\n  2,\n  3\n]",
+            "feed": "[\n  1\n]",
             "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
       }
 ]
