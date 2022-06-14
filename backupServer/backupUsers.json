@@ -1,25 +1,13 @@
 [
       {
             "username": "andrea",
-            "hashedPassword": "e7400e21f5cee57037379357a0a45a7c8949451aed79eac31c7aedf209159ca0",
-            "seed": "?\u0011??<???u!IMh?`n!b$???T???\u0005?S",
-            "tags": "[\n  \"calcio\",\n  \"sport\",\n  \"mare\"\n]",
+            "hashedPassword": "c6b1bdd915aa81aac9cefedf8d907746cbe4a942a86cb635e410aceffa6548ce",
+            "seed": "?????y???}\u0003|\u0014?w???9?L\r?&\u0013?Y~c?",
+            "tags": "[\n  \"defe\"\n]",
             "followers": "[]",
-            "followed": "[\n  \"chiara\"\n]",
-            "votes": "[\n  1\n]",
-            "blog": "{\n  \"3\": {\n    \"id\": 3,\n    \"author\": \"andrea\",\n    \"title\": \"\\\"inter\\\"\",\n    \"content\": \"\\\"forza inter per sempre\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 0,\n    \"comments\": [],\n    \"lastTimeReward\": 0\n  }\n}",
-            "feed": "{\n  \"1\": {\n    \"id\": 1,\n    \"author\": \"chiara\",\n    \"title\": \"\\\"ciao\\\"\",\n    \"content\": \"\\\"ciao a tutti, sono nuova\\\"\",\n    \"positiveVotes\": 1,\n    \"negativeVotes\": 0,\n    \"numComments\": 1,\n    \"comments\": [\n      {\n        \"author\": \"andrea\",\n        \"comment\": \"\\\"ciao chiara, benevenuta!\\\"\"\n      }\n    ],\n    \"lastTimeReward\": 0\n  },\n  \"2\": {\n    \"id\": 2,\n    \"author\": \"chiara\",\n    \"title\": \"\\\"opinioni\\\"\",\n    \"content\": \"\\\"cosa ne pensate di questo social\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 1,\n    \"comments\": [\n      {\n        \"author\": \"andrea\",\n        \"comment\": \"\\\"a me piace molto\\\"\"\n      }\n    ],\n    \"lastTimeReward\": 0\n  }\n}",
-            "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
-      },
-      {
-            "username": "chiara",
-            "hashedPassword": "d66b72053263ea02fa01372354d0761d5e3681a181b6902b6ee3454533419964",
-            "seed": "P??L?e;??=??\u001daC?????Zt\u0018i??\u0018?",
-            "tags": "[\n  \"calcio\",\n  \"pallavolo\",\n  \"sport\",\n  \"informatica\"\n]",
-            "followers": "[\n  \"andrea\"\n]",
             "followed": "[]",
             "votes": "[]",
-            "blog": "{\n  \"1\": {\n    \"id\": 1,\n    \"author\": \"chiara\",\n    \"title\": \"\\\"ciao\\\"\",\n    \"content\": \"\\\"ciao a tutti, sono nuova\\\"\",\n    \"positiveVotes\": 1,\n    \"negativeVotes\": 0,\n    \"numComments\": 1,\n    \"comments\": [\n      {\n        \"author\": \"andrea\",\n        \"comment\": \"\\\"ciao chiara, benevenuta!\\\"\"\n      }\n    ],\n    \"lastTimeReward\": 0\n  },\n  \"2\": {\n    \"id\": 2,\n    \"author\": \"chiara\",\n    \"title\": \"\\\"opinioni\\\"\",\n    \"content\": \"\\\"cosa ne pensate di questo social\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 1,\n    \"comments\": [\n      {\n        \"author\": \"andrea\",\n        \"comment\": \"\\\"a me piace molto\\\"\"\n      }\n    ],\n    \"lastTimeReward\": 0\n  }\n}",
+            "blog": "{\n  \"3\": {\n    \"id\": 3,\n    \"author\": \"andrea\",\n    \"title\": \"\\\"jnonon\\\"\",\n    \"content\": \"\\\"mkmpol\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 0,\n    \"comments\": [],\n    \"lastTimeReward\": 0\n  },\n  \"4\": {\n    \"id\": 4,\n    \"author\": \"andrea\",\n    \"title\": \"\\\"jnonon\\\"\",\n    \"content\": \"\\\"mkmpolsddfwee\\\"\",\n    \"positiveVotes\": 0,\n    \"negativeVotes\": 0,\n    \"numComments\": 0,\n    \"comments\": [],\n    \"lastTimeReward\": 0\n  }\n}",
             "feed": "{}",
             "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
       }

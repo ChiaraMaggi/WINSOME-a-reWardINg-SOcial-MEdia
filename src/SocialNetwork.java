@@ -343,4 +343,12 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public ConcurrentHashMap<Long, Post> getAllPosts() {
         return posts;
     }
+
+    public void setAllUsers(ConcurrentHashMap<String, User> users) {
+        this.users = users;
+    }
+
+    public void setAllPosts(ConcurrentHashMap<Long, Post> posts) {
+        this.posts = posts;
+    }
 }

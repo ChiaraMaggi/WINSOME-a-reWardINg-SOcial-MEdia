@@ -44,12 +44,20 @@ public class User {
 
     }
 
-    // costruttore in caso di ripristino utenti
-    /*
-     * public User() {
-     * 
-     * }
-     */
+    public User(String username, String hashedPassword, String seed, LinkedList<String> tags,
+            LinkedList<String> followers, LinkedList<String> followed, LinkedList<Long> votes,
+            HashMap<Long, Post> blog, HashMap<Long, Post> feed, Wallet wallet) {
+        this.username = username;
+        this.tags = tags;
+        this.seed = seed;
+        this.hashedPassword = hashedPassword;
+        this.blog = blog;
+        this.feed = feed;
+        this.followers = followers;
+        this.followed = followed;
+        this.votes = votes;
+        this.wallet = wallet;
+    }
 
     public boolean isLogged() {
         return logged;

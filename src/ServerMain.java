@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,6 +12,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +21,7 @@ import java.util.concurrent.Executors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 public class ServerMain {
@@ -76,6 +80,12 @@ public class ServerMain {
         // Creazione social network winsome
         SocialNetwork winsome = new SocialNetwork();
         // Ripristino le informazioni del social se presenti
+        try {
+            deserializeSocial(winsome, backupUsers, backupPosts);
+        } catch (IOException e) {
+            System.err.println("ERROR: error in rebooting winsome backup");
+            System.exit(-1);
+        }
 
         // avvio il thread di backup
         Backup backupThread = new Backup(winsome, backupUsers, backupPosts, BACKUP_TIMEOUT);
@@ -205,8 +215,10 @@ public class ServerMain {
 
     }
 
-    private static void deserializeUsers(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
+    private static void deserializePosts(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
         ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
+        Type typeOfComments = new TypeToken<ArrayList<String>>() {
+        }.getType();
 
         reader.beginArray();
         while (reader.hasNext()) {
@@ -226,10 +238,103 @@ public class ServerMain {
                 String next = reader.nextName();
                 if (next.equals("id"))
                     id = reader.nextLong();
+                else if (next.equals("author"))
+                    author = reader.nextString();
+                else if (next.equals("title"))
+                    title = reader.nextString();
+                else if (next.equals("content"))
+                    content = reader.nextString();
+                else if (next.equals("positiveVotes"))
+                    positiveVotes = reader.nextInt();
+                else if (next.equals("negativeVotes"))
+                    negativeVotes = reader.nextInt();
+                else if (next.equals("numComments"))
+                    numComments = reader.nextInt();
+                else if (next.equals("comments"))
+                    comments = gson.fromJson(reader.nextString(), typeOfComments);
+                else if (next.equals("lastTimereward"))
+                    lastTimeReward = reader.nextLong();
+                else
+                    reader.skipValue();
+            }
+            reader.endObject();
+            // controllo che almeno i valori di base siano accettabili
+            if (id != 0 || author != null || title != null || content != null) {
+                Post post = new Post(id, author, title, content, positiveVotes, negativeVotes, numComments, comments,
+                        lastTimeReward);
+                posts.putIfAbsent(id, post);
             }
         }
+        reader.endArray();
+        reader.close();
+        winsome.setAllPosts(posts);
     }
 
-    private static void deserializePosts(SocialNetwork winsome, JsonReader Reader, Gson gson) {
+    private static void deserializeUsers(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
+        ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
+        Type typeOfFollowAndTags = new TypeToken<LinkedList<String>>() {
+        }.getType();
+        Type typeOfVotes = new TypeToken<LinkedList<Long>>() {
+        }.getType();
+        Type typeOfMap = new TypeToken<LinkedList<Long>>() {
+        }.getType();
+
+        reader.beginArray();
+        while (reader.hasNext()) {
+            reader.beginObject();
+            // parametri utente
+            String username = null;
+            String hashedPassword = null;
+            String seed = null;
+            LinkedList<String> tags = null;
+            LinkedList<String> followers = null;
+            LinkedList<String> followed = null;
+            LinkedList<Long> votes = null;
+            HashMap<Long, Post> blog = new HashMap<>();
+            HashMap<Long, Post> feed = new HashMap<>();
+            Wallet wallet = null;
+
+            while (reader.hasNext()) {
+                String next = reader.nextName();
+                if (next.equals("username"))
+                    username = reader.nextString();
+                else if (next.equals("hashedpassword"))
+                    hashedPassword = reader.nextString();
+                else if (next.equals("seed"))
+                    seed = reader.nextString();
+                else if (next.equals("tags"))
+                    tags = gson.fromJson(reader.nextString(), typeOfFollowAndTags);
+                else if (next.equals("followers"))
+                    followers = gson.fromJson(reader.nextString(), typeOfFollowAndTags);
+                else if (next.equals("followed"))
+                    followed = gson.fromJson(reader.nextString(), typeOfFollowAndTags);
+                else if (next.equals("votes"))
+                    votes = gson.fromJson(reader.nextString(), typeOfVotes);
+                else if (next.equals("blog")) {
+                    LinkedList<Long> list = gson.fromJson(reader.nextString(), typeOfMap);
+                    for (Long id : list) {
+                        blog.putIfAbsent(id, winsome.getPost(id));
+                    }
+                } else if (next.equals("feed")) {
+                    LinkedList<Long> list = gson.fromJson(reader.nextString(), typeOfMap);
+                    for (Long id : list) {
+                        feed.putIfAbsent(id, winsome.getPost(id));
+                    }
+                } else if (next.equals("wallet"))
+                    wallet = gson.fromJson(reader.nextString(), Wallet.class);
+                else
+                    reader.skipValue();
+            }
+            reader.endObject();
+
+            if (username != null) {
+                User user = new User(username, hashedPassword, seed, tags, followers, followed, votes, blog, feed,
+                        wallet);
+                users.putIfAbsent(username, user);
+            }
+        }
+        reader.endArray();
+        reader.close();
+        winsome.setAllUsers(users);
     }
 }

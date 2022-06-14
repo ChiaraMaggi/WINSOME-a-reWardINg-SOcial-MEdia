@@ -28,6 +28,19 @@ public class Post {
         lastTimeReward = 0;
     }
 
+    public Post(long postId, String author, String title, String content, int positiveVotes, int negativeVotes,
+            int numComments, ArrayList<Comment> comments, long lastTimeReward) {
+        this.id = postId;
+        this.author = author;
+        this.title = title;
+        this.content = content;
+        this.positiveVotes = positiveVotes;
+        this.negativeVotes = negativeVotes;
+        this.numComments = numComments;
+        this.comments = comments;
+        this.lastTimeReward = lastTimeReward;
+    }
+
     // metodi getter
     public long getId() {
         return this.id;
@@ -73,6 +86,7 @@ public class Post {
         return lastTimeReward;
     }
 
+    // metodi add
     public void addComment(String username, String contentComment) {
         Comment comment = new Comment(username, contentComment);
         comments.add(comment);
