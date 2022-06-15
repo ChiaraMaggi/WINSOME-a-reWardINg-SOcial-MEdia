@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -6,11 +7,13 @@ import java.util.concurrent.TimeUnit;
 
 public class ServerCloser extends Thread {
     private ServerSocket socketTCP;
+    private DatagramSocket socketUDP;
     private ExecutorService pool;
     private Backup backup;
 
-    public ServerCloser(ServerSocket socketTCP, ExecutorService pool, Backup backup) {
+    public ServerCloser(ServerSocket socketTCP, DatagramSocket socketUDP, ExecutorService pool, Backup backup) {
         this.socketTCP = socketTCP;
+        this.socketUDP = socketUDP;
         this.pool = pool;
         this.backup = backup;
     }
@@ -26,6 +29,7 @@ public class ServerCloser extends Thread {
         System.out.println("SERVER: closing server...");
         try {
             socketTCP.close();
+            socketUDP.close();
         } catch (IOException e) {
             System.out.println("ERROR: problems in closing the socket");
             System.exit(-1);

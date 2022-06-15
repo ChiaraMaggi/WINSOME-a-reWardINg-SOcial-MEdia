@@ -1,9 +1,12 @@
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,7 +40,7 @@ public class ServerMain {
     private static int RMI_PORT = 7777;
     private static int MULTICAST_PORT = 44444;
     private static long SOCKET_TIMEOUT = 100000;
-    private static long REWARD_TIMEOUT = 100000;
+    private static long REWARD_TIMEOUT = 60000;
     private static long BACKUP_TIMEOUT = 60000;
     private static double AUTHOR_PERCENTAGE = 0.75;
 
@@ -50,7 +53,6 @@ public class ServerMain {
             CONFIG_FILE = new File(args[0]);
             configServer(CONFIG_FILE);
         }
-
         System.out.print("SERVER VALUES:");
         System.out.println("\n   SERVER ADDRESS -> " + SERVER_ADDRESS + "\n   TCP PORT -> "
                 + TCP_SERVER_PORT + "\n   UDP PORFT ->" + UDP_SERVER_PORT +
@@ -63,6 +65,7 @@ public class ServerMain {
                 + "\n   AUTHROR PERCENTAGE -> " +
                 AUTHOR_PERCENTAGE);
 
+        // dichiarazione e creazione dei file per il backup
         File backupUsers = new File("..//backupServer//backupUsers.json");
         File backupPosts = new File("..//backupServer//backupPosts.json");
         try {
@@ -88,7 +91,7 @@ public class ServerMain {
             System.exit(-1);
         }
 
-        // avvio il thread di backup
+        // Avvio il thread di backup
         Backup backupThread = new Backup(winsome, backupUsers, backupPosts, BACKUP_TIMEOUT);
         backupThread.setDaemon(true);
         backupThread.start();
@@ -96,7 +99,7 @@ public class ServerMain {
         // Threadpool per gestire richieste dei client
         ExecutorService threadPool = Executors.newCachedThreadPool();
 
-        // configurazione RMI
+        // Configurazione RMI
         try {
             ServerRemoteInterface stub = (ServerRemoteInterface) UnicastRemoteObject.exportObject(winsome, 0);
             LocateRegistry.createRegistry(RMI_PORT);
@@ -106,6 +109,22 @@ public class ServerMain {
             System.err.println("ERROR: error with RMI");
             System.exit(-1);
         }
+
+        // Configurazione connessione multicast
+        DatagramSocket socketUDP = null;
+        InetAddress multicastAddress = null;
+        try {
+            // creazione socket pre multicast
+            multicastAddress = InetAddress.getByName(MULTICAST_ADDRESS);
+            socketUDP = new DatagramSocket();
+        } catch (IOException e) {
+            System.out.println("ERROR: problems in creating multicast socket");
+            System.exit(-1);
+        }
+        Reward rewardThread = new Reward(socketUDP, multicastAddress, MULTICAST_PORT, winsome, REWARD_TIMEOUT,
+                AUTHOR_PERCENTAGE);
+        rewardThread.setDaemon(true);
+        rewardThread.start();
 
         // Configurazione connessioni tcp
         ServerSocket listener = null;
@@ -118,7 +137,7 @@ public class ServerMain {
         }
 
         // Avvio il thread che si occupa della chiusura del server
-        ServerCloser closerThread = new ServerCloser(listener, threadPool, backupThread);
+        ServerCloser closerThread = new ServerCloser(listener, socketUDP, threadPool, backupThread);
         closerThread.setDaemon(true);
         closerThread.start();
 
@@ -128,6 +147,12 @@ public class ServerMain {
                 Socket socket = listener.accept();
                 socket.setSoTimeout((int) SOCKET_TIMEOUT);
 
+                // invio dati per configurazione multicast
+                DataOutputStream outWriter = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                outWriter.writeUTF(MULTICAST_PORT + " " + MULTICAST_ADDRESS);
+                outWriter.flush();
+
+                // Faccio gestire il client da un thread del pool
                 threadPool.execute(new ServerRunnable(socket, winsome));
             } catch (IOException e) {
                 continue;

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.Socket;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -24,6 +25,10 @@ public class Client {
     private static int RMI_PORT = 7777;
     private static int SOCKET_TIMEOUT = 100000;
 
+    // variabili per multicast, comunicate dal server
+    private static int MULTICAST_PORT;
+    private static String MULTICAST_ADDRESS;
+
     // variabile che tiene traccia se qualcuno è loggato sul client o no
     private static boolean someoneLogged = false;
 
@@ -37,6 +42,7 @@ public class Client {
     private static NotifyClientInterface obj;
     private static NotifyClientInterface stub;
 
+    // lista followers tenuta localmente
     private static LinkedList<String> followers;
 
     public static void main(String[] args) {
@@ -61,10 +67,31 @@ public class Client {
             Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), TCP_SERVER_PORT);
             socket.setSoTimeout(SOCKET_TIMEOUT);
 
-            // configurazione RMI:
-            // registeazione con metodo remoto
+            // lettura e settaggio parametri multicast
+            DataInputStream inReader = new DataInputStream(socket.getInputStream());
+            String[] infoMulticast;
+            infoMulticast = inReader.readUTF().split(" ");
+            MULTICAST_PORT = Integer.parseInt(infoMulticast[0]);
+            MULTICAST_ADDRESS = infoMulticast[1];
+
+            // configurazione multicast
+            MulticastSocket mcastSocket = new MulticastSocket(MULTICAST_PORT);
+            InetAddress mcastAddress = InetAddress.getByName(MULTICAST_ADDRESS);
+
+            // per permettere più legami allo stesso socket
+            mcastSocket.setReuseAddress(true);
+            mcastSocket.joinGroup(mcastAddress);
+
+            // lancio il thread che sta in ascolto di notifiche di aggiornamento del wallet
+            UdpClient notifyReward = new UdpClient(mcastSocket);
+            Thread notifyRewardThread = new Thread(notifyReward);
+            notifyRewardThread.setDaemon(true);
+            notifyRewardThread.start();
+
+            // configurazione RMI: registrazione con metodo remoto
             registry = LocateRegistry.getRegistry(RMI_PORT);
             remote = (ServerRemoteInterface) registry.lookup(REGISTRY_HOST);
+
             // servizio di notifiche
             obj = new NotifyClient(followers);
             stub = (NotifyClientInterface) UnicastRemoteObject.exportObject(obj, 0);
@@ -72,7 +99,7 @@ public class Client {
             System.out.println("\n-------------- WELCOME TO WINSOME ---------------");
 
             // gestione richieste
-            requestsHandler(socket);
+            requestsHandler(socket, notifyReward);
             socket.close();
             System.exit(0);
 
@@ -116,7 +143,7 @@ public class Client {
         }
     }
 
-    public static boolean requestsHandler(Socket socket) throws IOException {
+    public static boolean requestsHandler(Socket socket, UdpClient notifyReward) throws IOException {
         Scanner scanner = new Scanner(System.in);
         String[] request = null;
         String line = null;
@@ -361,8 +388,16 @@ public class Client {
                         }
 
                         if ((request.length == 2 && !request[1].equals("feed"))
-                                || (request.length > 2 && request[1].equals("feed"))) {
+                                && (request.length == 2 && !request[1].equals("notifications"))) {
+                            System.out.println("< ERROR: wrong notation. Usage: show feed or show notifications");
+                            break;
+                        }
+                        if (request.length > 2 && request[1].equals("feed")) {
                             System.out.println("< ERROR: wrong notation. Usage: show feed");
+                            break;
+                        }
+                        if (request.length > 2 && request[1].equals("notifications")) {
+                            System.out.println("< ERROR: wrong notation. Usage: show notifications");
                             break;
                         }
 
@@ -383,6 +418,9 @@ public class Client {
                                 serverResponse = inReader.readUTF();
                                 System.out.println("< " + serverResponse);
                             }
+                        }
+                        if (request[1].equals("notifications")) {
+                            notifyReward.printNotifications();
                         }
 
                     } else {
