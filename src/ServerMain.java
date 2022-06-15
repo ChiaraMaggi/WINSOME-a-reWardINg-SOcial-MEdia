@@ -52,15 +52,15 @@ public class ServerMain {
         }
 
         System.out.print("SERVER VALUES:");
-        System.out.println("\n      SERVER ADDRESS -> " + SERVER_ADDRESS + "\n      TCP PORT -> "
-                + TCP_SERVER_PORT + "\n     UDP PORFT ->" + UDP_SERVER_PORT +
-                "\n     MULTICAST ADDRESS -> "
-                + MULTICAST_ADDRESS + "\n       MULTICAST PORT -> " + MULTICAST_PORT +
-                "\n     REGISTRY HOST -> "
-                + REGISTRY_HOST + "\n       REGISTRY PORT -> " + RMI_PORT + "\n     SOCKET TIMEOUT -> " +
+        System.out.println("\n   SERVER ADDRESS -> " + SERVER_ADDRESS + "\n   TCP PORT -> "
+                + TCP_SERVER_PORT + "\n   UDP PORFT ->" + UDP_SERVER_PORT +
+                "\n   MULTICAST ADDRESS -> "
+                + MULTICAST_ADDRESS + "\n   MULTICAST PORT -> " + MULTICAST_PORT +
+                "\n   REGISTRY HOST -> "
+                + REGISTRY_HOST + "\n   REGISTRY PORT -> " + RMI_PORT + "\n   SOCKET TIMEOUT -> " +
                 SOCKET_TIMEOUT
-                + "\n       REWARD TIMEOUT -> " + REWARD_TIMEOUT + "\n      BACKUP TIMEOUT -> " + BACKUP_TIMEOUT
-                + "\n       AUTHROR PERCENTAGE -> " +
+                + "\n   REWARD TIMEOUT -> " + REWARD_TIMEOUT + "\n   BACKUP TIMEOUT -> " + BACKUP_TIMEOUT
+                + "\n   AUTHROR PERCENTAGE -> " +
                 AUTHOR_PERCENTAGE);
 
         File backupUsers = new File("..//backupServer//backupUsers.json");
@@ -110,7 +110,7 @@ public class ServerMain {
         // Configurazione connessioni tcp
         ServerSocket listener = null;
         try {
-            listener = new ServerSocket(TCP_SERVER_PORT, 50, InetAddress.getByName(SERVER_ADDRESS));
+            listener = new ServerSocket(TCP_SERVER_PORT, 70, InetAddress.getByName(SERVER_ADDRESS));
             System.out.println("SERVER: server ready on port " + TCP_SERVER_PORT);
         } catch (IOException e) {
             System.out.println("ERROR: problem with server socket. Closing server");
@@ -130,7 +130,6 @@ public class ServerMain {
 
                 threadPool.execute(new ServerRunnable(socket, winsome));
             } catch (IOException e) {
-                e.printStackTrace();
                 continue;
             }
         }

@@ -20,6 +20,7 @@ public class ServerCloser extends Thread {
         String line = "";
         while ("close".compareTo(line) != 0 && "closeNow".compareTo(line) != 0) {
             System.out.println("SERVER: to terminate the server type 'close' or 'closeNow'");
+            System.out.print("> ");
             line = scan.nextLine();
         }
         System.out.println("SERVER: closing server...");

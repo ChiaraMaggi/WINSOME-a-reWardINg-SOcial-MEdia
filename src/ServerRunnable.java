@@ -26,7 +26,6 @@ public class ServerRunnable implements Runnable {
                 requestHandler(request, outWriter);
             }
         } catch (IOException e) {
-            System.out.println("SERVER: closing client connection");
             try {
                 clientSocket.close();
             } catch (IOException ex) {
@@ -123,7 +122,6 @@ public class ServerRunnable implements Runnable {
             if ((id = winsome.createPost(clientUsername, param[1], param[2])) > 0) {
                 response = "SUCCESS: post created (id = " + id + ")";
             } else {
-                System.out.println(id);
                 response = "ERROR: something goes wrong in creating the new post";
             }
             outWriter.writeUTF(response);

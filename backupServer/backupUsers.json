@@ -1,14 +1,38 @@
 [
       {
+            "username": "Virtute",
+            "hashedPassword": "66d419d6f8383e26a9b304c9da179be3af6a235b7bc90eaa793ba854d97f960d",
+            "seed": "?A5\u0005*??\u0000?R?K??a??e?Gvs?\u0006????V",
+            "tags": "[\n  \"dnd\",\n  \"calcio\",\n  \"cod\"\n]",
+            "followers": "[]",
+            "followed": "[\n  \"Canoscenza\",\n  \"Andrea\",\n  \"Chiara\"\n]",
+            "votes": "[]",
+            "blog": "[\n  6\n]",
+            "feed": "[\n  1,\n  2,\n  3,\n  4,\n  5\n]",
+            "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
+      },
+      {
             "username": "Chiara",
             "hashedPassword": "c927788d2656606f3b649dcc804ba12b7a3e1d24829ce64db59591eb3a0b28c2",
             "seed": "??o<?l?v?>?v\b???b????u??\u0003???G??",
             "tags": "[\n  \"calcio\",\n  \"pallavolo\",\n  \"tech\"\n]",
-            "followers": "[\n  \"Andrea\"\n]",
+            "followers": "[\n  \"Andrea\",\n  \"Canoscenza\",\n  \"Virtute\"\n]",
             "followed": "[]",
             "votes": "[]",
-            "blog": "[\n  1\n]",
+            "blog": "[\n  1,\n  4\n]",
             "feed": "[]",
+            "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
+      },
+      {
+            "username": "Canoscenza",
+            "hashedPassword": "cc69ffe538ac56a30aee37e0f1b94040b892702e0a2480e3665e87078c529e99",
+            "seed": "??s?\u0013\u0013r\u000boa.h?u%??r?\f?g?*y???",
+            "tags": "[\n  \"arte\",\n  \"dnd\",\n  \"musica\"\n]",
+            "followers": "[\n  \"Andrea\",\n  \"Virtute\"\n]",
+            "followed": "[\n  \"Chiara\",\n  \"Andrea\"\n]",
+            "votes": "[]",
+            "blog": "[\n  5\n]",
+            "feed": "[\n  1,\n  2,\n  3,\n  4\n]",
             "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
       },
       {
@@ -16,11 +40,11 @@
             "hashedPassword": "fe407df8c645402e80f2c286f690f82c7dd997b810ba2550998c36a0598650c5",
             "seed": "H???\u0005??,=???\u001cm??H??g??L?f???,@?",
             "tags": "[\n  \"calcio\",\n  \"pallavolo\",\n  \"giornalismo\"\n]",
-            "followers": "[]",
-            "followed": "[\n  \"Chiara\"\n]",
+            "followers": "[\n  \"Canoscenza\",\n  \"Virtute\"\n]",
+            "followed": "[\n  \"Chiara\",\n  \"Canoscenza\"\n]",
             "votes": "[]",
             "blog": "[\n  2,\n  3\n]",
-            "feed": "[\n  1\n]",
+            "feed": "[\n  1,\n  4,\n  5\n]",
             "wallet": "{\n  \"transactions\": [],\n  \"total\": 4.0\n}"
       }
 ]

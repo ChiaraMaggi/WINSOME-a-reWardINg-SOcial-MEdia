@@ -47,7 +47,13 @@ public class Client {
             CONFIG_FILE = new File(args[0]);
             configClient(CONFIG_FILE);
         }
+        System.out.print("CLIENT VALUES: ");
+        System.out.println("\n   SERVER ADDRESS -> " + SERVER_ADDRESS + "\n   TCP PORT -> " + TCP_SERVER_PORT +
+                "\n   REGISTRY HOST -> " + REGISTRY_HOST
+                + "\n   REGISTRY PORT -> " + RMI_PORT + "\n   SOCKET TIMEOUT -> " +
+                SOCKET_TIMEOUT);
 
+        // inizializzo lista followers tenuta localmente lato client
         followers = new LinkedList<>();
 
         try {
@@ -63,7 +69,7 @@ public class Client {
             obj = new NotifyClient(followers);
             stub = (NotifyClientInterface) UnicastRemoteObject.exportObject(obj, 0);
 
-            System.out.println("--------- WELCOME TO WINSOME ----------");
+            System.out.println("\n-------------- WELCOME TO WINSOME ---------------");
 
             // gestione richieste
             requestsHandler(socket);
@@ -74,14 +80,6 @@ public class Client {
             System.out.println("ERROR: connection with server failed");
             System.exit(-1);
         }
-
-        /*
-         * System.out.println("\ntcp port -> " + tcp_server_port +
-         * "\nresgistry host -> " + registry_host
-         * + "\nregistry port -> " + rmi_port + "\nsocket timeout -> " +
-         * socket_timeout);
-         */
-
     }
 
     private static void configClient(File config_file) {
