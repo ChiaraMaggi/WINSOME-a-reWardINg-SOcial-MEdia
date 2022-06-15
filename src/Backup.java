@@ -63,7 +63,7 @@ public class Backup extends Thread {
     private void serializePost(Post post, File backupFile, Gson gson, JsonWriter writer) throws IOException {
         writer.beginObject();
 
-        Type typeOfLikes = new TypeToken<LinkedList<Like>>() {
+        Type typeOfLikes = new TypeToken<LinkedList<Vote>>() {
         }.getType();
         Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
         }.getType();
@@ -74,7 +74,7 @@ public class Backup extends Thread {
         writer.name("content").value(post.getContent());
         writer.name("numIterations").value(post.getNumIter());
         writer.name("numComment").value(post.getNumComments());
-        writer.name("likes").value(gson.toJson(post.getLikes(), typeOfLikes));
+        writer.name("votes").value(gson.toJson(post.getVotes(), typeOfLikes));
         writer.name("comments").value(gson.toJson(post.getComments(), typeOfComments));
         writer.name("lastTimeReward").value(post.getLastTimeReward());
 
@@ -114,7 +114,7 @@ public class Backup extends Thread {
         writer.name("tags").value(gson.toJson(user.getTags(), typeOfFollowAndTags));
         writer.name("followers").value(gson.toJson(user.getFollowers(), typeOfFollowAndTags));
         writer.name("followed").value(gson.toJson(user.getFollowed(), typeOfFollowAndTags));
-        writer.name("votes").value(gson.toJson(user.getListVotes(), typeOfVotes));
+        writer.name("listVotes").value(gson.toJson(user.getListVotes(), typeOfVotes));
         writer.name("blog").value(gson.toJson(user.getBlog().keySet(), typeOfBlogAndFeed));
         writer.name("feed").value(gson.toJson(user.getFeed().keySet(), typeOfBlogAndFeed));
         writer.name("wallet").value(gson.toJson(user.getWallet()));

@@ -7,7 +7,7 @@ public class Wallet {
 
     public Wallet() {
         transactions = new LinkedList<String>();
-        total = 4.0;
+        total = 0.0;
     }
 
     public List<String> getTransaction() {

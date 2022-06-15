@@ -9,12 +9,15 @@ public class ServerCloser extends Thread {
     private ServerSocket socketTCP;
     private DatagramSocket socketUDP;
     private ExecutorService pool;
+    private Reward reward;
     private Backup backup;
 
-    public ServerCloser(ServerSocket socketTCP, DatagramSocket socketUDP, ExecutorService pool, Backup backup) {
+    public ServerCloser(ServerSocket socketTCP, DatagramSocket socketUDP, ExecutorService pool, Reward reward,
+            Backup backup) {
         this.socketTCP = socketTCP;
         this.socketUDP = socketUDP;
         this.pool = pool;
+        this.reward = reward;
         this.backup = backup;
     }
 
@@ -30,6 +33,11 @@ public class ServerCloser extends Thread {
         try {
             socketTCP.close();
             socketUDP.close();
+            reward.interrupt();
+            try {
+                reward.join(1000);
+            } catch (InterruptedException e) {
+            }
         } catch (IOException e) {
             System.out.println("ERROR: problems in closing the socket");
             System.exit(-1);

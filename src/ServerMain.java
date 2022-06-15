@@ -137,7 +137,7 @@ public class ServerMain {
         }
 
         // Avvio il thread che si occupa della chiusura del server
-        ServerCloser closerThread = new ServerCloser(listener, socketUDP, threadPool, backupThread);
+        ServerCloser closerThread = new ServerCloser(listener, socketUDP, threadPool, rewardThread, backupThread);
         closerThread.setDaemon(true);
         closerThread.start();
 
@@ -247,7 +247,7 @@ public class ServerMain {
 
     private static void deserializePosts(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
         ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
-        Type typeOfLikes = new TypeToken<LinkedList<Like>>() {
+        Type typeOfLikes = new TypeToken<LinkedList<Vote>>() {
         }.getType();
         Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
         }.getType();
@@ -262,7 +262,7 @@ public class ServerMain {
             String content = null;
             int numIter = 0;
             int numComments = 0;
-            LinkedList<Like> likes = null;
+            LinkedList<Vote> likes = null;
             ArrayList<Comment> comments = null;
             long lastTimeReward = 0;
 
@@ -280,7 +280,7 @@ public class ServerMain {
                     numIter = reader.nextInt();
                 else if (next.equals("numComments"))
                     numComments = reader.nextInt();
-                else if (next.equals("likes"))
+                else if (next.equals("votes"))
                     likes = gson.fromJson(reader.nextString(), typeOfLikes);
                 else if (next.equals("comments"))
                     comments = gson.fromJson(reader.nextString(), typeOfComments);
@@ -340,7 +340,7 @@ public class ServerMain {
                     followers = gson.fromJson(reader.nextString(), typeOfFollowAndTags);
                 else if (next.equals("followed"))
                     followed = gson.fromJson(reader.nextString(), typeOfFollowAndTags);
-                else if (next.equals("votes"))
+                else if (next.equals("listVotes"))
                     votes = gson.fromJson(reader.nextString(), typeOfVotes);
                 else if (next.equals("blog")) {
                     Set<Long> set = gson.fromJson(reader.nextString(), typeOfBlogAndFeed);

@@ -23,7 +23,7 @@ public class Client {
 
     private static int TCP_SERVER_PORT = 9999;
     private static int RMI_PORT = 7777;
-    private static int SOCKET_TIMEOUT = 100000;
+    private static int SOCKET_TIMEOUT = 180000;
 
     // variabili per multicast, comunicate dal server
     private static int MULTICAST_PORT;
@@ -65,7 +65,7 @@ public class Client {
         try {
             // configurazione tcp
             Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), TCP_SERVER_PORT);
-            socket.setSoTimeout(SOCKET_TIMEOUT);
+            // socket.setSoTimeout(SOCKET_TIMEOUT);
 
             // lettura e settaggio parametri multicast
             DataInputStream inReader = new DataInputStream(socket.getInputStream());

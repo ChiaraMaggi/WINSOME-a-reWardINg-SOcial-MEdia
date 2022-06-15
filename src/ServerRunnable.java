@@ -3,7 +3,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.List;
 
 public class ServerRunnable implements Runnable {
@@ -252,12 +251,8 @@ public class ServerRunnable implements Runnable {
                 outWriter.flush();
 
                 List<String> transactions = wallet.getTransaction();
-                Iterator<String> it = transactions.iterator();
-                int i = 1;
-
-                while (it.hasNext()) {
-                    response = it.next();
-                    outWriter.writeUTF("Transaction " + i + ": " + " response");
+                for (String s : transactions) {
+                    outWriter.writeUTF("    " + s);
                     outWriter.flush();
                 }
             }

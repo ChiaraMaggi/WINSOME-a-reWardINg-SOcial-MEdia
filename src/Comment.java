@@ -1,10 +1,12 @@
 public class Comment {
     private final String author;
     private final String comment;
+    private final long timestamp;
 
-    public Comment(String author, String comment) {
+    public Comment(String author, String comment, long timestamp) {
         this.author = author;
         this.comment = comment;
+        this.timestamp = timestamp;
     }
 
     public String getAuthor() {
@@ -13,6 +15,10 @@ public class Comment {
 
     public String getComment() {
         return comment;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
 }

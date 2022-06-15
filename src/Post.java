@@ -11,7 +11,7 @@ public class Post {
     private int numIter;
     private int numComments;
 
-    private final LinkedList<Like> likes;
+    private final LinkedList<Vote> votes;
     private final ArrayList<Comment> comments;
 
     private long lastTimeReward;
@@ -23,20 +23,20 @@ public class Post {
         this.content = content;
         numIter = 0;
         numComments = 0;
-        likes = new LinkedList<>();
+        votes = new LinkedList<>();
         comments = new ArrayList<>();
         lastTimeReward = 0;
     }
 
     public Post(long postId, String author, String title, String content, int numIter,
-            int numComments, LinkedList<Like> likes, ArrayList<Comment> comments, long lastTimeReward) {
+            int numComments, LinkedList<Vote> votes, ArrayList<Comment> comments, long lastTimeReward) {
         this.id = postId;
         this.author = author;
         this.title = title;
         this.content = content;
         this.numIter = numIter;
         this.numComments = numComments;
-        this.likes = likes;
+        this.votes = votes;
         this.comments = comments;
         this.lastTimeReward = lastTimeReward;
     }
@@ -64,8 +64,8 @@ public class Post {
 
     public int getPositiveVotes() {
         int positiveVotes = 0;
-        for (Like l : likes) {
-            if (l.getVote()) {
+        for (Vote v : votes) {
+            if (v.getVote()) {
                 positiveVotes++;
             }
         }
@@ -74,8 +74,8 @@ public class Post {
 
     public int getNegativeVotes() {
         int negativeVotes = 0;
-        for (Like l : likes) {
-            if (!l.getVote()) {
+        for (Vote v : votes) {
+            if (!v.getVote()) {
                 negativeVotes++;
             }
         }
@@ -86,8 +86,8 @@ public class Post {
         return numComments;
     }
 
-    public List<Like> getLikes() {
-        return likes;
+    public List<Vote> getVotes() {
+        return votes;
     }
 
     public List<Comment> getComments() {
@@ -106,21 +106,30 @@ public class Post {
         return lastTimeReward;
     }
 
+    public int addAndGetNumIter() {
+        numIter++;
+        return numIter;
+    }
+
     // metodi add
     public void addComment(String username, String contentComment) {
-        Comment comment = new Comment(username, contentComment);
+        Comment comment = new Comment(username, contentComment, System.nanoTime());
         comments.add(comment);
         numComments++;
     }
 
-    public void addLike(String username, int vote) {
-        Like like;
+    public void addVote(String username, int vote) {
+        Vote v;
         if (vote > 0) {
-            like = new Like(username, true, System.nanoTime());
+            v = new Vote(username, true, System.nanoTime());
         } else {
-            like = new Like(username, false, System.nanoTime());
+            v = new Vote(username, false, System.nanoTime());
         }
-        likes.add(like);
+        votes.add(v);
+    }
+
+    public void setLastTimeReward(long timestamp) {
+        this.lastTimeReward = timestamp;
     }
 
 }

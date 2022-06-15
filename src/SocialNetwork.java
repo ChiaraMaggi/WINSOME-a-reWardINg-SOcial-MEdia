@@ -252,7 +252,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             // controllo che il votante non sia l'autore del post, che abbia il post nel
             // feed e che non abbia già votato
             if (post.getAuthor() != username && user.getFeed().containsKey(id) && !user.getListVotes().contains(id)) {
-                post.addLike(username, vote);
+                post.addVote(username, vote);
                 user.addIdToListVotes(id);
                 return true;
             }

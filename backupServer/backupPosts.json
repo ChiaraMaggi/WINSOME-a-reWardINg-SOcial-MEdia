@@ -3,22 +3,33 @@
             "id": 1,
             "author": "Chiara",
             "title": "\"ciao\"",
-            "content": "\"ciao a tutti!\"",
-            "numIterations": 0,
-            "numComment": 1,
-            "likes": "[]",
-            "comments": "[\n  {\n    \"author\": \"Andrea\",\n    \"comment\": \"\\\"ciao Chiara!\\\"\"\n  }\n]",
-            "lastTimeReward": 0
+            "content": "\"ciao a tutti, sono Chiara\"",
+            "numIterations": 2,
+            "numComment": 0,
+            "votes": "[\n  {\n    \"author\": \"Andrea\",\n    \"vote\": true,\n    \"timestamp\": 13246426552500\n  }\n]",
+            "comments": "[\n  {\n    \"author\": \"Andrea\",\n    \"comment\": \"\\\"ciao Chiara!\\\"\",\n    \"timestamp\": 13254142627000\n  }\n]",
+            "lastTimeReward": 15489996059000
       },
       {
             "id": 2,
-            "author": "Chiara",
-            "title": "\"dnd\"",
-            "content": "\"adoro giocare a dnd\"",
-            "numIterations": 0,
+            "author": "Andrea",
+            "title": "\"inter\"",
+            "content": "\"forza inter per sempre\"",
+            "numIterations": 2,
             "numComment": 0,
-            "likes": "[\n  {\n    \"author\": \"Andrea\",\n    \"vote\": true,\n    \"timestamp\": 4286675398300\n  }\n]",
+            "votes": "[\n  {\n    \"author\": \"Chiara\",\n    \"vote\": true,\n    \"timestamp\": 13380958503000\n  }\n]",
+            "comments": "[\n  {\n    \"author\": \"Chiara\",\n    \"comment\": \"\\\"forza inter!!!\\\"\",\n    \"timestamp\": 13377182298200\n  }\n]",
+            "lastTimeReward": 15489996067500
+      },
+      {
+            "id": 3,
+            "author": "Andrea",
+            "title": "\"arte\"",
+            "content": "\" adoro Monet\"",
+            "numIterations": 2,
+            "numComment": 0,
+            "votes": "[\n  {\n    \"author\": \"Marghe\",\n    \"vote\": true,\n    \"timestamp\": 13333568636700\n  }\n]",
             "comments": "[]",
-            "lastTimeReward": 0
+            "lastTimeReward": 15489996073900
       }
 ]

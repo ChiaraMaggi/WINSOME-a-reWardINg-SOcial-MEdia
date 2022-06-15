@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
+import java.util.Calendar;
 
 public class UdpClient implements Runnable {
 
@@ -22,11 +22,9 @@ public class UdpClient implements Runnable {
                 mcastSocket.receive(packet);
                 String message = new String(packet.getData(), StandardCharsets.UTF_8);
                 message = message.replace("\u0000", "");
-                Instant time = Instant.now();
                 // le notifiche ricevute vengono archiviate all'interno della cronolgia
                 synchronized (notifications) {
-                    notifications.append("< ").append(time.toString(), 0, 10).append(" - ")
-                            .append(time.toString(), 11, 19)
+                    notifications.append("< ").append(Calendar.getInstance().getTime())
                             .append(" -> ").append(message).append("\n");
                 }
             } catch (IOException e) {
