@@ -186,7 +186,7 @@ public class ServerRunnable implements Runnable {
             if (winsome.ratePost(id, vote, clientUsername)) {
                 response = "SUCCESS: post (id = " + id + ") voted";
             } else {
-                response = "ERROR: impossible to vote this post";
+                response = "ERROR: impossible to vote this post. Maybe you've already vote or you are the author or this post isn't in your feed";
 
             }
             outWriter.writeUTF(response);

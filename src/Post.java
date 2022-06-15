@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Post {
@@ -7,11 +8,10 @@ public class Post {
     private final String title;
     private final String content;
 
-    private int positiveVotes;
-    private int negativeVotes;
-
+    private int numIter;
     private int numComments;
 
+    private final LinkedList<Like> likes;
     private final ArrayList<Comment> comments;
 
     private long lastTimeReward;
@@ -21,22 +21,22 @@ public class Post {
         this.author = author;
         this.title = title;
         this.content = content;
-        positiveVotes = 0;
-        negativeVotes = 0;
+        numIter = 0;
         numComments = 0;
+        likes = new LinkedList<>();
         comments = new ArrayList<>();
         lastTimeReward = 0;
     }
 
-    public Post(long postId, String author, String title, String content, int positiveVotes, int negativeVotes,
-            int numComments, ArrayList<Comment> comments, long lastTimeReward) {
+    public Post(long postId, String author, String title, String content, int numIter,
+            int numComments, LinkedList<Like> likes, ArrayList<Comment> comments, long lastTimeReward) {
         this.id = postId;
         this.author = author;
         this.title = title;
         this.content = content;
-        this.positiveVotes = positiveVotes;
-        this.negativeVotes = negativeVotes;
+        this.numIter = numIter;
         this.numComments = numComments;
+        this.likes = likes;
         this.comments = comments;
         this.lastTimeReward = lastTimeReward;
     }
@@ -58,16 +58,36 @@ public class Post {
         return this.content;
     }
 
+    public int getNumIter() {
+        return numIter;
+    }
+
     public int getPositiveVotes() {
+        int positiveVotes = 0;
+        for (Like l : likes) {
+            if (l.getVote()) {
+                positiveVotes++;
+            }
+        }
         return positiveVotes;
     }
 
     public int getNegativeVotes() {
+        int negativeVotes = 0;
+        for (Like l : likes) {
+            if (!l.getVote()) {
+                negativeVotes++;
+            }
+        }
         return negativeVotes;
     }
 
     public int getNumComments() {
         return numComments;
+    }
+
+    public List<Like> getLikes() {
+        return likes;
     }
 
     public List<Comment> getComments() {
@@ -93,11 +113,14 @@ public class Post {
         numComments++;
     }
 
-    public void addPostiveVote() {
-        positiveVotes++;
+    public void addLike(String username, int vote) {
+        Like like;
+        if (vote > 0) {
+            like = new Like(username, true, System.nanoTime());
+        } else {
+            like = new Like(username, false, System.nanoTime());
+        }
+        likes.add(like);
     }
 
-    public void addNegativeVotes() {
-        negativeVotes++;
-    }
 }

@@ -247,6 +247,8 @@ public class ServerMain {
 
     private static void deserializePosts(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
         ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
+        Type typeOfLikes = new TypeToken<LinkedList<Like>>() {
+        }.getType();
         Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
         }.getType();
 
@@ -258,9 +260,9 @@ public class ServerMain {
             String author = null;
             String title = null;
             String content = null;
-            int positiveVotes = 0;
-            int negativeVotes = 0;
+            int numIter = 0;
             int numComments = 0;
+            LinkedList<Like> likes = null;
             ArrayList<Comment> comments = null;
             long lastTimeReward = 0;
 
@@ -274,12 +276,12 @@ public class ServerMain {
                     title = reader.nextString();
                 else if (next.equals("content"))
                     content = reader.nextString();
-                else if (next.equals("positiveVotes"))
-                    positiveVotes = reader.nextInt();
-                else if (next.equals("negativeVotes"))
-                    negativeVotes = reader.nextInt();
+                else if (next.equals("numIterazioni"))
+                    numIter = reader.nextInt();
                 else if (next.equals("numComments"))
                     numComments = reader.nextInt();
+                else if (next.equals("likes"))
+                    likes = gson.fromJson(reader.nextString(), typeOfLikes);
                 else if (next.equals("comments"))
                     comments = gson.fromJson(reader.nextString(), typeOfComments);
                 else if (next.equals("lastTimereward"))
@@ -290,7 +292,7 @@ public class ServerMain {
             reader.endObject();
             // controllo che almeno i valori di base siano accettabili
             if (id != 0 || author != null || title != null || content != null) {
-                Post post = new Post(id, author, title, content, positiveVotes, negativeVotes, numComments, comments,
+                Post post = new Post(id, author, title, content, numIter, numComments, likes, comments,
                         lastTimeReward);
                 posts.putIfAbsent(id, post);
             }

@@ -62,19 +62,22 @@ public class Backup extends Thread {
 
     private void serializePost(Post post, File backupFile, Gson gson, JsonWriter writer) throws IOException {
         writer.beginObject();
+
+        Type typeOfLikes = new TypeToken<LinkedList<Like>>() {
+        }.getType();
+        Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
+        }.getType();
+
         writer.name("id").value(post.getId());
         writer.name("author").value(post.getAuthor());
         writer.name("title").value(post.getTitle());
         writer.name("content").value(post.getContent());
-        writer.name("positiveVotes").value(post.getPositiveVotes());
-        writer.name("negativeVotes").value(post.getNegativeVotes());
+        writer.name("numIterations").value(post.getNumIter());
         writer.name("numComment").value(post.getNumComments());
-
-        Type typeComments = new TypeToken<ArrayList<Comment>>() {
-        }.getType();
-
-        writer.name("comments").value(gson.toJson(post.getComments(), typeComments));
+        writer.name("likes").value(gson.toJson(post.getLikes(), typeOfLikes));
+        writer.name("comments").value(gson.toJson(post.getComments(), typeOfComments));
         writer.name("lastTimeReward").value(post.getLastTimeReward());
+
         writer.endObject();
     }
 
@@ -97,20 +100,21 @@ public class Backup extends Thread {
 
     private void serializeUser(User user, File backupUsers2, Gson gson, JsonWriter writer) throws IOException {
         writer.beginObject();
-        writer.name("username").value(user.getUsername());
-        writer.name("hashedPassword").value(user.getHashedPassword());
-        writer.name("seed").value(user.getSeed());
 
         Type typeOfFollowAndTags = new TypeToken<LinkedList<String>>() {
         }.getType();
+        Type typeOfVotes = new TypeToken<LinkedList<Long>>() {
+        }.getType();
+        Type typeOfBlogAndFeed = new TypeToken<Set<Long>>() {
+        }.getType();
+
+        writer.name("username").value(user.getUsername());
+        writer.name("hashedPassword").value(user.getHashedPassword());
+        writer.name("seed").value(user.getSeed());
         writer.name("tags").value(gson.toJson(user.getTags(), typeOfFollowAndTags));
         writer.name("followers").value(gson.toJson(user.getFollowers(), typeOfFollowAndTags));
         writer.name("followed").value(gson.toJson(user.getFollowed(), typeOfFollowAndTags));
-        Type typeOfVotes = new TypeToken<LinkedList<Long>>() {
-        }.getType();
         writer.name("votes").value(gson.toJson(user.getListVotes(), typeOfVotes));
-        Type typeOfBlogAndFeed = new TypeToken<Set<Long>>() {
-        }.getType();
         writer.name("blog").value(gson.toJson(user.getBlog().keySet(), typeOfBlogAndFeed));
         writer.name("feed").value(gson.toJson(user.getFeed().keySet(), typeOfBlogAndFeed));
         writer.name("wallet").value(gson.toJson(user.getWallet()));
