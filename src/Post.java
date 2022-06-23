@@ -1,6 +1,6 @@
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Post {
     private final long id;
@@ -12,9 +12,12 @@ public class Post {
     private int numComments;
 
     private final LinkedList<Vote> votes;
-    private final ArrayList<Comment> comments;
+    private final LinkedList<Comment> comments;
 
     private long lastTimeReward;
+
+    private final ReentrantLock votesLock;
+    private final ReentrantLock commentsLock;
 
     public Post(long postId, String author, String title, String content) {
         this.id = postId;
@@ -24,12 +27,14 @@ public class Post {
         numIter = 0;
         numComments = 0;
         votes = new LinkedList<>();
-        comments = new ArrayList<>();
+        comments = new LinkedList<>();
         lastTimeReward = 0;
+        votesLock = new ReentrantLock();
+        commentsLock = new ReentrantLock();
     }
 
     public Post(long postId, String author, String title, String content, int numIter,
-            int numComments, LinkedList<Vote> votes, ArrayList<Comment> comments, long lastTimeReward) {
+            int numComments, LinkedList<Vote> votes, LinkedList<Comment> comments, long lastTimeReward) {
         this.id = postId;
         this.author = author;
         this.title = title;
@@ -39,27 +44,45 @@ public class Post {
         this.votes = votes;
         this.comments = comments;
         this.lastTimeReward = lastTimeReward;
+        votesLock = new ReentrantLock();
+        commentsLock = new ReentrantLock();
     }
 
     // metodi getter
     public long getId() {
-        return this.id;
+        return id;
     }
 
     public String getAuthor() {
-        return this.author;
+        return author;
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public String getContent() {
-        return this.content;
+        return content;
     }
 
     public int getNumIter() {
         return numIter;
+    }
+
+    public void votesLock() {
+        votesLock.lock();
+    }
+
+    public void votesUnlock() {
+        votesLock.unlock();
+    }
+
+    public void commentsLock() {
+        commentsLock.lock();
+    }
+
+    public void commentsUnlock() {
+        commentsLock.unlock();
     }
 
     public int getPositiveVotes() {
@@ -129,7 +152,7 @@ public class Post {
     }
 
     public void setLastTimeReward(long timestamp) {
-        this.lastTimeReward = timestamp;
+        lastTimeReward = timestamp;
     }
 
 }

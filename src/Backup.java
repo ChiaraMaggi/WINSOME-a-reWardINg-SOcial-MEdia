@@ -4,7 +4,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -65,7 +64,7 @@ public class Backup extends Thread {
 
         Type typeOfLikes = new TypeToken<LinkedList<Vote>>() {
         }.getType();
-        Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
+        Type typeOfComments = new TypeToken<LinkedList<Comment>>() {
         }.getType();
 
         writer.name("id").value(post.getId());
@@ -74,8 +73,18 @@ public class Backup extends Thread {
         writer.name("content").value(post.getContent());
         writer.name("numIterations").value(post.getNumIter());
         writer.name("numComment").value(post.getNumComments());
-        writer.name("votes").value(gson.toJson(post.getVotes(), typeOfLikes));
-        writer.name("comments").value(gson.toJson(post.getComments(), typeOfComments));
+        try {
+            post.votesLock();
+            writer.name("votes").value(gson.toJson(post.getVotes(), typeOfLikes));
+        } finally {
+            post.votesUnlock();
+        }
+        try {
+            post.commentsLock();
+            writer.name("comments").value(gson.toJson(post.getComments(), typeOfComments));
+        } finally {
+            post.commentsUnlock();
+        }
         writer.name("lastTimeReward").value(post.getLastTimeReward());
 
         writer.endObject();
@@ -98,7 +107,7 @@ public class Backup extends Thread {
 
     }
 
-    private void serializeUser(User user, File backupUsers2, Gson gson, JsonWriter writer) throws IOException {
+    private void serializeUser(User user, File backupUsers, Gson gson, JsonWriter writer) throws IOException {
         writer.beginObject();
 
         Type typeOfFollowAndTags = new TypeToken<LinkedList<String>>() {
@@ -112,7 +121,12 @@ public class Backup extends Thread {
         writer.name("hashedPassword").value(user.getHashedPassword());
         writer.name("seed").value(user.getSeed());
         writer.name("tags").value(gson.toJson(user.getTags(), typeOfFollowAndTags));
-        writer.name("followers").value(gson.toJson(user.getFollowers(), typeOfFollowAndTags));
+        try {
+            user.followersLock();
+            writer.name("followers").value(gson.toJson(user.getFollowers(), typeOfFollowAndTags));
+        } finally {
+            user.followersUnlock();
+        }
         writer.name("followed").value(gson.toJson(user.getFollowed(), typeOfFollowAndTags));
         writer.name("listVotes").value(gson.toJson(user.getListVotes(), typeOfVotes));
         writer.name("blog").value(gson.toJson(user.getBlog().keySet(), typeOfBlogAndFeed));

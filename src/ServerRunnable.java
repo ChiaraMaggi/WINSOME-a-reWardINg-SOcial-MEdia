@@ -95,7 +95,7 @@ public class ServerRunnable implements Runnable {
             if (winsome.addComment(clientUsername, Long.parseLong(param[1]), param[2])) {
                 response = "SUCCESS: comment created";
             } else {
-                response = "ERROR: comment not created. Something goes wrong";
+                response = "ERROR: comment not created. Maybe you are the author or you this post isn't in your feed";
             }
             outWriter.writeUTF(response);
             outWriter.flush();
@@ -198,7 +198,7 @@ public class ServerRunnable implements Runnable {
                 if (winsome.rewinPost(id, clientUsername)) {
                     response = "SUCCESS: post (id = " + id + ") rewinned";
                 } else {
-                    response = "ERROR: you can't rewin this post";
+                    response = "ERROR: impossible to rewin this post. Maybe this pot isn't in your feed or you are the author";
                 }
             } else {
                 response = "ERROR: post (id = " + id + ") doesn't exist";

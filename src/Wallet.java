@@ -10,11 +10,11 @@ public class Wallet {
         total = 0.0;
     }
 
-    public List<String> getTransaction() {
+    public synchronized List<String> getTransaction() {
         return transactions;
     }
 
-    public double getTotal() {
+    public synchronized double getTotal() {
         return total;
     }
 

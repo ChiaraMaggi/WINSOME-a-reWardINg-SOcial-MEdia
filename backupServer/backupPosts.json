@@ -1,35 +1,13 @@
 [
       {
             "id": 1,
-            "author": "Chiara",
-            "title": "\"ciao\"",
-            "content": "\"ciao a tutti, sono Chiara\"",
-            "numIterations": 2,
-            "numComment": 0,
-            "votes": "[\n  {\n    \"author\": \"Andrea\",\n    \"vote\": true,\n    \"timestamp\": 13246426552500\n  }\n]",
-            "comments": "[\n  {\n    \"author\": \"Andrea\",\n    \"comment\": \"\\\"ciao Chiara!\\\"\",\n    \"timestamp\": 13254142627000\n  }\n]",
-            "lastTimeReward": 15489996059000
-      },
-      {
-            "id": 2,
-            "author": "Andrea",
+            "author": "chiara",
             "title": "\"inter\"",
-            "content": "\"forza inter per sempre\"",
-            "numIterations": 2,
+            "content": "\"forza inter\"",
+            "numIterations": 1,
             "numComment": 0,
-            "votes": "[\n  {\n    \"author\": \"Chiara\",\n    \"vote\": true,\n    \"timestamp\": 13380958503000\n  }\n]",
-            "comments": "[\n  {\n    \"author\": \"Chiara\",\n    \"comment\": \"\\\"forza inter!!!\\\"\",\n    \"timestamp\": 13377182298200\n  }\n]",
-            "lastTimeReward": 15489996067500
-      },
-      {
-            "id": 3,
-            "author": "Andrea",
-            "title": "\"arte\"",
-            "content": "\" adoro Monet\"",
-            "numIterations": 2,
-            "numComment": 0,
-            "votes": "[\n  {\n    \"author\": \"Marghe\",\n    \"vote\": true,\n    \"timestamp\": 13333568636700\n  }\n]",
+            "votes": "[]",
             "comments": "[]",
-            "lastTimeReward": 15489996073900
+            "lastTimeReward": 691710832105000
       }
 ]

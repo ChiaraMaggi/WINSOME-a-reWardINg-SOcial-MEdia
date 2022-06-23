@@ -14,8 +14,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Set;
@@ -249,21 +247,23 @@ public class ServerMain {
         ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
         Type typeOfLikes = new TypeToken<LinkedList<Vote>>() {
         }.getType();
-        Type typeOfComments = new TypeToken<ArrayList<Comment>>() {
+        Type typeOfComments = new TypeToken<LinkedList<Comment>>() {
         }.getType();
+
+        // utilizzata per tenere traccia anche dell'ultim0 id utilizzato
+        long id = 0;
 
         reader.beginArray();
         while (reader.hasNext()) {
             reader.beginObject();
             // parametri post
-            long id = 0;
             String author = null;
             String title = null;
             String content = null;
             int numIter = 0;
             int numComments = 0;
             LinkedList<Vote> likes = null;
-            ArrayList<Comment> comments = null;
+            LinkedList<Comment> comments = null;
             long lastTimeReward = 0;
 
             while (reader.hasNext()) {
@@ -292,14 +292,14 @@ public class ServerMain {
             reader.endObject();
             // controllo che almeno i valori di base siano accettabili
             if (id != 0 || author != null || title != null || content != null) {
-                Post post = new Post(id, author, title, content, numIter, numComments, likes, comments,
-                        lastTimeReward);
+                Post post = new Post(id, author, title, content, numIter, numComments, likes, comments, lastTimeReward);
                 posts.putIfAbsent(id, post);
             }
         }
         reader.endArray();
         reader.close();
         winsome.setAllPosts(posts);
+        winsome.setPostId(id);
     }
 
     private static void deserializeUsers(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
@@ -322,8 +322,8 @@ public class ServerMain {
             LinkedList<String> followers = null;
             LinkedList<String> followed = null;
             LinkedList<Long> votes = null;
-            HashMap<Long, Post> blog = new HashMap<>();
-            HashMap<Long, Post> feed = new HashMap<>();
+            ConcurrentHashMap<Long, Post> blog = new ConcurrentHashMap<>();
+            ConcurrentHashMap<Long, Post> feed = new ConcurrentHashMap<>();
             Wallet wallet = null;
 
             while (reader.hasNext()) {

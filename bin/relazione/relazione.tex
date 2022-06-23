@@ -1,0 +1,45 @@
+\documentclass[11pt, a4paper, oneside]{article}
+\usepackage[italian]{babel}
+\usepackage[margin=3cm]{geometry}
+\RequirePackage[latin1,utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage[bookmarks=true]{hyperref}
+\usepackage[small]{titlesec}
+
+\begin{document}
+\title{Relazione Progetto Laboratorio di Reti: Winsome, a reWardINg SOcial MEdia}
+\author{Università di Pisa - Dipartimento di Informatica \\ Chiara Maggi, 578517}
+\date{A.A. 2021/22}
+\maketitle
+\tableofcontents
+
+\section{Introduzione}
+Il progetto realizzato rappresenta un social network con funzionalità base, dove ciascun utente registrato può seguire altri utenti ed essere a sua volta seguito. 
+Questo meccanismo permette di presentare a un utente solo i contenuti pubblicati dagli utenti che egli segue. L’utente viene ricompensato dal servizio se pubblica
+contenuti che riscuotono interesse da parte della comunità e/o se contribuisce attivamente votando o commentando contenuti pubblicati da altri utenti.\\
+L'utente ha la possibilità di interagire con il social network da linea di comando, digitando particolari notazioni a seconda della richiesta,
+sfruttando un processo client che sarà correttamente servito da uno dei thread del pool del server. Il server sfrutta la connessione TCP o RMI (a seconda della richiesta)
+per eleaborare una risposta da mandare al client e quindi da mostrare all'utente.\\ \\
+Una prima scelta implementativa è appunto quelle di realizzare il server con meccanismo Java I/O e Threadpool (in particolare CachedThreadpool) per andare a gestire
+i vari client, così da poter identificare univocamente lo stato di login di un determinato utente e da gestire indipendentemente dagli altri le richieste di quest'ultimo.\\ \\
+Un'altra scelta implementativa riguarda la gestione degli accessi di un utente al social network: in particolare un utente che ha fatto il login su un determinato 
+client non potrà collegarsi su un client differente fino a quando non effetuerà il logout dal primo.\\ \\
+Per quanto riguarda i sistemi di notifica ammessi dal client vi sono: RMI callback per ottenere le informazioni sui followers dell'utente collegato e servizio Multicast 
+per ottenere le notifiche del periodico calcolo delle ricompense e conseguente aggiornamento del portafoglio. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

@@ -6,7 +6,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -49,7 +48,12 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         User user;
         LinkedList<String> followers;
         if ((user = users.get(username)) != null) {
-            followers = new LinkedList<>(user.getFollowers());
+            try {
+                user.followersLock();
+                followers = new LinkedList<>(user.getFollowers());
+            } finally {
+                user.followersUnlock();
+            }
             return followers;
         }
         return new LinkedList<>();
@@ -108,13 +112,16 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         Post post = new Post(id, author, title, content);
         User user = users.get(author);
         if (posts.putIfAbsent(id, post) == null) {
-            // TODO: gestione delle lock
-
             // modifico il blog dell'autore
             user.addPostToBlog(post);
             // modifico il feed dei followers
-            for (String s : user.getFollowers()) {
-                users.get(s).addPostToFeed(post);
+            try {
+                user.followersLock();
+                for (String s : user.getFollowers()) {
+                    users.get(s).addPostToFeed(post);
+                }
+            } finally {
+                user.followersUnlock();
             }
             return id;
         } else
@@ -125,9 +132,16 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         Post post;
         String printedPost = "";
         if ((post = posts.get(id)) != null) {
-            printedPost = "< Title: " + post.getTitle() + "\n< Content: " + post.getContent() + "\n< Votes: "
-                    + "\n<    Positive: " + post.getPositiveVotes() + "\n<    Negative: " + post.getNegativeVotes()
-                    + "\n< Comments: " + post.getNumComments() + "\n" + post.getCommentsInString();
+            try {
+                post.votesLock();
+                post.commentsLock();
+                printedPost = "< Title: " + post.getTitle() + "\n< Content: " + post.getContent() + "\n< Votes: "
+                        + "\n<    Positive: " + post.getPositiveVotes() + "\n<    Negative: " + post.getNegativeVotes()
+                        + "\n< Comments: " + post.getNumComments() + "\n" + post.getCommentsInString();
+            } finally {
+                post.votesUnlock();
+                post.commentsUnlock();
+            }
             return printedPost;
         }
         return null;
@@ -140,7 +154,12 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             // controllo se il commentante non è l'autore del
             // post e se ha il post nel proprio feed
             if (post.getAuthor() != username && user.getFeed().get(id) != null) {
-                post.addComment(username, comment);
+                try {
+                    post.commentsLock();
+                    post.addComment(username, comment);
+                } finally {
+                    post.commentsUnlock();
+                }
                 return true;
             }
         }
@@ -149,7 +168,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     public String viewBlog(String username) {
         User user = users.get(username);
-        HashMap<Long, Post> blog = user.getBlog();
+        ConcurrentHashMap<Long, Post> blog = user.getBlog();
         String blogInString = "";
         for (Long key : blog.keySet()) {
             blogInString = blogInString
@@ -162,7 +181,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     public String showFeed(String username) {
         User user = users.get(username);
-        HashMap<Long, Post> feed = user.getFeed();
+        ConcurrentHashMap<Long, Post> feed = user.getFeed();
         String feedInString = "";
         for (Long key : feed.keySet()) {
             feedInString = feedInString
@@ -176,19 +195,26 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public boolean followUser(String follower, String usernameToFollow) {
         User userToFollow = users.get(usernameToFollow);
         User user = users.get(follower);
-        // controllo se l'utente segue già userFollowed
-        if (userToFollow.getFollowers().contains(follower))
-            return false;
-        else {
-            // TO DO: gestire lock e callback
-            user.addFollowed(usernameToFollow);
-            userToFollow.addFollowers(follower);
+        try {
+            userToFollow.followersLock();
+            // controllo se l'utente segue già userFollowed
+            if (userToFollow.getFollowers().contains(follower)) {
+                userToFollow.followersUnlock();
+                return false;
+            } else {
+                user.addFollowed(usernameToFollow);
+                userToFollow.addFollowers(follower);
 
-            // aggiunta di tutti i post di userToFollow al feed di user
-            for (Post p : userToFollow.getBlog().values()) {
-                user.addPostToFeed(p);
+                // aggiunta di tutti i post di userToFollow al feed di user
+                for (Post p : userToFollow.getBlog().values()) {
+                    user.addPostToFeed(p);
+                }
+
+                // notifica all'utente interessato
+                doCallbackFollow(usernameToFollow, follower);
             }
-            doCallbackFollow(usernameToFollow, follower);
+        } finally {
+            userToFollow.followersUnlock();
         }
         return true;
     }
@@ -196,23 +222,28 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public boolean unfollowUser(String unfollower, String usernameToUnfollow) {
         User userToUnfollow = users.get(usernameToUnfollow);
         User user = users.get(unfollower);
-        // controllo se l'utente segue userToUnfollow
-        if (userToUnfollow.getFollowers().contains(unfollower)) {
-            // TO DO: gestire lock e callback
-            user.getFollowed().remove(usernameToUnfollow);
-            userToUnfollow.getFollowers().remove(unfollower);
-
-            // rimozione di tutti i post dell'utente che è stato smesso di seguire
-            // almeno che il post non sia stato ricondiviso da un altro utente seguito
-            for (Long id : userToUnfollow.getBlog().keySet()) {
-                for (String u : user.getFollowed()) {
-                    User followed = users.get(u);
-                    if (!followed.getBlog().containsKey(id))
-                        user.removePostFromFeed(id);
+        try {
+            userToUnfollow.followersLock();
+            // controllo se l'utente segue userToUnfollow
+            if (userToUnfollow.getFollowers().contains(unfollower)) {
+                user.getFollowed().remove(usernameToUnfollow);
+                userToUnfollow.getFollowers().remove(unfollower);
+                // rimozione di tutti i post dell'utente che è stato smesso di seguire
+                // almeno che il post non sia stato ricondiviso da un altro utente seguito
+                for (Long id : userToUnfollow.getBlog().keySet()) {
+                    for (String u : user.getFollowed()) {
+                        User followed = users.get(u);
+                        if (!followed.getBlog().containsKey(id))
+                            user.removePostFromFeed(id);
+                    }
                 }
+                // notifica all'utente interessato
+                doCallbackUnfollow(usernameToUnfollow, unfollower);
+                userToUnfollow.followersUnlock();
+                return true;
             }
-            doCallbackUnfollow(usernameToUnfollow, unfollower);
-            return true;
+        } finally {
+            userToUnfollow.followersUnlock();
         }
         return false;
 
@@ -228,9 +259,6 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 User userAuthor = users.get(post.getAuthor());
                 // rimozione dal blog dell'autore
                 userAuthor.removePostFromBlog(id);
-                // TO DO: risolvere problema che se una persona che seguo ricondivide un mio
-                // post ed elimino il post per lui tutto apposto ma io continuo a vedere il
-                // postricondiviso nel mio feed -> controllare
                 userAuthor.removePostFromFeed(id);
 
                 // rimozione dal feed e blog(in caso di rewin) di tutti i follower
@@ -252,7 +280,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             // controllo che il votante non sia l'autore del post, che abbia il post nel
             // feed e che non abbia già votato
             if (post.getAuthor() != username && user.getFeed().containsKey(id) && !user.getListVotes().contains(id)) {
-                post.addVote(username, vote);
+                try {
+                    post.votesLock();
+                    post.addVote(username, vote);
+                } finally {
+                    post.votesUnlock();
+                }
+
+                // per tenere traccia dei post già votati
                 user.addIdToListVotes(id);
                 return true;
             }
@@ -264,19 +299,24 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         Post post;
         User user = users.get(username);
         if ((post = posts.get(id)) != null) {
-            // controllo che il post sia nel feed dell'utente che vuole ricondividere
-            if (user.getFeed().containsKey(id)) {
+            // controllo che il post sia nel feed dell'utente che vuole ricondividere e che
+            // non sia l'autore
+            if (user.getFeed().containsKey(id) && !post.getAuthor().equals(username)) {
 
                 // aggiungo il post al blog dell'utente
                 user.addPostToBlog(post);
 
                 // aggiungo il post al feed dei followers dell'utente che fa il rewin
                 User follower;
-                for (String u : user.getFollowers()) {
-                    follower = users.get(u);
-                    follower.addPostToFeed(post);
+                try {
+                    user.followersLock();
+                    for (String u : user.getFollowers()) {
+                        follower = users.get(u);
+                        follower.addPostToFeed(post);
+                    }
+                } finally {
+                    user.followersUnlock();
                 }
-
                 return true;
             }
         }
@@ -292,8 +332,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 User u = users.get(s);
                 for (String tag : tags) {
                     if (u.getTags().contains(tag)) {
-                        // TODO: incolonnare bene i campi
-                        listUsers = listUsers.concat(s + "      |   " + u.printTags(u.getTags()) + "\n");
+                        listUsers = listUsers.concat(s + "      | " + u.printTags(u.getTags()) + "\n");
                     }
                 }
             }
@@ -306,7 +345,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String listFollowing = "";
         for (String s : user.getFollowed()) {
             User u = users.get(s);
-            listFollowing = listFollowing.concat(s + "      |   " + u.printTags(u.getTags()) + "\n");
+            listFollowing = listFollowing.concat(s + "      | " + u.printTags(u.getTags()) + "\n");
         }
         return listFollowing;
     }
@@ -345,5 +384,9 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     public void setAllPosts(ConcurrentHashMap<Long, Post> posts) {
         this.posts = posts;
+    }
+
+    public void setPostId(Long id) {
+        postId.set(id);
     }
 }

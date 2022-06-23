@@ -1,16 +1,17 @@
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class User {
     private final String username;
     private final String seed;
     private final String hashedPassword;
 
-    private final HashMap<Long, Post> blog;
-    private final HashMap<Long, Post> feed;
+    private final ConcurrentHashMap<Long, Post> blog;
+    private final ConcurrentHashMap<Long, Post> feed;
 
     private final LinkedList<String> tags;
     private final LinkedList<String> followers;
@@ -22,6 +23,8 @@ public class User {
 
     private boolean logged = false;
 
+    private final ReentrantLock followersLock;
+
     // costruttore nel caso di nuovi utenti
     public User(String username, String password, LinkedList<String> tags) throws NoSuchAlgorithmException {
         byte[] array = new byte[32];
@@ -31,22 +34,19 @@ public class User {
         this.tags = tags;
         this.seed = new String(array, StandardCharsets.UTF_8);
         hashedPassword = Hash.bytesToHex(Hash.sha256(password + seed));
-
-        blog = new HashMap<>();
-        feed = new HashMap<>();
-
+        blog = new ConcurrentHashMap<>();
+        feed = new ConcurrentHashMap<>();
         followers = new LinkedList<>();
         followed = new LinkedList<>();
-
         votes = new LinkedList<>();
-
         wallet = new Wallet();
+        followersLock = new ReentrantLock();
 
     }
 
     public User(String username, String hashedPassword, String seed, LinkedList<String> tags,
             LinkedList<String> followers, LinkedList<String> followed, LinkedList<Long> votes,
-            HashMap<Long, Post> blog, HashMap<Long, Post> feed, Wallet wallet) {
+            ConcurrentHashMap<Long, Post> blog, ConcurrentHashMap<Long, Post> feed, Wallet wallet) {
         this.username = username;
         this.tags = tags;
         this.seed = seed;
@@ -57,6 +57,7 @@ public class User {
         this.followed = followed;
         this.votes = votes;
         this.wallet = wallet;
+        followersLock = new ReentrantLock();
     }
 
     public boolean isLogged() {
@@ -73,6 +74,14 @@ public class User {
     public void logout() {
         logged = false;
         return;
+    }
+
+    public void followersLock() {
+        followersLock.lock();
+    }
+
+    public void followersUnlock() {
+        followersLock.unlock();
     }
 
     public void addPostToBlog(Post p) {
@@ -99,11 +108,11 @@ public class User {
         return tags;
     }
 
-    public HashMap<Long, Post> getBlog() {
+    public ConcurrentHashMap<Long, Post> getBlog() {
         return blog;
     }
 
-    public HashMap<Long, Post> getFeed() {
+    public ConcurrentHashMap<Long, Post> getFeed() {
         return feed;
     }
 

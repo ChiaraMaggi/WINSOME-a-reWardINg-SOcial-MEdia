@@ -14,36 +14,30 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Client {
+public class ClientMain {
     private static File CONFIG_FILE;
-
     private static String SERVER_ADDRESS = "127.0.0.1";
     private static String REGISTRY_HOST = "localhost";
-
     private static int TCP_SERVER_PORT = 9999;
     private static int RMI_PORT = 7777;
     private static int SOCKET_TIMEOUT = 180000;
-
     // variabili per multicast, comunicate dal server
     private static int MULTICAST_PORT;
     private static String MULTICAST_ADDRESS;
-
     // variabile che tiene traccia se qualcuno è loggato sul client o no
     private static boolean someoneLogged = false;
-
     // variabile che tiene traccia dell'utenete loggato in quel momento sul client
     private static String username;
     private static String LOGIN_ERROR_MSG = "< ERROR: nobody is logged in";
-
     private static ServerRemoteInterface remote;
     private static Registry registry;
-
     private static NotifyClientInterface obj;
     private static NotifyClientInterface stub;
-
     // lista followers tenuta localmente
     private static LinkedList<String> followers;
+    private static ReentrantLock followersLock;
 
     public static void main(String[] args) {
 
@@ -61,6 +55,7 @@ public class Client {
 
         // inizializzo lista followers tenuta localmente lato client
         followers = new LinkedList<>();
+        followersLock = new ReentrantLock();
 
         try {
             // configurazione tcp
@@ -247,9 +242,14 @@ public class Client {
                     }
 
                     if (request[1].equals("followers")) {
-                        System.out.println("< Followers:");
-                        for (String s : followers) {
-                            System.out.println("<   user: " + s);
+                        try {
+                            followersLock.lock();
+                            System.out.println("< " + followers.size() + " followers:");
+                            for (String s : followers) {
+                                System.out.println("<   " + s);
+                            }
+                        } finally {
+                            followersLock.unlock();
                         }
                         break;
                     }
@@ -258,8 +258,8 @@ public class Client {
                     outWriter.writeUTF(line);
                     outWriter.flush();
 
-                    System.out.println("<    User       |   Tags");
-                    System.out.println("<------------------------------------");
+                    System.out.println("< User      | Tags");
+                    System.out.println("<------------------------------------------------------------------------");
                     serverResponse = inReader.readUTF();
                     int dim = Integer.parseInt(serverResponse);
 
@@ -387,17 +387,12 @@ public class Client {
                             break;
                         }
 
-                        if ((request.length == 2 && !request[1].equals("feed"))
-                                && (request.length == 2 && !request[1].equals("notifications"))) {
-                            System.out.println("< ERROR: wrong notation. Usage: show feed or show notifications");
+                        if ((request.length == 2 && !request[1].equals("feed"))) {
+                            System.out.println("< ERROR: wrong notation. Usage: show feed");
                             break;
                         }
                         if (request.length > 2 && request[1].equals("feed")) {
                             System.out.println("< ERROR: wrong notation. Usage: show feed");
-                            break;
-                        }
-                        if (request.length > 2 && request[1].equals("notifications")) {
-                            System.out.println("< ERROR: wrong notation. Usage: show notifications");
                             break;
                         }
 
@@ -418,9 +413,6 @@ public class Client {
                                 serverResponse = inReader.readUTF();
                                 System.out.println("< " + serverResponse);
                             }
-                        }
-                        if (request[1].equals("notifications")) {
-                            notifyReward.printNotifications();
                         }
 
                     } else {
