@@ -1,3 +1,8 @@
+
+/**
+*	@file ServerRemoteInterface.java
+*	@author Chiara Maggi 578517
+*/
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.LinkedList;

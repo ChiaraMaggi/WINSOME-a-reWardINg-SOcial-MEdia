@@ -1,3 +1,8 @@
+
+/**
+*	@file NotifyClient.java
+*	@author Chiara Maggi 578517
+*/
 import java.rmi.RemoteException;
 import java.rmi.server.RemoteObject;
 import java.util.LinkedList;

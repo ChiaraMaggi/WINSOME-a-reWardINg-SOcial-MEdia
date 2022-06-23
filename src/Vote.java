@@ -1,4 +1,7 @@
-
+/**
+ * @file Vote.java
+ * @author Chiara Maggi 578517
+ */
 public class Vote {
     private String author;
     private boolean vote;

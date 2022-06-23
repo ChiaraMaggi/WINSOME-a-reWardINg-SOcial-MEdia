@@ -1,3 +1,8 @@
+
+/**
+*	@file Wallet.java
+*	@author Chiara Maggi 578517
+*/
 import java.util.LinkedList;
 import java.util.List;
 

@@ -1,3 +1,8 @@
+
+/**
+*	@file ServerCloser.java
+*	@author Chiara Maggi 578517
+*/
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;

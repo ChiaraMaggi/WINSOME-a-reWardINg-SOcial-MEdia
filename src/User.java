@@ -1,3 +1,8 @@
+
+/**
+*	@file User.java
+*	@author Chiara Maggi 578517
+*/
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;

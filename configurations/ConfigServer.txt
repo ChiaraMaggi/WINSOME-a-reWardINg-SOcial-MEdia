@@ -1,0 +1,29 @@
+# Indirizzo del server
+SERVER ADDRESS=127.0.0.1
+#
+# Indirizzo di multicast
+MULTICAST ADDRESS=239.255.32.32
+#
+# Host su cui si trova il registry
+REGISTRY HOST=localhost
+#
+# Porta TCP del server
+TCP PORT=9999
+#
+# Porta UDP del server
+UDP PORT=33333
+#
+# Porta del registry RMI
+REGISTRY PORT=7777
+#
+# Timeout della socket
+SOCKET TIMEOUT=120000
+#
+# Timeout calcolo ricompensa
+REWARD TIMEOUT=60000
+#
+# Timeout del backup
+BACKUP TIMEOUT=60000
+#
+# Percentuale guadagno autore
+AUTHOR PERCENTAGE=0.8

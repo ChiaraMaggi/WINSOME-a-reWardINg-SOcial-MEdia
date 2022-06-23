@@ -1,3 +1,8 @@
+
+/**
+*	@file Post.java
+*	@author Chiara Maggi 578517
+*/
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -7,13 +12,10 @@ public class Post {
     private final String author;
     private final String title;
     private final String content;
-
     private int numIter;
     private int numComments;
-
     private final LinkedList<Vote> votes;
     private final LinkedList<Comment> comments;
-
     private long lastTimeReward;
 
     private final ReentrantLock votesLock;

@@ -1,3 +1,7 @@
+/**
+ * @file Comment.java
+ * @author Chiara Maggi 578517
+ */
 public class Comment {
     private final String author;
     private final String comment;

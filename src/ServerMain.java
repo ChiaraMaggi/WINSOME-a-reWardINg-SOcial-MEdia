@@ -1,3 +1,8 @@
+
+/**
+*	@file ServerMain.java
+*	@author Chiara Maggi 578517
+*/
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -27,22 +32,20 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 public class ServerMain {
-    private static File CONFIG_FILE;
 
     private static String SERVER_ADDRESS = "127.0.0.1";
     private static String MULTICAST_ADDRESS = "239.255.32.32";
     private static String REGISTRY_HOST = "localhost";
-
-    private static int TCP_SERVER_PORT = 9999;
-    private static int UDP_SERVER_PORT = 33333;
-    private static int RMI_PORT = 7777;
-    private static int MULTICAST_PORT = 44444;
-    private static long SOCKET_TIMEOUT = 100000;
+    private static int TCP_PORT = 9999;
+    private static int UDP_PORT = 33333;
+    private static int REG_PORT = 7777;
+    private static long SOCKET_TIMEOUT = 120000;
     private static long REWARD_TIMEOUT = 60000;
     private static long BACKUP_TIMEOUT = 60000;
-    private static double AUTHOR_PERCENTAGE = 0.75;
+    private static double AUTHOR_PERCENTAGE = 0.8;
 
     public static void main(String[] args) {
+        File CONFIG_FILE;
         // Se non viene passato alcun config_file viene avviata la
         // configurazione di default altrimenti si parsa il config_file
         if (args.length == 0) {
@@ -53,15 +56,11 @@ public class ServerMain {
         }
         System.out.print("SERVER VALUES:");
         System.out.println("\n   SERVER ADDRESS -> " + SERVER_ADDRESS + "\n   TCP PORT -> "
-                + TCP_SERVER_PORT + "\n   UDP PORFT ->" + UDP_SERVER_PORT +
-                "\n   MULTICAST ADDRESS -> "
-                + MULTICAST_ADDRESS + "\n   MULTICAST PORT -> " + MULTICAST_PORT +
-                "\n   REGISTRY HOST -> "
-                + REGISTRY_HOST + "\n   REGISTRY PORT -> " + RMI_PORT + "\n   SOCKET TIMEOUT -> " +
-                SOCKET_TIMEOUT
+                + TCP_PORT + "\n   UDP PORFT ->" + UDP_PORT +
+                "\n   MULTICAST ADDRESS -> " + MULTICAST_ADDRESS + "\n   REGISTRY HOST -> " + REGISTRY_HOST
+                + "\n   REGISTRY PORT -> " + REG_PORT + "\n   SOCKET TIMEOUT -> " + SOCKET_TIMEOUT
                 + "\n   REWARD TIMEOUT -> " + REWARD_TIMEOUT + "\n   BACKUP TIMEOUT -> " + BACKUP_TIMEOUT
-                + "\n   AUTHROR PERCENTAGE -> " +
-                AUTHOR_PERCENTAGE);
+                + "\n   AUTHROR PERCENTAGE -> " + AUTHOR_PERCENTAGE);
 
         // dichiarazione e creazione dei file per il backup
         File backupUsers = new File("..//backupServer//backupUsers.json");
@@ -100,8 +99,8 @@ public class ServerMain {
         // Configurazione RMI
         try {
             ServerRemoteInterface stub = (ServerRemoteInterface) UnicastRemoteObject.exportObject(winsome, 0);
-            LocateRegistry.createRegistry(RMI_PORT);
-            Registry registry = LocateRegistry.getRegistry(RMI_PORT);
+            LocateRegistry.createRegistry(REG_PORT);
+            Registry registry = LocateRegistry.getRegistry(REG_PORT);
             registry.rebind(REGISTRY_HOST, stub);
         } catch (RemoteException e) {
             System.err.println("ERROR: error with RMI");
@@ -119,7 +118,7 @@ public class ServerMain {
             System.out.println("ERROR: problems in creating multicast socket");
             System.exit(-1);
         }
-        Reward rewardThread = new Reward(socketUDP, multicastAddress, MULTICAST_PORT, winsome, REWARD_TIMEOUT,
+        Reward rewardThread = new Reward(socketUDP, multicastAddress, UDP_PORT, winsome, REWARD_TIMEOUT,
                 AUTHOR_PERCENTAGE);
         rewardThread.setDaemon(true);
         rewardThread.start();
@@ -127,8 +126,8 @@ public class ServerMain {
         // Configurazione connessioni tcp
         ServerSocket listener = null;
         try {
-            listener = new ServerSocket(TCP_SERVER_PORT, 70, InetAddress.getByName(SERVER_ADDRESS));
-            System.out.println("SERVER: server ready on port " + TCP_SERVER_PORT);
+            listener = new ServerSocket(TCP_PORT, 70, InetAddress.getByName(SERVER_ADDRESS));
+            System.out.println("SERVER: server ready on port " + TCP_PORT);
         } catch (IOException e) {
             System.out.println("ERROR: problem with server socket. Closing server");
             System.exit(-1);
@@ -147,7 +146,7 @@ public class ServerMain {
 
                 // invio dati per configurazione multicast
                 DataOutputStream outWriter = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-                outWriter.writeUTF(MULTICAST_PORT + " " + MULTICAST_ADDRESS);
+                outWriter.writeUTF(UDP_PORT + " " + MULTICAST_ADDRESS);
                 outWriter.flush();
 
                 // Faccio gestire il client da un thread del pool
@@ -161,7 +160,7 @@ public class ServerMain {
     // Funzione di cofigurazione del server per mezzo di un file di configurazione
     private static void configServer(File config_file) {
         try {
-            Scanner scanner = new Scanner(CONFIG_FILE);
+            Scanner scanner = new Scanner(config_file);
             while (scanner.hasNextLine()) {
                 try {
                     String line = scanner.nextLine();
@@ -172,22 +171,19 @@ public class ServerMain {
                             SERVER_ADDRESS = split_line[1];
 
                         else if (line.startsWith("TCP PORT"))
-                            TCP_SERVER_PORT = Integer.parseInt(split_line[1]);
+                            TCP_PORT = Integer.parseInt(split_line[1]);
 
                         else if (line.startsWith("UDP PORT"))
-                            UDP_SERVER_PORT = Integer.parseInt(split_line[1]);
+                            UDP_PORT = Integer.parseInt(split_line[1]);
 
                         else if (line.startsWith("MULTICAST ADDRESS"))
                             MULTICAST_ADDRESS = split_line[1];
-
-                        else if (line.startsWith("MULTICAST PORT"))
-                            MULTICAST_PORT = Integer.parseInt(split_line[1]);
 
                         else if (line.startsWith("REGISTRY HOST"))
                             REGISTRY_HOST = split_line[1];
 
                         else if (line.startsWith("RMI PORT"))
-                            RMI_PORT = Integer.parseInt(split_line[1]);
+                            REG_PORT = Integer.parseInt(split_line[1]);
 
                         else if (line.startsWith("SOCKET TIMEOUT"))
                             SOCKET_TIMEOUT = Long.parseLong(split_line[1]);

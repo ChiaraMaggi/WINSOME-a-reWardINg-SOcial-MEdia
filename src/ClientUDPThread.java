@@ -1,13 +1,18 @@
+
+/**
+*	@file ClientUDPThread.java
+*	@author Chiara Maggi 578517
+*/
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.nio.charset.StandardCharsets;
 
-public class UdpClient implements Runnable {
+public class ClientUDPThread implements Runnable {
 
     private final MulticastSocket mcastSocket;
 
-    public UdpClient(MulticastSocket mcastSocket) {
+    public ClientUDPThread(MulticastSocket mcastSocket) {
         this.mcastSocket = mcastSocket;
     }
 

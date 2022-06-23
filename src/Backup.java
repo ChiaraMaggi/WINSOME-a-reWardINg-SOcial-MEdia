@@ -1,3 +1,8 @@
+
+/**
+*	@file Backup.java
+*	@author Chiara Maggi 578517
+*/
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

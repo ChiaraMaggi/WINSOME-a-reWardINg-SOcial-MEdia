@@ -1,3 +1,8 @@
+
+/**
+*	@file CLientMain.java
+*	@author Chiara Maggi 578517
+*/
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,12 +22,11 @@ import java.util.Scanner;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ClientMain {
-    private static File CONFIG_FILE;
     private static String SERVER_ADDRESS = "127.0.0.1";
     private static String REGISTRY_HOST = "localhost";
-    private static int TCP_SERVER_PORT = 9999;
-    private static int RMI_PORT = 7777;
-    private static int SOCKET_TIMEOUT = 180000;
+    private static int TCP_PORT = 9999;
+    private static int REG_PORT = 7777;
+    private static int SOCKET_TIMEOUT = 120000;
     // variabili per multicast, comunicate dal server
     private static int MULTICAST_PORT;
     private static String MULTICAST_ADDRESS;
@@ -40,7 +44,7 @@ public class ClientMain {
     private static ReentrantLock followersLock;
 
     public static void main(String[] args) {
-
+        File CONFIG_FILE;
         if (args.length == 0) {
             System.out.println("CLIENT: client stars with default configuration");
         } else {
@@ -48,9 +52,9 @@ public class ClientMain {
             configClient(CONFIG_FILE);
         }
         System.out.print("CLIENT VALUES: ");
-        System.out.println("\n   SERVER ADDRESS -> " + SERVER_ADDRESS + "\n   TCP PORT -> " + TCP_SERVER_PORT +
+        System.out.println("\n   SERVER ADDRESS -> " + SERVER_ADDRESS + "\n   TCP PORT -> " + TCP_PORT +
                 "\n   REGISTRY HOST -> " + REGISTRY_HOST
-                + "\n   REGISTRY PORT -> " + RMI_PORT + "\n   SOCKET TIMEOUT -> " +
+                + "\n   REGISTRY PORT -> " + REG_PORT + "\n   SOCKET TIMEOUT -> " +
                 SOCKET_TIMEOUT);
 
         // inizializzo lista followers tenuta localmente lato client
@@ -59,7 +63,7 @@ public class ClientMain {
 
         try {
             // configurazione tcp
-            Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), TCP_SERVER_PORT);
+            Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), TCP_PORT);
             // socket.setSoTimeout(SOCKET_TIMEOUT);
 
             // lettura e settaggio parametri multicast
@@ -78,13 +82,13 @@ public class ClientMain {
             mcastSocket.joinGroup(mcastAddress);
 
             // lancio il thread che sta in ascolto di notifiche di aggiornamento del wallet
-            UdpClient notifyReward = new UdpClient(mcastSocket);
+            ClientUDPThread notifyReward = new ClientUDPThread(mcastSocket);
             Thread notifyRewardThread = new Thread(notifyReward);
             notifyRewardThread.setDaemon(true);
             notifyRewardThread.start();
 
             // configurazione RMI: registrazione con metodo remoto
-            registry = LocateRegistry.getRegistry(RMI_PORT);
+            registry = LocateRegistry.getRegistry(REG_PORT);
             remote = (ServerRemoteInterface) registry.lookup(REGISTRY_HOST);
 
             // servizio di notifiche
@@ -112,19 +116,19 @@ public class ClientMain {
                     String line = scanner.nextLine();
                     if (!line.isEmpty() && !line.startsWith("#")) {
                         String[] split_line = line.split("=");
-                        if (line.startsWith("SERVER"))
+                        if (line.startsWith("SERVER ADDRESS"))
                             SERVER_ADDRESS = split_line[1];
 
-                        else if (line.startsWith("TCPPORT"))
-                            TCP_SERVER_PORT = Integer.parseInt(split_line[1]);
+                        else if (line.startsWith("TCP PORT"))
+                            TCP_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("REGHOST"))
+                        else if (line.startsWith("REG HOST"))
                             REGISTRY_HOST = split_line[1];
 
-                        else if (line.startsWith("REGPORT"))
-                            RMI_PORT = Integer.parseInt(split_line[1]);
+                        else if (line.startsWith("REG PORT"))
+                            REG_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("TIMEOUTSOCK"))
+                        else if (line.startsWith("TIMEOUT SOCKET"))
                             SOCKET_TIMEOUT = Integer.parseInt(split_line[1]);
 
                     }
@@ -138,7 +142,7 @@ public class ClientMain {
         }
     }
 
-    public static boolean requestsHandler(Socket socket, UdpClient notifyReward) throws IOException {
+    public static boolean requestsHandler(Socket socket, ClientUDPThread notifyReward) throws IOException {
         Scanner scanner = new Scanner(System.in);
         String[] request = null;
         String line = null;

@@ -1,3 +1,8 @@
+
+/**
+*	@file Reward.java
+*	@author Chiara Maggi 578517
+*/
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
