@@ -26,7 +26,7 @@ public class ClientMain {
     private static String REGISTRY_HOST = "localhost";
     private static int TCP_PORT = 9999;
     private static int REG_PORT = 7777;
-    private static int SOCKET_TIMEOUT = 120000;
+    private static long SOCKET_TIMEOUT = 300000;
     // variabili per multicast, comunicate dal server
     private static int MULTICAST_PORT;
     private static String MULTICAST_ADDRESS;
@@ -64,7 +64,7 @@ public class ClientMain {
         try {
             // configurazione tcp
             Socket socket = new Socket(InetAddress.getByName(SERVER_ADDRESS), TCP_PORT);
-            // socket.setSoTimeout(SOCKET_TIMEOUT);
+            socket.setSoTimeout((int) SOCKET_TIMEOUT);
 
             // lettura e settaggio parametri multicast
             DataInputStream inReader = new DataInputStream(socket.getInputStream());
@@ -101,9 +101,8 @@ public class ClientMain {
             requestsHandler(socket, notifyReward);
             socket.close();
             System.exit(0);
-
         } catch (IOException | NotBoundException e) {
-            System.out.println("ERROR: connection with server failed");
+            System.out.println("ERROR: connection with server interrupted");
             System.exit(-1);
         }
     }
@@ -129,7 +128,7 @@ public class ClientMain {
                             REG_PORT = Integer.parseInt(split_line[1]);
 
                         else if (line.startsWith("TIMEOUT SOCKET"))
-                            SOCKET_TIMEOUT = Integer.parseInt(split_line[1]);
+                            SOCKET_TIMEOUT = Long.parseLong(split_line[1]);
 
                     }
                 } catch (NumberFormatException e) {
@@ -201,6 +200,7 @@ public class ClientMain {
                         // client ufficialmente in uso da un utente
                         if (serverResponse.startsWith("SUCCESS")) {
                             someoneLogged = true;
+                            notifyReward.login();
                             username = request[1];
                             followers.clear();
                             followers.addAll(remote.backupFollowers(username));
@@ -225,8 +225,12 @@ public class ClientMain {
                         outWriter.writeUTF(line);
                         outWriter.flush();
 
-                        System.out.println("< SUCCESS: logout teminated with success");
+                        // lettura risposta e stampa esito
+                        serverResponse = inReader.readUTF();
+                        System.out.println("< " + serverResponse);
+
                         someoneLogged = false;
+                        notifyReward.logout();
                         remote.unregisterForCallback(stub, username);
                         username = null;
                     } else {
@@ -269,7 +273,7 @@ public class ClientMain {
 
                     for (int i = 0; i < dim; i++) {
                         serverResponse = inReader.readUTF();
-                        System.out.println("<     " + serverResponse);
+                        System.out.println("< " + serverResponse);
                     }
 
                     break;
@@ -580,6 +584,8 @@ public class ClientMain {
                     if (someoneLogged) {
                         outWriter.writeUTF(line);
                         outWriter.flush();
+                        inReader.close();
+                        outWriter.close();
                     }
                     break;
 

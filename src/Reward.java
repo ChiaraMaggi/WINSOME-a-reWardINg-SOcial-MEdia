@@ -71,7 +71,7 @@ public class Reward extends Thread {
                 for (String c : curators) {
                     winsome.getUser(c).getWallet()
                             .addTransaction(
-                                    "+" + curatorsReward + ",   curator of post (id=" + post.getId() + "),   date: "
+                                    "+" + curatorsReward + " - curator of post (id = " + post.getId() + ") - date: "
                                             + Calendar.getInstance().getTime());
                     winsome.getUser(c).getWallet().incrementTotal(curatorsReward);
                 }
@@ -79,7 +79,7 @@ public class Reward extends Thread {
 
             if (authorReward > 0) {
                 winsome.getUser(author).getWallet()
-                        .addTransaction("+" + authorReward + ",   author of post (id=" + post.getId() + "),   date: "
+                        .addTransaction("+" + authorReward + " - author of post (id = " + post.getId() + ") - date: "
                                 + Calendar.getInstance().getTime());
                 winsome.getUser(author).getWallet().incrementTotal(authorReward);
             }

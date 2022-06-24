@@ -331,15 +331,18 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public String listUsers(String username) {
         User user = users.get(username);
         String listUsers = "";
+        boolean sameTags = false;
         LinkedList<String> tags = user.getTags();
         for (String s : users.keySet()) {
             if (!s.equals(username)) {// non può seguire se stesso
                 User u = users.get(s);
                 for (String tag : tags) {
                     if (u.getTags().contains(tag)) {
-                        listUsers = listUsers.concat(s + "      | " + u.printTags(u.getTags()) + "\n");
+                        sameTags = true;
                     }
                 }
+                if (sameTags)
+                    listUsers = listUsers.concat(s + "      | " + u.printTags(u.getTags()) + "\n");
             }
         }
         return listUsers;

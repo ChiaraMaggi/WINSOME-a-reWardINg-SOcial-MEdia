@@ -1,0 +1,3 @@
+Gestione chiusura connessione con timeout lato server -> ok
+usare printf per incolonnare bene -> 
+notifica di ricompensa solo con login -> ok

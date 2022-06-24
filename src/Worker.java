@@ -1,6 +1,6 @@
 
 /**
-*	@file ServerRunnable.java
+*	@file Worker.java
 *	@author Chiara Maggi 578517
 */
 import java.io.BufferedOutputStream;
@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
-public class ServerRunnable implements Runnable {
+public class Worker implements Runnable {
     Socket clientSocket;
     SocialNetwork winsome;
     String clientUsername;
 
-    public ServerRunnable(Socket socket, SocialNetwork winsome) {
+    public Worker(Socket socket, SocialNetwork winsome) {
         this.clientSocket = socket;
         this.winsome = winsome;
     }
@@ -31,7 +31,14 @@ public class ServerRunnable implements Runnable {
             }
         } catch (IOException e) {
             try {
+                winsome.getUser(clientUsername).logout();
                 clientSocket.close();
+            } catch (NullPointerException ex2) {
+                try {
+                    clientSocket.close();
+                } catch (IOException e1) {
+                    // ignore
+                }
             } catch (IOException ex) {
                 System.err.println("ERROR: problems in closing clientSocket");
             }
@@ -65,6 +72,9 @@ public class ServerRunnable implements Runnable {
         if (param[0].equals("logout")) {
             winsome.logout(clientUsername);
             clientUsername = null;
+            response = "SUCCESS: logout teminated with success";
+            outWriter.writeUTF(response);
+            outWriter.flush();
         }
 
         if (param[0].equals("show")) {
@@ -188,7 +198,7 @@ public class ServerRunnable implements Runnable {
             Long id = Long.parseLong(param[1]);
             int vote = Integer.parseInt(param[2]);
             if (winsome.ratePost(id, vote, clientUsername)) {
-                response = "SUCCESS: post (id = " + id + ") voted";
+                response = "SUCCESS: post (id = " + id + ") rated";
             } else {
                 response = "ERROR: impossible to vote this post. Maybe you've already vote or you are the author or this post isn't in your feed";
 

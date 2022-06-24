@@ -77,7 +77,7 @@ public class Backup extends Thread {
         writer.name("title").value(post.getTitle());
         writer.name("content").value(post.getContent());
         writer.name("numIterations").value(post.getNumIter());
-        writer.name("numComment").value(post.getNumComments());
+        writer.name("numComments").value(post.getNumComments());
         try {
             post.votesLock();
             writer.name("votes").value(gson.toJson(post.getVotes(), typeOfLikes));

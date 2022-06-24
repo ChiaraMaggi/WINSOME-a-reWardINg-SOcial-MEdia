@@ -39,8 +39,8 @@ public class ServerMain {
     private static int TCP_PORT = 9999;
     private static int UDP_PORT = 33333;
     private static int REG_PORT = 7777;
-    private static long SOCKET_TIMEOUT = 120000;
-    private static long REWARD_TIMEOUT = 60000;
+    private static long SOCKET_TIMEOUT = 3000;
+    private static long REWARD_TIMEOUT = 15000;
     private static long BACKUP_TIMEOUT = 60000;
     private static double AUTHOR_PERCENTAGE = 0.8;
 
@@ -111,7 +111,7 @@ public class ServerMain {
         DatagramSocket socketUDP = null;
         InetAddress multicastAddress = null;
         try {
-            // creazione socket pre multicast
+            // creazione socket per multicast
             multicastAddress = InetAddress.getByName(MULTICAST_ADDRESS);
             socketUDP = new DatagramSocket();
         } catch (IOException e) {
@@ -144,13 +144,13 @@ public class ServerMain {
                 Socket socket = listener.accept();
                 socket.setSoTimeout((int) SOCKET_TIMEOUT);
 
-                // invio dati per configurazione multicast
+                // Invio dati per configurazione multicast
                 DataOutputStream outWriter = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                 outWriter.writeUTF(UDP_PORT + " " + MULTICAST_ADDRESS);
                 outWriter.flush();
 
                 // Faccio gestire il client da un thread del pool
-                threadPool.execute(new ServerRunnable(socket, winsome));
+                threadPool.execute(new Worker(socket, winsome));
             } catch (IOException e) {
                 continue;
             }
@@ -272,7 +272,7 @@ public class ServerMain {
                     title = reader.nextString();
                 else if (next.equals("content"))
                     content = reader.nextString();
-                else if (next.equals("numIterazioni"))
+                else if (next.equals("numIterations"))
                     numIter = reader.nextInt();
                 else if (next.equals("numComments"))
                     numComments = reader.nextInt();
@@ -280,7 +280,7 @@ public class ServerMain {
                     likes = gson.fromJson(reader.nextString(), typeOfLikes);
                 else if (next.equals("comments"))
                     comments = gson.fromJson(reader.nextString(), typeOfComments);
-                else if (next.equals("lastTimereward"))
+                else if (next.equals("lastTimeReward"))
                     lastTimeReward = reader.nextLong();
                 else
                     reader.skipValue();

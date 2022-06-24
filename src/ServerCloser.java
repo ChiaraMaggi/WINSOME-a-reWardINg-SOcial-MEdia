@@ -27,12 +27,12 @@ public class ServerCloser extends Thread {
     }
 
     public void run() {
-        Scanner scan = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         String line = "";
         while ("close".compareTo(line) != 0 && "closeNow".compareTo(line) != 0) {
             System.out.println("SERVER: to terminate the server type 'close' or 'closeNow'");
             System.out.print("> ");
-            line = scan.nextLine();
+            line = scanner.nextLine();
         }
         System.out.println("SERVER: closing server...");
         try {
@@ -52,7 +52,7 @@ public class ServerCloser extends Thread {
         } else {
             try {
                 pool.shutdown();
-                pool.awaitTermination(60, TimeUnit.SECONDS);
+                pool.awaitTermination(5, TimeUnit.MINUTES);
             } catch (InterruptedException e) {
             }
         }
@@ -66,7 +66,7 @@ public class ServerCloser extends Thread {
             System.out.println("ERROR: problem in doing the backup last time");
             System.exit(-1);
         }
-        scan.close();
+        scanner.close();
     }
 
 }
