@@ -249,8 +249,8 @@ public class ClientMain {
                         break;
                     }
 
-                    if (request[1].equals("followers")) {
-                        if (someoneLogged) {
+                    if (someoneLogged) {
+                        if (request[1].equals("followers")) {
                             try {
                                 followersLock.lock();
                                 System.out.println("< " + followers.size() + " followers:");
@@ -260,24 +260,24 @@ public class ClientMain {
                             } finally {
                                 followersLock.unlock();
                             }
-                        } else {
-                            System.out.println(LOGIN_ERROR_MSG);
+                            break;
                         }
-                        break;
-                    }
 
-                    // invio richiesta al server
-                    outWriter.writeUTF(line);
-                    outWriter.flush();
+                        // invio richiesta al server
+                        outWriter.writeUTF(line);
+                        outWriter.flush();
 
-                    System.out.println("< User     | Tags");
-                    System.out.println("<------------------------------------------------");
-                    serverResponse = inReader.readUTF();
-                    int dim = Integer.parseInt(serverResponse);
-
-                    for (int i = 0; i < dim; i++) {
+                        System.out.println(String.format("< %-15s| ", "User") + "Tags");
+                        System.out.println("<------------------------------------------------------");
                         serverResponse = inReader.readUTF();
-                        System.out.println("< " + serverResponse);
+                        int dim = Integer.parseInt(serverResponse);
+
+                        for (int i = 0; i < dim; i++) {
+                            serverResponse = inReader.readUTF();
+                            System.out.println("< " + serverResponse);
+                        }
+                    } else {
+                        System.out.println(LOGIN_ERROR_MSG);
                     }
 
                     break;
@@ -319,8 +319,9 @@ public class ClientMain {
                         outWriter.flush();
 
                         // lettura risposta e stampa esito
-                        System.out.println("< Id    | Author    | Title     ");
-                        System.out.println("< --------------------------------------------");
+                        System.out.println(
+                                String.format("< %-10s| ", "Id") + String.format("%-15s| ", "Author") + "Title");
+                        System.out.println("< ----------------------------------------------------------");
                         serverResponse = inReader.readUTF();
                         int dim2 = Integer.parseInt(serverResponse);
 
@@ -420,8 +421,9 @@ public class ClientMain {
                         if (request[1].equals("feed")) {
                             serverResponse = inReader.readUTF();
                             int dim3 = Integer.parseInt(serverResponse);
-                            System.out.println("< Id    | Author    | Title     ");
-                            System.out.println("< ---------------------------------------------");
+                            System.out.println(
+                                    String.format("< %-10s| ", "Id") + String.format("%-15s| ", "Author") + "Title");
+                            System.out.println("< ----------------------------------------------------------");
                             for (int i = 0; i < dim3; i++) {
                                 serverResponse = inReader.readUTF();
                                 System.out.println("< " + serverResponse);
