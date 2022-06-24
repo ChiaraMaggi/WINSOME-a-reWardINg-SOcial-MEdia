@@ -31,6 +31,7 @@ public class Worker implements Runnable {
             }
         } catch (IOException e) {
             try {
+                // server chiude la connessione col client perchè non arrivano nuove richieste
                 winsome.getUser(clientUsername).logout();
                 clientSocket.close();
             } catch (NullPointerException ex2) {

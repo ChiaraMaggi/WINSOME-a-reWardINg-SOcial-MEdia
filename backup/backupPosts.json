@@ -4,43 +4,76 @@
             "author": "chiara",
             "title": "\"ciao\"",
             "content": "\"ciao a tutti\"",
-            "numIterations": 179,
+            "numIterations": 242,
             "numComments": 2,
             "votes": "[\n  {\n    \"author\": \"fede\",\n    \"vote\": true,\n    \"timestamp\": 698273319668500\n  }\n]",
             "comments": "[\n  {\n    \"author\": \"andrea\",\n    \"comment\": \"\\\"ciao chiara\\\"\",\n    \"timestamp\": 698112170450300\n  },\n  {\n    \"author\": \"fede\",\n    \"comment\": \"\\\"ciao chiara!\\\"\",\n    \"timestamp\": 698267813051400\n  }\n]",
-            "lastTimeReward": 770037032768400
+            "lastTimeReward": 781970499661200
       },
       {
             "id": 2,
             "author": "chiara",
             "title": "\"inter\"",
             "content": "\"forza inter\"",
-            "numIterations": 179,
+            "numIterations": 242,
             "numComments": 0,
             "votes": "[\n  {\n    \"author\": \"andrea\",\n    \"vote\": true,\n    \"timestamp\": 698116368796400\n  }\n]",
             "comments": "[]",
-            "lastTimeReward": 770037032805900
+            "lastTimeReward": 781970499716000
       },
       {
             "id": 3,
             "author": "chiara",
             "title": "\"nonon\"",
             "content": "\"mpompo,m\"",
-            "numIterations": 168,
+            "numIterations": 231,
             "numComments": 1,
             "votes": "[]",
             "comments": "[\n  {\n    \"author\": \"andrea\",\n    \"comment\": \"\\\"fkmerfmrfo\\\"\",\n    \"timestamp\": 699992970585500\n  }\n]",
-            "lastTimeReward": 770037032832600
+            "lastTimeReward": 781970499756000
       },
       {
             "id": 4,
             "author": "chiara",
             "title": "\"ninijnij\"",
             "content": "\"momom\"",
-            "numIterations": 9,
+            "numIterations": 72,
             "numComments": 0,
             "votes": "[]",
             "comments": "[]",
-            "lastTimeReward": 770037032854600
+            "lastTimeReward": 781970499775600
+      },
+      {
+            "id": 5,
+            "author": "fede",
+            "title": "\"jnoommp\"",
+            "content": "\"läp,äpä,ä.ä\"",
+            "numIterations": 31,
+            "numComments": 0,
+            "votes": "[]",
+            "comments": "[]",
+            "lastTimeReward": 781970499790900
+      },
+      {
+            "id": 6,
+            "author": "fede",
+            "title": "\"knomomp\"",
+            "content": "\",p,p,\"",
+            "numIterations": 30,
+            "numComments": 0,
+            "votes": "[]",
+            "comments": "[]",
+            "lastTimeReward": 781970499805400
+      },
+      {
+            "id": 7,
+            "author": "chiara",
+            "title": "\"oknoonon\"",
+            "content": "\"mopmpom\"",
+            "numIterations": 30,
+            "numComments": 0,
+            "votes": "[]",
+            "comments": "[]",
+            "lastTimeReward": 781970499823600
       }
 ]

@@ -39,8 +39,8 @@ public class ServerMain {
     private static int TCP_PORT = 9999;
     private static int UDP_PORT = 33333;
     private static int REG_PORT = 7777;
-    private static long SOCKET_TIMEOUT = 3000;
-    private static long REWARD_TIMEOUT = 15000;
+    private static long SOCKET_TIMEOUT = 1800000;
+    private static long REWARD_TIMEOUT = 120000;
     private static long BACKUP_TIMEOUT = 60000;
     private static double AUTHOR_PERCENTAGE = 0.8;
 
@@ -63,8 +63,8 @@ public class ServerMain {
                 + "\n   AUTHROR PERCENTAGE -> " + AUTHOR_PERCENTAGE);
 
         // dichiarazione e creazione dei file per il backup
-        File backupUsers = new File("..//backupServer//backupUsers.json");
-        File backupPosts = new File("..//backupServer//backupPosts.json");
+        File backupUsers = new File("..//backup//backupUsers.json");
+        File backupPosts = new File("..//backup//backupPosts.json");
         try {
             backupUsers.createNewFile();
         } catch (IOException e1) {

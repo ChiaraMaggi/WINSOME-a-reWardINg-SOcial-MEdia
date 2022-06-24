@@ -250,14 +250,18 @@ public class ClientMain {
                     }
 
                     if (request[1].equals("followers")) {
-                        try {
-                            followersLock.lock();
-                            System.out.println("< " + followers.size() + " followers:");
-                            for (String s : followers) {
-                                System.out.println("<   " + s);
+                        if (someoneLogged) {
+                            try {
+                                followersLock.lock();
+                                System.out.println("< " + followers.size() + " followers:");
+                                for (String s : followers) {
+                                    System.out.println("<   " + s);
+                                }
+                            } finally {
+                                followersLock.unlock();
                             }
-                        } finally {
-                            followersLock.unlock();
+                        } else {
+                            System.out.println(LOGIN_ERROR_MSG);
                         }
                         break;
                     }
@@ -266,8 +270,8 @@ public class ClientMain {
                     outWriter.writeUTF(line);
                     outWriter.flush();
 
-                    System.out.println("< User      | Tags");
-                    System.out.println("<------------------------------------------------------------------------");
+                    System.out.println("< User     | Tags");
+                    System.out.println("<------------------------------------------------");
                     serverResponse = inReader.readUTF();
                     int dim = Integer.parseInt(serverResponse);
 
@@ -315,8 +319,8 @@ public class ClientMain {
                         outWriter.flush();
 
                         // lettura risposta e stampa esito
-                        System.out.println("< Id      | Author        | Title     ");
-                        System.out.println("< -----------------------------------------------------");
+                        System.out.println("< Id    | Author    | Title     ");
+                        System.out.println("< --------------------------------------------");
                         serverResponse = inReader.readUTF();
                         int dim2 = Integer.parseInt(serverResponse);
 
@@ -416,7 +420,8 @@ public class ClientMain {
                         if (request[1].equals("feed")) {
                             serverResponse = inReader.readUTF();
                             int dim3 = Integer.parseInt(serverResponse);
-
+                            System.out.println("< Id    | Author    | Title     ");
+                            System.out.println("< ---------------------------------------------");
                             for (int i = 0; i < dim3; i++) {
                                 serverResponse = inReader.readUTF();
                                 System.out.println("< " + serverResponse);

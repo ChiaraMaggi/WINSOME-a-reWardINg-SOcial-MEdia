@@ -60,7 +60,7 @@ public class ServerCloser extends Thread {
         try {
             backup.savePosts();
             backup.saveUsers();
-            System.out.println("SERVER: server closed");
+            System.out.print("SERVER: server closed");
             System.exit(0);
         } catch (IOException e) {
             System.out.println("ERROR: problem in doing the backup last time");

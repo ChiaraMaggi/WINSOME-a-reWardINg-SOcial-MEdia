@@ -177,7 +177,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String blogInString = "";
         for (Long key : blog.keySet()) {
             blogInString = blogInString
-                    .concat(key + "       | " + blog.get(key).getAuthor() + "        | "
+                    .concat(key + "    | " + blog.get(key).getAuthor() + "    | "
                             + blog.get(key).getTitle()
                             + "\n");
         }
@@ -190,7 +190,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String feedInString = "";
         for (Long key : feed.keySet()) {
             feedInString = feedInString
-                    .concat(key + "       | " + feed.get(key).getAuthor() + "        | "
+                    .concat(key + "    | " + feed.get(key).getAuthor() + "    | "
                             + feed.get(key).getTitle()
                             + "\n");
         }
@@ -342,7 +342,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                     }
                 }
                 if (sameTags)
-                    listUsers = listUsers.concat(s + "      | " + u.printTags(u.getTags()) + "\n");
+                    listUsers = listUsers.concat(s + "    | " + u.printTags(u.getTags()) + "\n");
             }
         }
         return listUsers;
@@ -353,7 +353,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         String listFollowing = "";
         for (String s : user.getFollowed()) {
             User u = users.get(s);
-            listFollowing = listFollowing.concat(s + "      | " + u.printTags(u.getTags()) + "\n");
+            listFollowing = listFollowing.concat(s + "    | " + u.printTags(u.getTags()) + "\n");
         }
         return listFollowing;
     }

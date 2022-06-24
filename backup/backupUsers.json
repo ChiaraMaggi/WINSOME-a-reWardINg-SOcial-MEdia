@@ -5,10 +5,10 @@
             "seed": "*:?;E??\u001a,??{z\u0001\u0001??r??A?\u0007????\u00003??",
             "tags": "[\n  \"calcio\",\n  \"giornalismo\",\n  \"mare\",\n  \"pallavolo\"\n]",
             "followers": "[\n  \"chiara\",\n  \"fede\"\n]",
-            "followed": "[\n  \"chiara\"\n]",
+            "followed": "[\n  \"chiara\",\n  \"fede\"\n]",
             "listVotes": "[\n  2\n]",
             "blog": "[\n  2\n]",
-            "feed": "[\n  1,\n  2,\n  3,\n  4\n]",
+            "feed": "[\n  1,\n  2,\n  3,\n  4,\n  5,\n  6,\n  7\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.06931471805599451,   curator of post (id\\u003d1),   date: Thu Jun 23 16:46:00 CEST 2022\",\n    \"+0.06931471805599451,   curator of post (id\\u003d2),   date: Thu Jun 23 16:46:00 CEST 2022\",\n    \"+0.06931471805599451 - curator of post (id \\u003d 3) - date: Thu Jun 23 17:17:18 CEST 2022\"\n  ],\n  \"total\": 0.20794415416798354\n}"
       },
       {
@@ -19,8 +19,8 @@
             "followers": "[\n  \"andrea\",\n  \"fede\"\n]",
             "followed": "[\n  \"fede\",\n  \"andrea\"\n]",
             "listVotes": "[]",
-            "blog": "[\n  1,\n  2,\n  3,\n  4\n]",
-            "feed": "[\n  2\n]",
+            "blog": "[\n  1,\n  2,\n  3,\n  4,\n  7\n]",
+            "feed": "[\n  2,\n  5,\n  6\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.2772588722239781,   author of post (id\\u003d1),   date: Thu Jun 23 16:46:00 CEST 2022\",\n    \"+0.2772588722239781,   author of post (id\\u003d2),   date: Thu Jun 23 16:46:00 CEST 2022\",\n    \"+0.13862943611198905,   author of post (id\\u003d1),   date: Thu Jun 23 16:48:00 CEST 2022\",\n    \"+0.11090354888959125,   author of post (id\\u003d1),   date: Thu Jun 23 16:49:00 CEST 2022\",\n    \"+0.2772588722239781 - author of post (id \\u003d 3) - date: Thu Jun 23 17:17:18 CEST 2022\"\n  ],\n  \"total\": 1.0813096016735146\n}"
       },
       {
@@ -40,11 +40,11 @@
             "hashedPassword": "053f6ecda9bca674d1ffeed4307b14d84fff284bff9358846cfddacae4663b55",
             "seed": "a?9kM.??.??-?\u001a?????\b??r?????\u0018k",
             "tags": "[\n  \"pallavolo\",\n  \"mare\",\n  \"estate\",\n  \"tech\"\n]",
-            "followers": "[\n  \"chiara\"\n]",
+            "followers": "[\n  \"chiara\",\n  \"andrea\"\n]",
             "followed": "[\n  \"andrea\",\n  \"chiara\"\n]",
             "listVotes": "[\n  1\n]",
-            "blog": "[\n  2\n]",
-            "feed": "[\n  1,\n  2,\n  3,\n  4\n]",
+            "blog": "[\n  2,\n  5,\n  6\n]",
+            "feed": "[\n  1,\n  2,\n  3,\n  4,\n  7\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.034657359027997256,   curator of post (id\\u003d1),   date: Thu Jun 23 16:48:00 CEST 2022\",\n    \"+0.027725887222397803,   curator of post (id\\u003d1),   date: Thu Jun 23 16:49:00 CEST 2022\"\n  ],\n  \"total\": 0.062383246250395055\n}"
       }
 ]
