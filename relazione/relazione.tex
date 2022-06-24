@@ -178,5 +178,30 @@ Eseguire il Server utilizzando Server.jar:
     \item Digitare il seguente comando e premere invio:\\
     \texttt{java -jar Server.jar ..\textbackslash config \textbackslash ConfigServer.txt}
 \end{enumerate}
+Creare file Server.jar:
+\begin{enumerate}
+    \item Aprire terminale sulla cartella bin
+    \item Digitare il seguente comando e premere invio:\\
+    \texttt{jar cmf ManifestServer.mf ..\textbackslash jar\textbackslash Server.jar Backup*.class Comment.class Vote.class Hash.class ServerMain*.class Post.class ServerRemoteInterface.class 
+    Reward.class User.class Wallet.class SocialNetwork.class Worker.class NotifyClientInterface.class ServerCloser.class}
+\end{enumerate}
+Creare file Client.jar:
+\begin{enumerate}
+    \item Aprire terminale sulla cartella bin
+    \item Digitare il seguente comando e premere invio:\\
+    \texttt{jar cmf ManifestClient.mf ..\textbackslash jar\textbackslash Client.jar ClientMain.class NotifyClient.class NotifyClientInterface.class ClientUDPThread.class ServerRemoteInterface.class}
+\end{enumerate}
+Eseguire filse Server.jar:
+\begin{enumerate}
+    \item Aprire terminale sulla cartella jar
+    \item Digitare il seguente comando e premere invio:\\
+    \texttt{java -jar Server.jar}
+\end{enumerate}
+Eseguire filse Client.jar:
+\begin{enumerate}
+    \item Aprire terminale sulla cartella jar
+    \item Digitare il seguente comando e premere invio:\\
+    \texttt{java -jar Client.jar}
+\end{enumerate}
 
 \end{document}

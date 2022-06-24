@@ -198,13 +198,13 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
     public boolean followUser(String follower, String usernameToFollow) {
         User userToFollow = users.get(usernameToFollow);
         User user = users.get(follower);
+        boolean b = true;
         try {
             userToFollow.followersLock();
             // controllo se l'utente segue già userFollowed
-            if (userToFollow.getFollowers().contains(follower)) {
-                userToFollow.followersUnlock();
-                return false;
-            } else {
+            if (userToFollow.getFollowers().contains(follower))
+                b = false;
+            else {
                 user.addFollowed(usernameToFollow);
                 userToFollow.addFollowers(follower);
 
@@ -219,12 +219,13 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         } finally {
             userToFollow.followersUnlock();
         }
-        return true;
+        return b;
     }
 
     public boolean unfollowUser(String unfollower, String usernameToUnfollow) {
         User userToUnfollow = users.get(usernameToUnfollow);
         User user = users.get(unfollower);
+        boolean b = false;
         try {
             userToUnfollow.followersLock();
             // controllo se l'utente segue userToUnfollow
@@ -242,13 +243,12 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 }
                 // notifica all'utente interessato
                 doCallbackUnfollow(usernameToUnfollow, unfollower);
-                userToUnfollow.followersUnlock();
-                return true;
+                b = true;
             }
         } finally {
             userToUnfollow.followersUnlock();
         }
-        return false;
+        return b;
 
     }
 
