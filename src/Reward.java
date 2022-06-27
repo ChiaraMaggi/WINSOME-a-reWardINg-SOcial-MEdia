@@ -21,7 +21,7 @@ public class Reward extends Thread {
     private final int port;
     private final SocialNetwork winsome;
     private final long timeoutReward;
-    private double authorPercentage;
+    private final double authorPercentage;
 
     public Reward(DatagramSocket socketUDP, InetAddress address, int port, SocialNetwork winsome,
             long timeoutReward,

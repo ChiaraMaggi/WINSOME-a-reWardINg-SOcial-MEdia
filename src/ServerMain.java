@@ -40,9 +40,9 @@ public class ServerMain {
     private static int UDP_PORT = 33333;
     private static int REG_PORT = 7777;
     private static long SOCKET_TIMEOUT = 1800000;
-    private static long REWARD_TIMEOUT = 120000;
-    private static long BACKUP_TIMEOUT = 60000;
-    private static double AUTHOR_PERCENTAGE = 0.8;
+    private static long REWARD_TIMEOUT = 300000;
+    private static long BACKUP_TIMEOUT = 120000;
+    private static double AUTHOR_PERCENTAGE = 0.75;
 
     public static void main(String[] args) {
         File CONFIG_FILE;

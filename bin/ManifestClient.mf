@@ -1,3 +1,0 @@
-Manifest-Version: 1.0
-Main-Class: ClientMain
-Created-By: 15 (Oracle Corpotation)

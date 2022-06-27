@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ClientUDPThread implements Runnable {
 
-    private MulticastSocket mcastSocket;
+    private final MulticastSocket mcastSocket;
     private boolean someonelogged = false;
 
     public ClientUDPThread(MulticastSocket mcastSocket) {

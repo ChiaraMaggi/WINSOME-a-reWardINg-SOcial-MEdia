@@ -11,9 +11,9 @@ import java.net.Socket;
 import java.util.List;
 
 public class Worker implements Runnable {
-    Socket clientSocket;
-    SocialNetwork winsome;
-    String clientUsername;
+    private final Socket clientSocket;
+    private final SocialNetwork winsome;
+    private String clientUsername;
 
     public Worker(Socket socket, SocialNetwork winsome) {
         this.clientSocket = socket;

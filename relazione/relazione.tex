@@ -133,7 +133,7 @@ del socil neù dal file JSON.
 \subsection{Post}
 La classe Post è utilizzata per definire ogni post creato all'interno del social network. Le principali strutture dati utilizzate sono 2 LinkedList una contenente 
 i voti relativi al post e l'altra i commenti (classe Vote e Comment più avanti). Per gestire la sincronizzazione di quest'ultime vi sono 2 ReentrantLock (votesLock e commentsLock) che dovranno essere 
-acquisite (votesLock(), commentsUnlock()) prima di apportare una qualsiasi modifica e rilasciare alla fine (votesUnlock(), commentsUnlock()). Anche questa classe 
+acquisite (votesLock(), commentsLock()) prima di apportare una qualsiasi modifica e rilasciare alla fine (votesUnlock(), commentsUnlock()). Anche questa classe 
 possiede numerosi metodi di utilità utilizati dal social network per apportare modifiche ai vari post esistenti nel sistema. 
 \subsection{Comment}
 La classe Comment è una semplice classe di utilità per tenere traccia delle informazioni relative ad un commento ovvero autore, contenuto e data creazione.
@@ -189,7 +189,7 @@ Creare file Client.jar:
 \begin{enumerate}
     \item Aprire terminale sulla cartella bin
     \item Digitare il seguente comando e premere invio:\\
-    \texttt{jar cmf ManifestClient.mf ..\textbackslash jar\textbackslash Client.jar ClientMain.class NotifyClient.class NotifyClientInterface.class ClientUDPThread.class ServerRemoteInterface.class}
+    \texttt{jar cmf ManifestClient.mf ..\textbackslash jar\textbackslash Client.jar ClientMain.class NotifyClient.class ClientMain.class NotifyClient.classzNotifyClientInterface.class ClientUDPThread.class ServerRemoteInterface.class}
 \end{enumerate}
 Eseguire filse Server.jar:
 \begin{enumerate}

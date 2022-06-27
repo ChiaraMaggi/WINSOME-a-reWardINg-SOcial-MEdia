@@ -34,7 +34,7 @@ public class ClientMain {
     private static boolean someoneLogged = false;
     // variabile che tiene traccia dell'utenete loggato in quel momento sul client
     private static String username;
-    private static String LOGIN_ERROR_MSG = "< ERROR: nobody is logged in";
+    private final static String LOGIN_ERROR_MSG = "< ERROR: nobody is logged in";
     private static ServerRemoteInterface remote;
     private static Registry registry;
     private static NotifyClientInterface obj;

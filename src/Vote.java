@@ -3,9 +3,9 @@
  * @author Chiara Maggi 578517
  */
 public class Vote {
-    private String author;
-    private boolean vote;
-    private long timestamp;
+    private final String author;
+    private final boolean vote;
+    private final long timestamp;
 
     public Vote(String author, boolean vote, long timestamp) {
         this.author = author;

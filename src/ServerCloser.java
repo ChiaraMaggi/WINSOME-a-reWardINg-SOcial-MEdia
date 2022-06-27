@@ -11,11 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ServerCloser extends Thread {
-    private ServerSocket socketTCP;
-    private DatagramSocket socketUDP;
-    private ExecutorService pool;
-    private Reward reward;
-    private Backup backup;
+    private final ServerSocket socketTCP;
+    private final DatagramSocket socketUDP;
+    private final ExecutorService pool;
+    private final Reward reward;
+    private final Backup backup;
 
     public ServerCloser(ServerSocket socketTCP, DatagramSocket socketUDP, ExecutorService pool, Reward reward,
             Backup backup) {

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.10.16)  24 JUN 2022 18:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.10.16)  27 JUN 2022 11:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -729,8 +729,8 @@ Overfull \hbox (47.59502pt too wide) in paragraph at lines 191--193
  []
 
 
-Overfull \hbox (36.27827pt too wide) in paragraph at lines 191--193
-\T1/cmtt/m/n/10.95 NotifyClientInterface.class ClientUDPThread.class ServerRemoteInterface.class 
+Overfull \hbox (81.54524pt too wide) in paragraph at lines 191--193
+\T1/cmtt/m/n/10.95 ClientMain.class NotifyClient.classzNotifyClientInterface.class ClientUDPThread.class
  []
 
 [7] (./relazione.aux)
@@ -746,7 +746,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  60i,6n,66p,395b,406s stack positions out of 5000i,500n,10000p,200000b,80000s
 {d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}{d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}<d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb><d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb><d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb><d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb><d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb><d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on relazione.pdf (7 pages, 154678 bytes).
+Output written on relazione.pdf (7 pages, 154813 bytes).
 PDF statistics:
  191 PDF objects out of 1000 (max. 8388607)
  167 compressed objects within 2 object streams
