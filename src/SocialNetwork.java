@@ -235,11 +235,14 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
                 // rimozione di tutti i post dell'utente che è stato smesso di seguire
                 // almeno che il post non sia stato ricondiviso da un altro utente seguito
                 for (Long id : userToUnfollow.getBlog().keySet()) {
+                    boolean keep = false;
                     for (String u : user.getFollowed()) {
                         User followed = users.get(u);
-                        if (!followed.getBlog().containsKey(id))
-                            user.removePostFromFeed(id);
+                        if (followed.getBlog().containsKey(id))
+                            keep = true;
                     }
+                    if (!keep)
+                        user.removePostFromFeed(id);
                 }
                 // notifica all'utente interessato
                 doCallbackUnfollow(usernameToUnfollow, unfollower);

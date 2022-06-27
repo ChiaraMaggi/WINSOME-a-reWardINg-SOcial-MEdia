@@ -1,0 +1,74 @@
+[
+      {
+            "username": "Fede",
+            "hashedPassword": "aeeba091b16b33217265879789962137666305d6ebc7e717e6581935c463f1a8",
+            "seed": "\u000bL?*?\f????s??k?v?Sv\u0013??]B?yS??\u000fn",
+            "tags": "[\n  \"pallavolo\",\n  \"amore\",\n  \"estate\",\n  \"discoteca\",\n  \"informatica\"\n]",
+            "followers": "[\n  \"Chiara\",\n  \"Anna\",\n  \"Andrea\"\n]",
+            "followed": "[\n  \"Andrea\",\n  \"Marghe\",\n  \"Chiara\"\n]",
+            "listVotes": "[]",
+            "blog": "[\n  7\n]",
+            "feed": "[\n  1,\n  2,\n  3\n]",
+            "wallet": "{\n  \"transactions\": [\n    \"+0.057762265046662105 - curator of post (id \\u003d 2) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.08664339756999316 - curator of post (id \\u003d 3) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.03433163402087843 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:41:10 CEST 2022\",\n    \"+0.5198603854199589 - author of post (id \\u003d 7) - date: Mon Jun 27 16:41:10 CEST 2022\"\n  ],\n  \"total\": 0.6985976820574926\n}"
+      },
+      {
+            "username": "Chiara",
+            "hashedPassword": "c7ec1c745d9ba8a24b6000375e481251a33c1304781007178aeaedcf84cc3ba4",
+            "seed": "@\u000e\rms????r??????hp?????????????",
+            "tags": "[\n  \"pallavolo\",\n  \"calcio\",\n  \"sport\",\n  \"informatica\",\n  \"arte\"\n]",
+            "followers": "[\n  \"Marghe\",\n  \"Andrea\",\n  \"Lorena\",\n  \"Fede\"\n]",
+            "followed": "[\n  \"Fede\",\n  \"Andrea\",\n  \"Marghe\",\n  \"Lorena\",\n  \"Anna\"\n]",
+            "listVotes": "[]",
+            "blog": "[\n  1,\n  2\n]",
+            "feed": "[\n  1,\n  3,\n  4,\n  5,\n  6,\n  7\n]",
+            "wallet": "{\n  \"transactions\": [\n    \"+0.5198603854199589 - author of post (id \\u003d 1) - date: Mon Jun 27 16:31:10 CEST 2022\",\n    \"+0.25993019270997947 - author of post (id \\u003d 2) - date: Mon Jun 27 16:31:10 CEST 2022\",\n    \"+0.17328679513998632 - author of post (id \\u003d 1) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.17328679513998632 - author of post (id \\u003d 2) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.20598980412527057 - author of post (id \\u003d 1) - date: Mon Jun 27 16:41:10 CEST 2022\"\n  ],\n  \"total\": 1.3323539725351816\n}"
+      },
+      {
+            "username": "Marghe",
+            "hashedPassword": "5fff32bdde7e3643e4138f7804472f7fbad3c9222feee6103293fe7a1a8b001f",
+            "seed": "? ?\u00139\u0000\u0005????{?\\?;?????\n????\u001c}?\u001co",
+            "tags": "[\n  \"arte\",\n  \"giornalismo\",\n  \"libri\",\n  \"amore\"\n]",
+            "followers": "[\n  \"Andrea\",\n  \"Chiara\",\n  \"Lorena\",\n  \"Fede\"\n]",
+            "followed": "[\n  \"Chiara\",\n  \"Lorena\",\n  \"Andrea\"\n]",
+            "listVotes": "[\n  1\n]",
+            "blog": "[\n  1\n]",
+            "feed": "[\n  1,\n  2,\n  3,\n  4,\n  5,\n  6\n]",
+            "wallet": "{\n  \"transactions\": [\n    \"+0.17328679513998632 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:31:10 CEST 2022\"\n  ],\n  \"total\": 0.17328679513998632\n}"
+      },
+      {
+            "username": "Lorena",
+            "hashedPassword": "521db870129bb85eab58cd9ab5736f78c645184e7f189bcfe37c73ce02113c4c",
+            "seed": "M?:?w??+?\\??\u0004???????\u0015\u0002i?DX??\u0004?",
+            "tags": "[\n  \"ingegneria\",\n  \"videogiochi\",\n  \"nerd\",\n  \"amore\"\n]",
+            "followers": "[\n  \"Marghe\",\n  \"Chiara\",\n  \"Andrea\"\n]",
+            "followed": "[\n  \"Chiara\",\n  \"Marghe\"\n]",
+            "listVotes": "[]",
+            "blog": "[\n  4,\n  5,\n  6\n]",
+            "feed": "[\n  1,\n  2\n]",
+            "wallet": "{\n  \"transactions\": [\n    \"+0.057762265046662105 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.20794415416798356 - author of post (id \\u003d 5) - date: Mon Jun 27 17:06:52 CEST 2022\"\n  ],\n  \"total\": 0.26570641921464566\n}"
+      },
+      {
+            "username": "Andrea",
+            "hashedPassword": "35b329ffa183b58da88063d79a9a52669e6d7fc6d7fe176c9e4420d589b4ffe2",
+            "seed": "ss???I\b???o\n?P\u0005? 5FP???F?\u001c\u0013?k",
+            "tags": "[\n  \"calcio\",\n  \"sport\",\n  \"giornalismo\",\n  \"arte\",\n  \"amore\"\n]",
+            "followers": "[\n  \"Marghe\",\n  \"Fede\",\n  \"Chiara\"\n]",
+            "followed": "[\n  \"Marghe\",\n  \"Chiara\",\n  \"Fede\",\n  \"Anna\",\n  \"Lorena\"\n]",
+            "listVotes": "[\n  2,\n  5,\n  7\n]",
+            "blog": "[\n  3\n]",
+            "feed": "[\n  1,\n  2,\n  4,\n  5,\n  6,\n  7\n]",
+            "wallet": "{\n  \"transactions\": [\n    \"+0.08664339756999316 - curator of post (id \\u003d 2) - date: Mon Jun 27 16:31:10 CEST 2022\",\n    \"+0.25993019270997947 - author of post (id \\u003d 3) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.03433163402087843 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:41:10 CEST 2022\",\n    \"+0.06931471805599453 - curator of post (id \\u003d 5) - date: Mon Jun 27 17:06:52 CEST 2022\"\n  ],\n  \"total\": 0.4502199423568456\n}"
+      },
+      {
+            "username": "Anna",
+            "hashedPassword": "b62f38bccd49d2a5ebdcdef7562a952c5c423807627482558a6d88b7313a5085",
+            "seed": "?k\nq0?\u0003N?*????#\u00060cNn*+\u001a??`\n??=S",
+            "tags": "[\n  \"lavoro\",\n  \"amore\",\n  \"estate\",\n  \"relax\"\n]",
+            "followers": "[\n  \"Chiara\",\n  \"Andrea\"\n]",
+            "followed": "[\n  \"Fede\"\n]",
+            "listVotes": "[\n  7\n]",
+            "blog": "[]",
+            "feed": "[\n  7\n]",
+            "wallet": "{\n  \"transactions\": [\n    \"+0.17328679513998632 - curator of post (id \\u003d 7) - date: Mon Jun 27 16:41:10 CEST 2022\"\n  ],\n  \"total\": 0.17328679513998632\n}"
+      }
+]

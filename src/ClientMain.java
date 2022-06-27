@@ -95,8 +95,8 @@ public class ClientMain {
             obj = new NotifyClient(followers);
             stub = (NotifyClientInterface) UnicastRemoteObject.exportObject(obj, 0);
 
-            System.out.println("\n-------------- WELCOME TO WINSOME ---------------");
-
+            System.out.println(
+                    "\n---------------------------------------- WELCOME TO WINSOME ----------------------------------------");
             // gestione richieste
             requestsHandler(socket, notifyReward);
             socket.close();
@@ -121,7 +121,7 @@ public class ClientMain {
                         else if (line.startsWith("TCP PORT"))
                             TCP_PORT = Integer.parseInt(split_line[1]);
 
-                        else if (line.startsWith("REG HOST"))
+                        else if (line.startsWith("REGISTRY HOST"))
                             REGISTRY_HOST = split_line[1];
 
                         else if (line.startsWith("REG PORT"))
@@ -268,7 +268,8 @@ public class ClientMain {
                         outWriter.flush();
 
                         System.out.println(String.format("< %-15s| ", "User") + "Tags");
-                        System.out.println("<------------------------------------------------------");
+                        System.out.println(
+                                "< ----------------------------------------------------------------------------------------------------");
                         serverResponse = inReader.readUTF();
                         int dim = Integer.parseInt(serverResponse);
 
@@ -321,7 +322,8 @@ public class ClientMain {
                         // lettura risposta e stampa esito
                         System.out.println(
                                 String.format("< %-10s| ", "Id") + String.format("%-15s| ", "Author") + "Title");
-                        System.out.println("< ----------------------------------------------------------");
+                        System.out.println(
+                                "< ----------------------------------------------------------------------------------------------------");
                         serverResponse = inReader.readUTF();
                         int dim2 = Integer.parseInt(serverResponse);
 
@@ -423,7 +425,8 @@ public class ClientMain {
                             int dim3 = Integer.parseInt(serverResponse);
                             System.out.println(
                                     String.format("< %-10s| ", "Id") + String.format("%-15s| ", "Author") + "Title");
-                            System.out.println("< ----------------------------------------------------------");
+                            System.out.println(
+                                    "< ----------------------------------------------------------------------------------------------------");
                             for (int i = 0; i < dim3; i++) {
                                 serverResponse = inReader.readUTF();
                                 System.out.println("< " + serverResponse);
