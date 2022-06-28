@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1656406731 "d:/ChiaraMaggi/Documents/Università/3° ANNO/RCL/Progetto WINSOME/relazione/relazione.tex" "relazione.pdf" "relazione" 1656406735
-  "d:/ChiaraMaggi/Documents/Università/3° ANNO/RCL/Progetto WINSOME/relazione/relazione.tex" 1656406729 20901 aef69e5e46b2aa505bb3ffae086f39c6 ""
+["pdflatex"] 1656407625 "d:/ChiaraMaggi/Documents/Università/3° ANNO/RCL/Progetto WINSOME/relazione/relazione.tex" "relazione.pdf" "relazione" 1656407628
+  "d:/ChiaraMaggi/Documents/Università/3° ANNO/RCL/Progetto WINSOME/relazione/relazione.tex" 1656407623 19838 f2572a6616d78e2a85fd7e79f97080ef ""
   "d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1634380799 2971 def0b6c1f0b107b3b936def894055589 ""
   "d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1634380799 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "d:/ChiaraMaggi/Documents/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1634381970 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -84,12 +84,12 @@
   "d:/ChiaraMaggi/Documents/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1634387514 4399773 9fe08eed1279ee511233eb38490fe224 ""
   "d:/ChiaraMaggi/Documents/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1634387854 2797830 687a906178f55f046cd1cd3419b17183 ""
   "d:/ChiaraMaggi/Documents/texlive/2021/texmf.cnf" 1634387370 713 e69b156964470283e0530f5060668171 ""
-  "relazione.aux" 1656406734 2923 13c59d7a9ae46d7af711bb1aff033f77 "pdflatex"
-  "relazione.out" 1656406734 2048 6a7f335583c40ecae57657a621a25d7c "pdflatex"
-  "relazione.toc" 1656406734 1457 05c1455ae4cf98cc14d2b4cb26ce8335 "pdflatex"
+  "relazione.aux" 1656407628 2923 13c59d7a9ae46d7af711bb1aff033f77 "pdflatex"
+  "relazione.out" 1656407628 2048 6a7f335583c40ecae57657a621a25d7c "pdflatex"
+  "relazione.toc" 1656407628 1457 05c1455ae4cf98cc14d2b4cb26ce8335 "pdflatex"
   (generated)
+  "relazione.toc"
   "relazione.out"
+  "relazione.pdf"
   "relazione.log"
   "relazione.aux"
-  "relazione.toc"
-  "relazione.pdf"
