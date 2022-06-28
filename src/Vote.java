@@ -5,7 +5,7 @@
 public class Vote {
     private final String author;
     private final boolean vote;
-    private final long timestamp;
+    private final long timestamp; // data in cui è stato inserito il voto
 
     public Vote(String author, boolean vote, long timestamp) {
         this.author = author;
@@ -13,6 +13,7 @@ public class Vote {
         this.timestamp = timestamp;
     }
 
+    /* Metodi getter */
     public boolean getVote() {
         if (vote)
             return true;

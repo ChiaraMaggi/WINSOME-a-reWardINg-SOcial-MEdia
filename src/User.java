@@ -14,23 +14,17 @@ public class User {
     private final String username;
     private final String seed;
     private final String hashedPassword;
-
     private final ConcurrentHashMap<Long, Post> blog;
     private final ConcurrentHashMap<Long, Post> feed;
-
     private final LinkedList<String> tags;
     private final LinkedList<String> followers;
     private final LinkedList<String> followed;
-    // elenco dei post votati dall'utente
-    private final LinkedList<Long> votes;
-
+    private final LinkedList<Long> votes; // elenco dei post votati dall'utente
     private final Wallet wallet;
-
-    private boolean logged = false;
-
+    private boolean logged = false; // per tener traccia se un utente è loggato su un client
     private final ReentrantLock followersLock;
 
-    // costruttore nel caso di nuovi utenti
+    /* Costruttore usato nel caso di nuovi utenti */
     public User(String username, String password, LinkedList<String> tags) throws NoSuchAlgorithmException {
         byte[] array = new byte[32];
         ThreadLocalRandom.current().nextBytes(array);
@@ -49,6 +43,7 @@ public class User {
 
     }
 
+    /* Costruttore usato per il ripristino degli utenti */
     public User(String username, String hashedPassword, String seed, LinkedList<String> tags,
             LinkedList<String> followers, LinkedList<String> followed, LinkedList<Long> votes,
             ConcurrentHashMap<Long, Post> blog, ConcurrentHashMap<Long, Post> feed, Wallet wallet) {
@@ -89,14 +84,7 @@ public class User {
         followersLock.unlock();
     }
 
-    public void addPostToBlog(Post p) {
-        blog.putIfAbsent(p.getId(), p);
-    }
-
-    public void addPostToFeed(Post p) {
-        feed.putIfAbsent(p.getId(), p);
-    }
-
+    /* Metodi getter */
     public String getUsername() {
         return username;
     }
@@ -137,6 +125,15 @@ public class User {
         return wallet;
     }
 
+    /* Metodi adder */
+    public void addPostToBlog(Post p) {
+        blog.putIfAbsent(p.getId(), p);
+    }
+
+    public void addPostToFeed(Post p) {
+        feed.putIfAbsent(p.getId(), p);
+    }
+
     public void addFollowers(String username) {
         followers.add(username);
     }
@@ -149,6 +146,7 @@ public class User {
         votes.add(id);
     }
 
+    /* Metodi remove */
     public void removePostFromBlog(Long id) {
         blog.remove(id);
     }
@@ -157,6 +155,7 @@ public class User {
         feed.remove(id);
     }
 
+    /* Metodo di utilità per stampare i tags */
     public String printTags(LinkedList<String> tags) {
         String print = "";
         int i;

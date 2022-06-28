@@ -22,6 +22,7 @@ public class ClientUDPThread implements Runnable {
         DatagramPacket packet = new DatagramPacket(buff, buff.length);
         while (!Thread.currentThread().isInterrupted()) {
             try {
+                // si blocca in attesa dell'arrivo di un messaggio
                 mcastSocket.receive(packet);
                 String message = new String(packet.getData(), StandardCharsets.UTF_8);
                 message = message.replace("\u0000", "");

@@ -15,7 +15,7 @@ public class Wallet {
         total = 0.0;
     }
 
-    public synchronized List<String> getTransaction() {
+    public synchronized List<String> getTransactions() {
         return transactions;
     }
 

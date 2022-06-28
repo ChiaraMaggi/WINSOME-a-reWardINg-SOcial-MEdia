@@ -31,24 +31,11 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         postId = new AtomicLong(0);
     }
 
-    public boolean register(String username, String password, LinkedList<String> tags) throws RemoteException {
-        if (password.length() > 16 || password.length() < 8) {
-            throw new IllegalArgumentException();
-        }
-
-        try {
-            User newUser = new User(username, password, tags);
-            if (users.putIfAbsent(username, newUser) == null)
-                return true;
-            else
-                return false;
-        } catch (NoSuchAlgorithmException e) {
-            return false;
-        }
-    }
-
-    // utilizzata quando un certo utente si riconette sul client, per recuperare la
-    // lista dei followers gestita lato client
+    /*
+     * Metodo utilizzata quando un certo utente si riconette sul client, per
+     * recuperare la lista dei followers che viene gestita lato client.
+     * Implementazione del metodo dell'interfaccia ServerRemoteInterface.
+     */
     public LinkedList<String> backupFollowers(String username) throws RemoteException {
         User user;
         LinkedList<String> followers;
@@ -62,20 +49,34 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
             return followers;
         }
         return new LinkedList<>();
-
     }
 
+    /*
+     * Metodo per registrare l'utente al servizio di callback per aggiornamento
+     * dei followers. Implementazione del metodo dell'interfaccia
+     * ServerRemoteInterface.
+     */
     public synchronized void registerForCallback(NotifyClientInterface ClientInterface, String username)
             throws RemoteException {
         callbacksRegistration.putIfAbsent(username, ClientInterface);
     }
 
+    /*
+     * Metodo per deregistrare l'utente dal servizio di callback per aggiornamento
+     * dei followers. Implementazione del metodo dell'interfaccia
+     * ServerRemoteInterface.
+     */
     public synchronized void unregisterForCallback(NotifyClientInterface ClientInterface, String username)
             throws RemoteException {
         callbacksRegistration.remove(username, ClientInterface);
     }
 
+    /*
+     * Metodo che si occupa di notificare al Client l'arrivo di un nuovo follower
+     */
     public synchronized boolean doCallbackFollow(String usernameFollowed, String follower) {
+        // ricavo l'interfaccia dell'utente che deve ricevere la notifica per il nuovo
+        // follower
         NotifyClientInterface client = callbacksRegistration.get(usernameFollowed);
         try {
             client.notifyNewFollower(follower);
@@ -87,7 +88,12 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         }
     }
 
+    /*
+     * Metodo che si occupa di notificare al Client l'arrivo di un unfollower
+     */
     public synchronized boolean doCallbackUnfollow(String usernameUnfollowed, String unfollower) {
+        // ricavo l'interfaccia dell'utente che deve ricevere la notifica per il nuovo
+        // unfollower
         NotifyClientInterface client = callbacksRegistration.get(usernameUnfollowed);
         try {
             client.notifyNewUnfollower(unfollower);
@@ -99,6 +105,27 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         }
     }
 
+    /*
+     * Implementazione del metodo dell'interfaccia ServerRemoteInterface che
+     * permette di far registrare gli utenti al social Network.
+     */
+    public boolean register(String username, String password, LinkedList<String> tags) throws RemoteException {
+        // controllo lunghezza della password
+        if (password.length() > 16 || password.length() < 8) {
+            throw new IllegalArgumentException();
+        }
+        try {
+            User newUser = new User(username, password, tags);
+            if (users.putIfAbsent(username, newUser) == null)
+                return true;
+            else
+                return false;
+        } catch (NoSuchAlgorithmException e) {
+            return false;
+        }
+    }
+
+    /* Metodo per effettuare il login */
     public boolean login(String username, String password) {
         try {
             return (users.containsKey(username) && users.get(username).verifyPassword(username, password));
@@ -107,94 +134,46 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         }
     }
 
+    /* Metodo per effettuare il logout */
     public void logout(String username) {
         User user = users.get(username);
         user.logout();
     }
 
-    public long createPost(String author, String title, String content) {
-        long id = postId.addAndGet(1);
-        Post post = new Post(id, author, title, content);
-        User user = users.get(author);
-        if (posts.putIfAbsent(id, post) == null) {
-            // modifico il blog dell'autore
-            user.addPostToBlog(post);
-            // modifico il feed dei followers
-            try {
-                user.followersLock();
-                for (String s : user.getFollowers()) {
-                    users.get(s).addPostToFeed(post);
+    /* Metodo per visualizzare la lista di utente con almeno un tag in comune */
+    public String listUsers(String username) {
+        User user = users.get(username);
+        String listUsers = "";
+        boolean sameTags = false; // per evitare duplicati quando più di un tag in comune
+        LinkedList<String> tags = user.getTags();
+        for (String s : users.keySet()) {
+            if (!s.equals(username)) {// non può seguire se stesso
+                User u = users.get(s);
+                for (String tag : tags) {
+                    if (u.getTags().contains(tag)) {
+                        sameTags = true;
+                    }
                 }
-            } finally {
-                user.followersUnlock();
-            }
-            return id;
-        } else
-            return 0;
-    }
-
-    public String showPost(Long id) {
-        Post post;
-        String printedPost = "";
-        if ((post = posts.get(id)) != null) {
-            try {
-                post.votesLock();
-                post.commentsLock();
-                printedPost = "< Title: " + post.getTitle() + "\n< Content: " + post.getContent() + "\n< Votes: "
-                        + "\n<    Positive: " + post.getPositiveVotes() + "\n<    Negative: " + post.getNegativeVotes()
-                        + "\n< Comments: " + post.getNumComments() + "\n" + post.getCommentsInString();
-            } finally {
-                post.votesUnlock();
-                post.commentsUnlock();
-            }
-            return printedPost;
-        }
-        return null;
-    }
-
-    public boolean addComment(String username, Long id, String comment) {
-        Post post;
-        User user = users.get(username);
-        if ((post = posts.get(id)) != null) {
-            // controllo se il commentante non è l'autore del
-            // post e se ha il post nel proprio feed
-            if (post.getAuthor() != username && user.getFeed().get(id) != null) {
-                try {
-                    post.commentsLock();
-                    post.addComment(username, comment);
-                } finally {
-                    post.commentsUnlock();
+                if (sameTags) {
+                    listUsers = listUsers.concat(String.format("%-15s| ", s) + u.printTags(u.getTags()) + "\n");
                 }
-                return true;
             }
         }
-        return false;
+        return listUsers;
     }
 
-    public String viewBlog(String username) {
+    /* Metodo per visualizzare la lista di utente seguiti */
+    public String listFollowing(String username) {
         User user = users.get(username);
-        ConcurrentHashMap<Long, Post> blog = user.getBlog();
-        String blogInString = "";
-        for (Long key : blog.keySet()) {
-            blogInString = blogInString
-                    .concat(String.format("%-10d| ", key) + String.format("%-15s| ", blog.get(key).getAuthor())
-                            + blog.get(key).getTitle() + "\n");
+        String listFollowing = "";
+        for (String s : user.getFollowed()) {
+            User u = users.get(s);
+            listFollowing = listFollowing.concat(String.format("%-15s| ", s) + u.printTags(u.getTags()) + "\n");
         }
-        return blogInString;
+        return listFollowing;
     }
 
-    public String showFeed(String username) {
-        User user = users.get(username);
-        ConcurrentHashMap<Long, Post> feed = user.getFeed();
-        String feedInString = "";
-        for (Long key : feed.keySet()) {
-            feedInString = feedInString
-                    .concat(String.format("%-10d| ", key) + String.format("%-15s| ", feed.get(key).getAuthor())
-                            + feed.get(key).getTitle() + "\n");
-        }
-        return feedInString;
-    }
-
+    /* Metodo per inziare a seguire un utente */
     public boolean followUser(String follower, String usernameToFollow) {
         User userToFollow = users.get(usernameToFollow);
         User user = users.get(follower);
@@ -222,6 +201,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return b;
     }
 
+    /* Metodo per smettere di seguire un utente */
     public boolean unfollowUser(String unfollower, String usernameToUnfollow) {
         User userToUnfollow = users.get(usernameToUnfollow);
         User user = users.get(unfollower);
@@ -255,6 +235,75 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
 
     }
 
+    /* Metodo per visualizzare il blog di un utente */
+    public String viewBlog(String username) {
+        User user = users.get(username);
+        ConcurrentHashMap<Long, Post> blog = user.getBlog();
+        String blogInString = "";
+        for (Long key : blog.keySet()) {
+            blogInString = blogInString
+                    .concat(String.format("%-10d| ", key) + String.format("%-15s| ", blog.get(key).getAuthor())
+                            + blog.get(key).getTitle() + "\n");
+        }
+        return blogInString;
+    }
+
+    /* Metodo per creare un post */
+    public long createPost(String author, String title, String content) {
+        long id = postId.addAndGet(1);
+        Post post = new Post(id, author, title, content);
+        User user = users.get(author);
+        if (posts.putIfAbsent(id, post) == null) {
+            // modifico il blog dell'autore
+            user.addPostToBlog(post);
+            // modifico il feed dei followers
+            try {
+                user.followersLock();
+                for (String s : user.getFollowers()) {
+                    users.get(s).addPostToFeed(post);
+                }
+            } finally {
+                user.followersUnlock();
+            }
+            return id;
+        } else
+            return 0;
+    }
+
+    /* Metodo per visualizzare il feed di un utente */
+    public String showFeed(String username) {
+        User user = users.get(username);
+        ConcurrentHashMap<Long, Post> feed = user.getFeed();
+        String feedInString = "";
+        for (Long key : feed.keySet()) {
+            feedInString = feedInString
+                    .concat(String.format("%-10d| ", key) + String.format("%-15s| ", feed.get(key).getAuthor())
+                            + feed.get(key).getTitle() + "\n");
+        }
+        return feedInString;
+    }
+
+    /* Metodo per visualizzare un post */
+    public String showPost(Long id) {
+        Post post;
+        String printedPost = "";
+        if ((post = posts.get(id)) != null) {
+            try {
+                post.votesLock();
+                post.commentsLock();
+                printedPost = "< Title: " + post.getTitle() + "\n< Content: " + post.getContent() + "\n< Votes: "
+                        + "\n<    Positive: " + post.getPositiveVotes() + "\n<    Negative: " + post.getNegativeVotes()
+                        + "\n< Comments: " + post.getNumComments() + "\n" + post.getCommentsInString();
+            } finally {
+                post.votesUnlock();
+                post.commentsUnlock();
+            }
+            return printedPost;
+        }
+        return null;
+    }
+
+    /* Metodo per rimuovere un post */
     public boolean deletePost(Long id, String username) {
         Post post;
         if ((post = posts.get(id)) != null) {
@@ -279,28 +328,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return false;
     }
 
-    public boolean ratePost(Long id, int vote, String username) {
-        Post post;
-        User user = users.get(username);
-        if ((post = posts.get(id)) != null) { // il post deve esistere
-            // controllo che il votante non sia l'autore del post, che abbia il post nel
-            // feed e che non abbia già votato
-            if (post.getAuthor() != username && user.getFeed().containsKey(id) && !user.getListVotes().contains(id)) {
-                try {
-                    post.votesLock();
-                    post.addVote(username, vote);
-                } finally {
-                    post.votesUnlock();
-                }
-
-                // per tenere traccia dei post già votati
-                user.addIdToListVotes(id);
-                return true;
-            }
-        }
-        return false;
-    }
-
+    /* Metodo per fare il rewin di un post */
     public boolean rewinPost(Long id, String username) {
         Post post;
         User user = users.get(username);
@@ -329,42 +357,56 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return false;
     }
 
-    public String listUsers(String username) {
+    /* Metodo per votare un post */
+    public boolean ratePost(Long id, int vote, String username) {
+        Post post;
         User user = users.get(username);
-        String listUsers = "";
-        boolean sameTags = false;
-        LinkedList<String> tags = user.getTags();
-        for (String s : users.keySet()) {
-            if (!s.equals(username)) {// non può seguire se stesso
-                User u = users.get(s);
-                for (String tag : tags) {
-                    if (u.getTags().contains(tag)) {
-                        sameTags = true;
-                    }
+        if ((post = posts.get(id)) != null) { // il post deve esistere
+            // controllo che il votante non sia l'autore del post, che abbia il post nel
+            // feed e che non abbia già votato
+            if (post.getAuthor() != username && user.getFeed().containsKey(id) && !user.getListVotes().contains(id)) {
+                try {
+                    post.votesLock();
+                    post.addVote(username, vote);
+                } finally {
+                    post.votesUnlock();
                 }
-                if (sameTags) {
-                    listUsers = listUsers.concat(String.format("%-15s| ", s) + u.printTags(u.getTags()) + "\n");
-                }
+
+                // per tenere traccia dei post già votati
+                user.addIdToListVotes(id);
+                return true;
             }
         }
-        return listUsers;
+        return false;
     }
 
-    public String listFollowing(String username) {
+    /* Metodo utilizzato per aggiungere un commento ad un post */
+    public boolean addComment(String username, Long id, String comment) {
+        Post post;
         User user = users.get(username);
-        String listFollowing = "";
-        for (String s : user.getFollowed()) {
-            User u = users.get(s);
-            listFollowing = listFollowing.concat(String.format("%-15s| ", s) + u.printTags(u.getTags()) + "\n");
+        if ((post = posts.get(id)) != null) {
+            // controllo se il commentante non è l'autore del
+            // post e se ha il post nel proprio feed
+            if (post.getAuthor() != username && user.getFeed().get(id) != null) {
+                try {
+                    post.commentsLock();
+                    post.addComment(username, comment);
+                } finally {
+                    post.commentsUnlock();
+                }
+                return true;
+            }
         }
-        return listFollowing;
+        return false;
     }
 
+    /* Metodo che si occupa della conversione da Wincoin a Bitcoin */
     public double toBitcoin(double total) throws IOException {
         URL randomOrg = new URL("https://www.random.org/decimal-fractions/?num=1&dec=10&col=2&format=plain&rnd=new");
         InputStream urlReader = randomOrg.openStream();
         BufferedReader buff = new BufferedReader(new InputStreamReader(urlReader));
         String randomValue;
+        // ricavo il valore random
         randomValue = buff.readLine();
         buff.close();
         urlReader.close();
@@ -372,6 +414,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return Double.parseDouble(randomValue) * total;
     }
 
+    /* Metodi getter */
     public User getUser(String username) {
         return users.get(username);
     }
@@ -388,6 +431,7 @@ public class SocialNetwork extends RemoteObject implements ServerRemoteInterface
         return posts;
     }
 
+    /* Metodi setter */
     public void setAllUsers(ConcurrentHashMap<String, User> users) {
         this.users = users;
     }

@@ -39,7 +39,7 @@ public class Reward extends Thread {
             try {
                 Thread.sleep(timeoutReward);
                 computeRewards();
-                // messaggio di notifica da inziare al gruppo multicast
+                // messaggio di notifica da inviare al gruppo multicast
                 byte[] buff = "CLIENT: REWARDS UPDATED".getBytes(StandardCharsets.UTF_8);
                 DatagramPacket packet = new DatagramPacket(buff, buff.length, address, port);
                 try {
@@ -54,6 +54,10 @@ public class Reward extends Thread {
         }
     }
 
+    /*
+     * Metodo che per ogni post ricava il totale della ricompensa e aggiorna i
+     * wallet degli utenti coinvolti.
+     */
     private void computeRewards() {
         ConcurrentHashMap<Long, Post> copyOfPosts = winsome.getAllPosts();
         for (Long id : copyOfPosts.keySet()) {
@@ -69,6 +73,7 @@ public class Reward extends Thread {
 
             if (curatorsReward > 0) {
                 for (String c : curators) {
+                    // aggiunta della nuova transazione ai wallet degli utenti curatori
                     winsome.getUser(c).getWallet()
                             .addTransaction(
                                     "+" + curatorsReward + " - curator of post (id = " + post.getId() + ") - date: "
@@ -78,6 +83,7 @@ public class Reward extends Thread {
             }
 
             if (authorReward > 0) {
+                // aggiunta della nuova transazione al wallet dell'utente autore
                 winsome.getUser(author).getWallet()
                         .addTransaction("+" + authorReward + " - author of post (id = " + post.getId() + ") - date: "
                                 + Calendar.getInstance().getTime());
@@ -86,6 +92,7 @@ public class Reward extends Thread {
         }
     }
 
+    /* Metodo che si occupa del calcolo della ricompensa */
     private double postReward(Post post, Set<String> curators) {
         double total = 0;
         double votesSum = 0;
@@ -114,7 +121,7 @@ public class Reward extends Thread {
                     negativeVotes++; // i curatori di voti negativi non ricevono ricompense
                 }
             }
-            // sommatoria dei voti
+            // logaritmo della sommatoria dei voti
             votesSum = Math.log(Math.max(0, (positiveVotes - negativeVotes)) + 1);
 
             // selezione commenti più recenti e quanti ne hanno fatto i singoli curatori
@@ -137,7 +144,9 @@ public class Reward extends Thread {
                 }
                 partialSum += 2 / (1 + Math.pow(Math.E, -Cp + 1));
             }
+            // logaritmo della sommatoria dei commenti
             commentsSum = Math.log(partialSum + 1);
+            // calcolo della somma finale
             total = (votesSum + commentsSum) / numIter;
         } finally {
             post.setLastTimeReward(System.nanoTime());

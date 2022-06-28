@@ -13,6 +13,7 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
+    /* Metodi getter */
     public String getAuthor() {
         return author;
     }

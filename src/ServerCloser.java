@@ -36,21 +36,25 @@ public class ServerCloser extends Thread {
         }
         System.out.println("SERVER: closing server...");
         try {
+            // chiusi i socket
             socketTCP.close();
             socketUDP.close();
+            // interrotto il thread che calcola le ricompense
             reward.interrupt();
             try {
                 reward.join(1000);
             } catch (InterruptedException e) {
             }
         } catch (IOException e) {
-            System.out.println("ERROR: problems in closing the socket");
+            System.out.println("ERROR: problems with socket closure");
             System.exit(-1);
         }
         if (line.equals("closeNow")) {
+            // chiusura immediata
             pool.shutdownNow();
         } else {
             try {
+                // chiusura lenta
                 pool.shutdown();
                 pool.awaitTermination(5, TimeUnit.MINUTES);
             } catch (InterruptedException e) {
@@ -58,12 +62,13 @@ public class ServerCloser extends Thread {
         }
         backup.interrupt();
         try {
+            // prima di chiudere viene svolto l'ultimo backup
             backup.savePosts();
             backup.saveUsers();
             System.out.print("SERVER: server closed");
             System.exit(0);
         } catch (IOException e) {
-            System.out.println("ERROR: problem in doing the backup last time");
+            System.out.println("ERROR: problems with last backup");
             System.exit(-1);
         }
         scanner.close();

@@ -4,76 +4,76 @@
             "author": "Chiara",
             "title": "\"ciao\"",
             "content": "\"ciao a tutti, mi sono appena iscritta\"",
-            "numIterations": 7,
+            "numIterations": 8,
             "numComments": 4,
             "votes": "[\n  {\n    \"author\": \"Marghe\",\n    \"vote\": true,\n    \"timestamp\": 1042682967824200\n  }\n]",
             "comments": "[\n  {\n    \"author\": \"Marghe\",\n    \"comment\": \"\\\"ciao chiara, stasera dnd?\\\"\",\n    \"timestamp\": 1042673157555800\n  },\n  {\n    \"author\": \"Lorena\",\n    \"comment\": \"\\\"ci sono anche io stasera!!\\\"\",\n    \"timestamp\": 1043182960237200\n  },\n  {\n    \"author\": \"Andrea\",\n    \"comment\": \"\\\"se andate a giocare vengo anche io!!\\\"\",\n    \"timestamp\": 1043247646870600\n  },\n  {\n    \"author\": \"Fede\",\n    \"comment\": \"\\\"siete proprio dei maledetti nerd\\\"\",\n    \"timestamp\": 1043268570464400\n  }\n]",
-            "lastTimeReward": 1045028362927900
+            "lastTimeReward": 1050093421800199
       },
       {
             "id": 2,
             "author": "Chiara",
             "title": "\"inter\"",
             "content": "\"pazza inter amala\"",
-            "numIterations": 7,
+            "numIterations": 8,
             "numComments": 1,
             "votes": "[\n  {\n    \"author\": \"Andrea\",\n    \"vote\": true,\n    \"timestamp\": 1042849831202100\n  }\n]",
             "comments": "[\n  {\n    \"author\": \"Fede\",\n    \"comment\": \"\\\"forza inter\\\"\",\n    \"timestamp\": 1042925091310400\n  }\n]",
-            "lastTimeReward": 1045028362997000
+            "lastTimeReward": 1050093421859000
       },
       {
             "id": 3,
             "author": "Andrea",
             "title": "\"Appartamenti\"",
             "content": "\"ciao, cerco appartamenti per Bologna\"",
-            "numIterations": 6,
+            "numIterations": 7,
             "numComments": 1,
             "votes": "[]",
             "comments": "[\n  {\n    \"author\": \"Fede\",\n    \"comment\": \"\\\"ciao Andre, ho un amico che affitta a Bologna!\\\"\",\n    \"timestamp\": 1042907956344600\n  }\n]",
-            "lastTimeReward": 1045028363026700
+            "lastTimeReward": 1050093424206900
       },
       {
             "id": 4,
             "author": "Lorena",
             "title": "\"dnd\"",
             "content": "\"seduta di dnd stasera chi c'Š??\"",
-            "numIterations": 5,
+            "numIterations": 6,
             "numComments": 0,
             "votes": "[]",
             "comments": "[]",
-            "lastTimeReward": 1045028363040900
+            "lastTimeReward": 1050093424231800
       },
       {
             "id": 5,
             "author": "Lorena",
             "title": "\"Laurea\"",
             "content": "\"mi sono appena laureata con 104\"",
-            "numIterations": 5,
+            "numIterations": 6,
             "numComments": 1,
             "votes": "[\n  {\n    \"author\": \"Andrea\",\n    \"vote\": true,\n    \"timestamp\": 1044801280699000\n  }\n]",
             "comments": "[\n  {\n    \"author\": \"Andrea\",\n    \"comment\": \"\\\"complimenti 104ista\\\"\",\n    \"timestamp\": 1044796042379300\n  }\n]",
-            "lastTimeReward": 1045028363133100
+            "lastTimeReward": 1050093424244700
       },
       {
             "id": 6,
             "author": "Lorena",
             "title": "\"Aki\"",
             "content": "\"Akira Š la mia cagnolina vota\"",
-            "numIterations": 5,
+            "numIterations": 6,
             "numComments": 0,
             "votes": "[]",
             "comments": "[]",
-            "lastTimeReward": 1045028394012000
+            "lastTimeReward": 1050093424252400
       },
       {
             "id": 7,
             "author": "Fede",
             "title": "\"citt…\"",
             "content": "\"stasera qualcuno in citt…?\"",
-            "numIterations": 4,
+            "numIterations": 5,
             "numComments": 1,
             "votes": "[\n  {\n    \"author\": \"Anna\",\n    \"vote\": false,\n    \"timestamp\": 1043412411573400\n  },\n  {\n    \"author\": \"Andrea\",\n    \"vote\": false,\n    \"timestamp\": 1044813356797200\n  }\n]",
             "comments": "[\n  {\n    \"author\": \"Anna\",\n    \"comment\": \"\\\"no stasera tirrenia\\\"\",\n    \"timestamp\": 1043398960456300\n  }\n]",
-            "lastTimeReward": 1045028394026500
+            "lastTimeReward": 1050093424262299
       }
 ]

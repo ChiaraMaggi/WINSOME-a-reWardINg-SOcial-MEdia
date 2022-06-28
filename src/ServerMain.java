@@ -46,10 +46,10 @@ public class ServerMain {
 
     public static void main(String[] args) {
         File CONFIG_FILE;
-        // Se non viene passato alcun config_file viene avviata la
-        // configurazione di default altrimenti si parsa il config_file
+        // se non viene passato alcun config_file viene avviata la
+        // configurazione di default altrimenti si parsa il CONFIG_FILE
         if (args.length == 0) {
-            System.out.println("SERVER: server stars with default configuration");
+            System.out.println("SERVER: server starts with default configuration");
         } else {
             CONFIG_FILE = new File(args[0]);
             configServer(CONFIG_FILE);
@@ -68,35 +68,36 @@ public class ServerMain {
         try {
             backupUsers.createNewFile();
         } catch (IOException e1) {
-            System.out.println("ERROR: error in creating backupUsers file");
+            System.out.println("ERROR: error with backupUsers file creation");
             System.exit(-1);
         }
         try {
             backupPosts.createNewFile();
         } catch (IOException e1) {
-            System.out.println("ERROR: error in creating backupUsers file");
+            System.out.println("ERROR: error with backupPosts file creation");
             System.exit(-1);
         }
 
-        // Creazione social network winsome
+        // creazione social network winsome
         SocialNetwork winsome = new SocialNetwork();
-        // Ripristino le informazioni del social se presenti
+
+        // ripristino le informazioni del social se presenti
         try {
             deserializeSocial(winsome, backupUsers, backupPosts);
         } catch (IOException e) {
-            System.err.println("ERROR: error in rebooting winsome backup");
+            System.err.println("ERROR: error with winsome backup rebooting");
             System.exit(-1);
         }
 
-        // Avvio il thread di backup
+        // avvio il thread di backup
         Backup backupThread = new Backup(winsome, backupUsers, backupPosts, BACKUP_TIMEOUT);
         backupThread.setDaemon(true);
         backupThread.start();
 
-        // Threadpool per gestire richieste dei client
+        // threadpool per gestire richieste dei client
         ExecutorService threadPool = Executors.newCachedThreadPool();
 
-        // Configurazione RMI
+        // configurazione RMI
         try {
             ServerRemoteInterface stub = (ServerRemoteInterface) UnicastRemoteObject.exportObject(winsome, 0);
             LocateRegistry.createRegistry(REG_PORT);
@@ -107,7 +108,7 @@ public class ServerMain {
             System.exit(-1);
         }
 
-        // Configurazione connessione multicast
+        // configurazione connessione multicast
         DatagramSocket socketUDP = null;
         InetAddress multicastAddress = null;
         try {
@@ -115,15 +116,17 @@ public class ServerMain {
             multicastAddress = InetAddress.getByName(MULTICAST_ADDRESS);
             socketUDP = new DatagramSocket();
         } catch (IOException e) {
-            System.out.println("ERROR: problems in creating multicast socket");
+            System.out.println("ERROR: problems with multicast socket creation");
             System.exit(-1);
         }
+
+        // avvio il thread per il calcolo della ricomensa
         Reward rewardThread = new Reward(socketUDP, multicastAddress, UDP_PORT, winsome, REWARD_TIMEOUT,
                 AUTHOR_PERCENTAGE);
         rewardThread.setDaemon(true);
         rewardThread.start();
 
-        // Configurazione connessioni tcp
+        // configurazione connessioni tcp
         ServerSocket listener = null;
         try {
             listener = new ServerSocket(TCP_PORT, 70, InetAddress.getByName(SERVER_ADDRESS));
@@ -133,7 +136,7 @@ public class ServerMain {
             System.exit(-1);
         }
 
-        // Avvio il thread che si occupa della chiusura del server
+        // avvio il thread che si occupa della chiusura del server
         ServerCloser closerThread = new ServerCloser(listener, socketUDP, threadPool, rewardThread, backupThread);
         closerThread.setDaemon(true);
         closerThread.start();
@@ -144,12 +147,12 @@ public class ServerMain {
                 Socket socket = listener.accept();
                 socket.setSoTimeout((int) SOCKET_TIMEOUT);
 
-                // Invio dati per configurazione multicast
+                // invio dati per configurazione multicast
                 DataOutputStream outWriter = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                 outWriter.writeUTF(UDP_PORT + " " + MULTICAST_ADDRESS);
                 outWriter.flush();
 
-                // Faccio gestire il client da un thread del pool
+                // Gestione del client da parte di un thread del pool
                 threadPool.execute(new Worker(socket, winsome));
             } catch (IOException e) {
                 continue;
@@ -157,7 +160,7 @@ public class ServerMain {
         }
     }
 
-    // Funzione di cofigurazione del server per mezzo di un file di configurazione
+    /* Metodo di configurazione del server per mezzo di un file di configurazione */
     private static void configServer(File config_file) {
         try {
             Scanner scanner = new Scanner(config_file);
@@ -215,15 +218,16 @@ public class ServerMain {
                     }
                 } catch (NumberFormatException e) {
                     System.out.println(
-                            "SERVER: wrong parsing or wrong value of some parameters. Use default value for them");
+                            "SERVER: wrong parsing or wrong value of some parameters. Will be used default values for them");
                 }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("SERVER: configuration file not found. Server stars with default configuration");
+            System.out.println("SERVER: configuration file not found. Server starts with default configuration");
         }
     }
 
+    /* Metodo per la deserializzazione del social network */
     private static void deserializeSocial(SocialNetwork winsome, File backupUsers, File backupPosts)
             throws IOException {
         JsonReader usersReader = new JsonReader(new InputStreamReader(new FileInputStream(backupUsers)));
@@ -239,6 +243,7 @@ public class ServerMain {
 
     }
 
+    /* Metodo per la deserializzazione dei post del social network */
     private static void deserializePosts(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
         ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
         Type typeOfLikes = new TypeToken<LinkedList<Vote>>() {
@@ -246,7 +251,7 @@ public class ServerMain {
         Type typeOfComments = new TypeToken<LinkedList<Comment>>() {
         }.getType();
 
-        // utilizzata per tenere traccia anche dell'ultim0 id utilizzato
+        // utilizzata per tenere traccia anche dell'ultimo id utilizzato
         long id = 0;
 
         reader.beginArray();
@@ -298,6 +303,7 @@ public class ServerMain {
         winsome.setPostId(id);
     }
 
+    /* Metodo per la deserializzazione degli utenti del social network */
     private static void deserializeUsers(SocialNetwork winsome, JsonReader reader, Gson gson) throws IOException {
         ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
         Type typeOfFollowAndTags = new TypeToken<LinkedList<String>>() {

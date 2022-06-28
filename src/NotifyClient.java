@@ -18,6 +18,7 @@ public class NotifyClient extends RemoteObject implements NotifyClientInterface 
         lock = new ReentrantLock();
     }
 
+    /* Metodi per l'aggiornamento della lista di followers */
     public void notifyNewFollower(String username) throws RemoteException {
         try {
             lock.lock();

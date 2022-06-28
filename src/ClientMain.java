@@ -34,7 +34,7 @@ public class ClientMain {
     private static boolean someoneLogged = false;
     // variabile che tiene traccia dell'utenete loggato in quel momento sul client
     private static String username;
-    private final static String LOGIN_ERROR_MSG = "< ERROR: nobody is logged in";
+    private final static String LOGIN_ERROR_MSG = "< ERROR: no one is logged in";
     private static ServerRemoteInterface remote;
     private static Registry registry;
     private static NotifyClientInterface obj;
@@ -45,8 +45,10 @@ public class ClientMain {
 
     public static void main(String[] args) {
         File CONFIG_FILE;
+        // se non viene passato alcun config_file viene avviata la
+        // configurazione di default altrimenti si parsa il CONFIG_FILE
         if (args.length == 0) {
-            System.out.println("CLIENT: client stars with default configuration");
+            System.out.println("CLIENT: client starts with default configuration");
         } else {
             CONFIG_FILE = new File(args[0]);
             configClient(CONFIG_FILE);
@@ -91,7 +93,7 @@ public class ClientMain {
             registry = LocateRegistry.getRegistry(REG_PORT);
             remote = (ServerRemoteInterface) registry.lookup(REGISTRY_HOST);
 
-            // servizio di notifiche
+            // servizio di notifiche per aggiornamento followers
             obj = new NotifyClient(followers);
             stub = (NotifyClientInterface) UnicastRemoteObject.exportObject(obj, 0);
 
@@ -102,11 +104,12 @@ public class ClientMain {
             socket.close();
             System.exit(0);
         } catch (IOException | NotBoundException e) {
-            System.out.println("ERROR: connection with server interrupted");
+            System.out.println("ERROR: connection interrupted with server");
             System.exit(-1);
         }
     }
 
+    /* Metodo di configurazione del client per mezzo di un file di configurazione */
     private static void configClient(File config_file) {
         try {
             Scanner scanner = new Scanner(config_file);
@@ -132,12 +135,14 @@ public class ClientMain {
 
                     }
                 } catch (NumberFormatException e) {
-                    System.out.println("CLIENT: wrong parsing of some parameters. Use default value for them\n");
+                    System.out
+                            .println(
+                                    "CLIENT: wrong parsing of some parameters. Will be used default values for them\n");
                 }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("CLIENT: configuration file not found. Client stars with default configuration\n");
+            System.out.println("CLIENT: configuration file not found. Client starts with default configuration\n");
         }
     }
 
@@ -240,6 +245,7 @@ public class ClientMain {
                     break;
 
                 case "list":
+                    // controllo notazione della richiesta
                     if (request.length != 2
                             || (!request[1].equals("users") && !request[1].equals("followers")
                                     && !request[1].equals("following"))) {
@@ -284,17 +290,17 @@ public class ClientMain {
                     break;
 
                 case "follow", "unfollow":
-                    if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request[0].equals("follow") && request.length != 2) {
-                            System.out.println("< ERROR: wrong notation. Usage: follow <username>");
-                            break;
-                        }
-                        if (request[0].equals("unfollow") && request.length != 2) {
-                            System.out.println("< ERROR: wrong notation. Usage: unfollow <username>");
-                            break;
-                        }
+                    // controllo notazione della richiesta
+                    if (request[0].equals("follow") && request.length != 2) {
+                        System.out.println("< ERROR: wrong notation. Usage: follow <username>");
+                        break;
+                    }
+                    if (request[0].equals("unfollow") && request.length != 2) {
+                        System.out.println("< ERROR: wrong notation. Usage: unfollow <username>");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -308,13 +314,13 @@ public class ClientMain {
                     break;
 
                 case "blog":
-                    if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length != 1) {
-                            System.out.println("< ERROR: wrong notation. Usage: blog");
-                            break;
-                        }
+                    // controllo notazione della richiesta
+                    if (request.length != 1) {
+                        System.out.println("< ERROR: wrong notation. Usage: blog");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -338,44 +344,44 @@ public class ClientMain {
                     break;
 
                 case "post":
+                    // controllo notazione della richiesta
+                    if (request.length == 1 || !request[1].startsWith("\"")) {
+                        System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
+                        break;
+                    }
+
+                    // ricompongo titolo e testo e conto se ho un numero pari di virgolette
+                    String str = request[1];
+                    for (int i = 2; i < request.length; i++) {
+                        str = str.concat(" " + request[i]);
+                    }
+
+                    char temp;
+                    int occ = 0;
+                    for (int i = 0; i < str.length(); i++) {
+                        temp = str.charAt(i);
+                        if (temp == '\"') {
+                            occ++;
+                        }
+                    }
+
+                    String info[] = str.split("\"");
+                    if (info.length != 4 || occ != 4) {
+                        System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
+                        break;
+                    }
+
+                    if (info[1].length() >= 20) {
+                        System.out.println("< ERROR: title too long. Max 20 characters");
+                        break;
+                    }
+
+                    if (info[3].length() >= 500) {
+                        System.out.println("< ERROR: content too long. Max 500 characters");
+                        break;
+                    }
+
                     if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length == 1 || !request[1].startsWith("\"")) {
-                            System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
-                            break;
-                        }
-
-                        // ricompongo titolo e testo e conto se ho un numero pari di virgolette
-                        String str = request[1];
-                        for (int i = 2; i < request.length; i++) {
-                            str = str.concat(" " + request[i]);
-                        }
-
-                        char temp;
-                        int occ = 0;
-                        for (int i = 0; i < str.length(); i++) {
-                            temp = str.charAt(i);
-                            if (temp == '\"') {
-                                occ++;
-                            }
-                        }
-
-                        String info[] = str.split("\"");
-                        if (info.length != 4 || occ != 4) {
-                            System.out.println("< ERROR: wrong notation. Usage: post \"<title>\" \"<content>\"");
-                            break;
-                        }
-
-                        if (info[1].length() >= 20) {
-                            System.out.println("< ERROR: title too long. Max 20 characters");
-                            break;
-                        }
-
-                        if (info[3].length() >= 500) {
-                            System.out.println("< ERROR: content too long. Max 500 characters");
-                            break;
-                        }
-
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -389,28 +395,28 @@ public class ClientMain {
                     break;
 
                 case "show":
+                    // controllo notazione della richiesta
+                    if (request.length == 1) {
+                        System.out.println("< ERROR: wrong notation. Usage: show feed or show post <id>");
+                        break;
+                    }
+
+                    if (((request.length == 2 || request.length > 3) && request[1].equals("post"))
+                            || (request.length == 3 && !request[1].equals("post"))) {
+                        System.out.println("< ERROR: wrong notation. Usage: show post <id>");
+                        break;
+                    }
+
+                    if ((request.length == 2 && !request[1].equals("feed"))) {
+                        System.out.println("< ERROR: wrong notation. Usage: show feed");
+                        break;
+                    }
+                    if (request.length > 2 && request[1].equals("feed")) {
+                        System.out.println("< ERROR: wrong notation. Usage: show feed");
+                        break;
+                    }
+
                     if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length == 1) {
-                            System.out.println("< ERROR: wrong notation. Usage: show feed or show post <id>");
-                            break;
-                        }
-
-                        if (((request.length == 2 || request.length > 3) && request[1].equals("post"))
-                                || (request.length == 3 && !request[1].equals("post"))) {
-                            System.out.println("< ERROR: wrong notation. Usage: show post <id>");
-                            break;
-                        }
-
-                        if ((request.length == 2 && !request[1].equals("feed"))) {
-                            System.out.println("< ERROR: wrong notation. Usage: show feed");
-                            break;
-                        }
-                        if (request.length > 2 && request[1].equals("feed")) {
-                            System.out.println("< ERROR: wrong notation. Usage: show feed");
-                            break;
-                        }
-
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -439,13 +445,13 @@ public class ClientMain {
                     break;
 
                 case "delete":
-                    if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length != 2) {
-                            System.out.println("< ERROR: wrong notation. Usage: delete <idPost>");
-                            break;
-                        }
+                    // controllo notazione della richiesta
+                    if (request.length != 2) {
+                        System.out.println("< ERROR: wrong notation. Usage: delete <idPost>");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -459,13 +465,13 @@ public class ClientMain {
                     break;
 
                 case "rewin":
-                    if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length != 2) {
-                            System.out.println("< ERROR: wrong notation. Usage: rewin <idPost>");
-                            break;
-                        }
+                    // controllo notazione della richiesta
+                    if (request.length != 2) {
+                        System.out.println("< ERROR: wrong notation. Usage: rewin <idPost>");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -479,17 +485,17 @@ public class ClientMain {
                     break;
 
                 case "rate":
-                    if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length != 3) {
-                            System.out.println("< ERROR: wrong notation. Usage: rate <idPost> <vote>");
-                            break;
-                        }
-                        if (Integer.parseInt(request[2]) != 1 && Integer.parseInt(request[2]) != -1) {
-                            System.out.println("< ERROR: vote must be 1 or -1");
-                            break;
-                        }
+                    // controllo notazione della richiesta
+                    if (request.length != 3) {
+                        System.out.println("< ERROR: wrong notation. Usage: rate <idPost> <vote>");
+                        break;
+                    }
+                    if (Integer.parseInt(request[2]) != 1 && Integer.parseInt(request[2]) != -1) {
+                        System.out.println("< ERROR: vote must be 1 or -1");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -504,34 +510,34 @@ public class ClientMain {
                     }
 
                 case "comment":
-                    if (someoneLogged) {
-                        // Controllo notazione della richiesta
-                        if (request.length <= 2 || !request[2].startsWith("\"")) {
-                            System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
-                            break;
+                    // Controllo notazione della richiesta
+                    if (request.length <= 2 || !request[2].startsWith("\"")) {
+                        System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
+                        break;
+                    }
+                    String str2 = request[2];
+                    for (int i = 3; i < request.length; i++) {
+                        str2 = str2.concat(" " + request[i]);
+                    }
+                    char temp2;
+                    int occ2 = 0;
+                    for (int i = 0; i < str2.length(); i++) {
+                        temp2 = str2.charAt(i);
+                        if (temp2 == '\"') {
+                            occ2++;
                         }
-                        String str2 = request[2];
-                        for (int i = 3; i < request.length; i++) {
-                            str2 = str2.concat(" " + request[i]);
-                        }
-                        char temp2;
-                        int occ2 = 0;
-                        for (int i = 0; i < str2.length(); i++) {
-                            temp2 = str2.charAt(i);
-                            if (temp2 == '\"') {
-                                occ2++;
-                            }
-                        }
-                        String info2[] = str2.split("\"");
-                        if (info2.length != 2 || occ2 != 2) {
-                            System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
-                            break;
-                        }
-                        if (info2[1].length() >= 200) {
-                            System.out.println("< ERROR: comment too long. Max 200 charachters");
-                            break;
-                        }
+                    }
+                    String info2[] = str2.split("\"");
+                    if (info2.length != 2 || occ2 != 2) {
+                        System.out.println("< ERROR: wrong notation. Usage: comment <idPost> \"<comment>\"");
+                        break;
+                    }
+                    if (info2[1].length() >= 200) {
+                        System.out.println("< ERROR: comment too long. Max 200 charachters");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richietsa al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -546,13 +552,13 @@ public class ClientMain {
                     break;
 
                 case "wallet":
-                    if (someoneLogged) {
-                        // controllo notazione della richiesta
-                        if (request.length > 2 || (request.length == 2 && !request[1].equals("btc"))) {
-                            System.out.println("< ERROR: wrong notation. Usage: wallet or wallet btc");
-                            break;
-                        }
+                    // controllo notazione della richiesta
+                    if (request.length > 2 || (request.length == 2 && !request[1].equals("btc"))) {
+                        System.out.println("< ERROR: wrong notation. Usage: wallet or wallet btc");
+                        break;
+                    }
 
+                    if (someoneLogged) {
                         // invio richiesta al server
                         outWriter.writeUTF(line);
                         outWriter.flush();
@@ -616,43 +622,46 @@ public class ClientMain {
 
     private static void help() {
         System.out.println("< USAGE:\n" +
-                "   -> register <username> <password> <tags>\n" +
-                "   -> login <username> <password>\n" +
-                "   -> logout\n" +
-                "   -> list user\n" +
-                "   -> list followers\n" +
-                "   -> list following\n" +
-                "   -> follow <user>\n" +
-                "   -> unfollow <user>\n" +
-                "   -> blog\n" +
-                "   -> post \"<title>\" \"<content>\"\n" +
-                "   -> show feed\n" +
-                "   -> show post <idPost>\n" +
-                "   -> delete <idPost>\n" +
-                "   -> rewin <idPost>\n" +
-                "   -> rate <idPost> <vote>\n" +
-                "   -> comment <idPost> \"<comment>\"\n" +
-                "   -> wallet\n" +
-                "   -> wallet btc\n" +
-                "   -> quit\n");
+                "<      register <username> <password> <tags>\n" +
+                "<      login <username> <password>\n" +
+                "<      logout\n" +
+                "<      list user\n" +
+                "<      list followers\n" +
+                "<      list following\n" +
+                "<      follow <user>\n" +
+                "<      unfollow <user>\n" +
+                "<      blog\n" +
+                "<      post \"<title>\" \"<content>\"\n" +
+                "<      show feed\n" +
+                "<      show post <idPost>\n" +
+                "<      delete <idPost>\n" +
+                "<      rewin <idPost>\n" +
+                "<      rate <idPost> <vote>\n" +
+                "<      comment <idPost> \"<comment>\"\n" +
+                "<      wallet\n" +
+                "<      wallet btc\n" +
+                "<      help\n" +
+                "<      quit\n");
     }
 
+    /*
+     * Metodo per registrare un nuovo utente, che invoca il metodo remoto fornito da
+     * ServerRemoteInterface
+     */
     private static void register(String username, String password, LinkedList<String> tags) {
         try {
             remote = (ServerRemoteInterface) registry.lookup(REGISTRY_HOST);
             if (remote.register(username, password, tags)) {
                 System.out.println(
-                        "< SUCCESS: registration is terminated with success. Remember to log in before starting");
+                        "< SUCCESS: registration is terminated with success");
             } else {
                 System.out.println("< ERROR: username already used by another user");
             }
         } catch (NotBoundException | RemoteException e) {
-            System.out.println("< ERROR: registration faild");
+            System.out.println("< ERROR: registration failed");
             System.exit(-1);
         } catch (IllegalArgumentException e) {
             System.out.println("< ERROR: password must be between 8 and 16 characters");
         }
-
     }
-
 }

@@ -21,6 +21,7 @@ public class Post {
     private final ReentrantLock votesLock;
     private final ReentrantLock commentsLock;
 
+    /* Costruttore utilizzato nel caso di nuovi post */
     public Post(long postId, String author, String title, String content) {
         this.id = postId;
         this.author = author;
@@ -35,6 +36,7 @@ public class Post {
         commentsLock = new ReentrantLock();
     }
 
+    /* Costruttore usato per il ripristino dei post */
     public Post(long postId, String author, String title, String content, int numIter,
             int numComments, LinkedList<Vote> votes, LinkedList<Comment> comments, long lastTimeReward) {
         this.id = postId;
@@ -50,7 +52,7 @@ public class Post {
         commentsLock = new ReentrantLock();
     }
 
-    // metodi getter
+    /* Metodi getter */
     public long getId() {
         return id;
     }
@@ -71,6 +73,31 @@ public class Post {
         return numIter;
     }
 
+    public int getNumComments() {
+        return numComments;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public String getCommentsInString() {
+        String str = "";
+        for (int i = 0; i < comments.size(); i++) {
+            str = str.concat("<    " + comments.get(i).getAuthor() + ": " + comments.get(i).getComment() + "\n");
+        }
+        return str;
+    }
+
+    public Long getLastTimeReward() {
+        return lastTimeReward;
+    }
+
+    /* Metodi per le lock */
     public void votesLock() {
         votesLock.lock();
     }
@@ -107,36 +134,12 @@ public class Post {
         return negativeVotes;
     }
 
-    public int getNumComments() {
-        return numComments;
-    }
-
-    public List<Vote> getVotes() {
-        return votes;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public String getCommentsInString() {
-        String str = "";
-        for (int i = 0; i < comments.size(); i++) {
-            str = str.concat("<    " + comments.get(i).getAuthor() + ": " + comments.get(i).getComment() + "\n");
-        }
-        return str;
-    }
-
-    public Long getLastTimeReward() {
-        return lastTimeReward;
-    }
-
+    /* Metodi adder */
     public int addAndGetNumIter() {
         numIter++;
         return numIter;
     }
 
-    // metodi add
     public void addComment(String username, String contentComment) {
         Comment comment = new Comment(username, contentComment, System.nanoTime());
         comments.add(comment);
@@ -153,6 +156,7 @@ public class Post {
         votes.add(v);
     }
 
+    /* Metodo setter */
     public void setLastTimeReward(long timestamp) {
         lastTimeReward = timestamp;
     }

@@ -33,6 +33,7 @@ public class Backup extends Thread {
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             try {
+                // backup periodico
                 Thread.sleep(backupTimeout);
                 savePosts();
                 saveUsers();
@@ -49,6 +50,7 @@ public class Backup extends Thread {
 
     }
 
+    /* Metodo per il salvataggio dei post del social nework */
     public synchronized void savePosts() throws IOException, FileNotFoundException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(backupPosts)));
@@ -64,6 +66,7 @@ public class Backup extends Thread {
         writer.close();
     }
 
+    /* Metodo che serializza i post del social network */
     private void serializePost(Post post, File backupFile, Gson gson, JsonWriter writer) throws IOException {
         writer.beginObject();
 
@@ -95,6 +98,7 @@ public class Backup extends Thread {
         writer.endObject();
     }
 
+    /* Metodo per il salvataggio degli utenti del social nework */
     public synchronized void saveUsers() throws IOException, FileNotFoundException {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonWriter writer = new JsonWriter(new OutputStreamWriter(new FileOutputStream(backupUsers)));
@@ -112,6 +116,7 @@ public class Backup extends Thread {
 
     }
 
+    /* Metodo che serializza gli utenti del social network */
     private void serializeUser(User user, File backupUsers, Gson gson, JsonWriter writer) throws IOException {
         writer.beginObject();
 
