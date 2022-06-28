@@ -8,7 +8,7 @@
             "followed": "[\n  \"Andrea\",\n  \"Marghe\",\n  \"Chiara\"\n]",
             "listVotes": "[]",
             "blog": "[\n  7\n]",
-            "feed": "[\n  1,\n  2,\n  3\n]",
+            "feed": "[\n  2\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.057762265046662105 - curator of post (id \\u003d 2) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.08664339756999316 - curator of post (id \\u003d 3) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.03433163402087843 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:41:10 CEST 2022\",\n    \"+0.5198603854199589 - author of post (id \\u003d 7) - date: Mon Jun 27 16:41:10 CEST 2022\"\n  ],\n  \"total\": 0.6985976820574926\n}"
       },
       {
@@ -19,8 +19,8 @@
             "followers": "[\n  \"Marghe\",\n  \"Andrea\",\n  \"Lorena\",\n  \"Fede\"\n]",
             "followed": "[\n  \"Fede\",\n  \"Andrea\",\n  \"Marghe\",\n  \"Lorena\",\n  \"Anna\"\n]",
             "listVotes": "[]",
-            "blog": "[\n  1,\n  2\n]",
-            "feed": "[\n  1,\n  3,\n  4,\n  5,\n  6,\n  7\n]",
+            "blog": "[\n  2\n]",
+            "feed": "[\n  4,\n  5,\n  6,\n  7,\n  8\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.5198603854199589 - author of post (id \\u003d 1) - date: Mon Jun 27 16:31:10 CEST 2022\",\n    \"+0.25993019270997947 - author of post (id \\u003d 2) - date: Mon Jun 27 16:31:10 CEST 2022\",\n    \"+0.17328679513998632 - author of post (id \\u003d 1) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.17328679513998632 - author of post (id \\u003d 2) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.20598980412527057 - author of post (id \\u003d 1) - date: Mon Jun 27 16:41:10 CEST 2022\"\n  ],\n  \"total\": 1.3323539725351816\n}"
       },
       {
@@ -31,8 +31,8 @@
             "followers": "[\n  \"Andrea\",\n  \"Chiara\",\n  \"Lorena\",\n  \"Fede\"\n]",
             "followed": "[\n  \"Chiara\",\n  \"Lorena\",\n  \"Andrea\"\n]",
             "listVotes": "[\n  1\n]",
-            "blog": "[\n  1\n]",
-            "feed": "[\n  1,\n  2,\n  3,\n  4,\n  5,\n  6\n]",
+            "blog": "[]",
+            "feed": "[\n  2,\n  4,\n  5,\n  6,\n  8\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.17328679513998632 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:31:10 CEST 2022\"\n  ],\n  \"total\": 0.17328679513998632\n}"
       },
       {
@@ -40,11 +40,11 @@
             "hashedPassword": "521db870129bb85eab58cd9ab5736f78c645184e7f189bcfe37c73ce02113c4c",
             "seed": "M?:?w??+?\\??\u0004???????\u0015\u0002i?DX??\u0004?",
             "tags": "[\n  \"ingegneria\",\n  \"videogiochi\",\n  \"nerd\",\n  \"amore\"\n]",
-            "followers": "[\n  \"Marghe\",\n  \"Chiara\",\n  \"Andrea\"\n]",
-            "followed": "[\n  \"Chiara\",\n  \"Marghe\"\n]",
+            "followers": "[\n  \"Marghe\",\n  \"Chiara\",\n  \"Andrea\",\n  \"Anna\"\n]",
+            "followed": "[\n  \"Chiara\",\n  \"Marghe\",\n  \"Anna\"\n]",
             "listVotes": "[]",
-            "blog": "[\n  4,\n  5,\n  6\n]",
-            "feed": "[\n  1,\n  2\n]",
+            "blog": "[\n  4,\n  5,\n  6,\n  8\n]",
+            "feed": "[\n  2\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.057762265046662105 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.20794415416798356 - author of post (id \\u003d 5) - date: Mon Jun 27 17:06:52 CEST 2022\"\n  ],\n  \"total\": 0.26570641921464566\n}"
       },
       {
@@ -55,8 +55,8 @@
             "followers": "[\n  \"Marghe\",\n  \"Fede\",\n  \"Chiara\"\n]",
             "followed": "[\n  \"Marghe\",\n  \"Chiara\",\n  \"Fede\",\n  \"Anna\",\n  \"Lorena\"\n]",
             "listVotes": "[\n  2,\n  5,\n  7\n]",
-            "blog": "[\n  3\n]",
-            "feed": "[\n  1,\n  2,\n  4,\n  5,\n  6,\n  7\n]",
+            "blog": "[]",
+            "feed": "[\n  2,\n  4,\n  5,\n  6,\n  7,\n  8\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.08664339756999316 - curator of post (id \\u003d 2) - date: Mon Jun 27 16:31:10 CEST 2022\",\n    \"+0.25993019270997947 - author of post (id \\u003d 3) - date: Mon Jun 27 16:36:10 CEST 2022\",\n    \"+0.03433163402087843 - curator of post (id \\u003d 1) - date: Mon Jun 27 16:41:10 CEST 2022\",\n    \"+0.06931471805599453 - curator of post (id \\u003d 5) - date: Mon Jun 27 17:06:52 CEST 2022\"\n  ],\n  \"total\": 0.4502199423568456\n}"
       },
       {
@@ -64,11 +64,11 @@
             "hashedPassword": "b62f38bccd49d2a5ebdcdef7562a952c5c423807627482558a6d88b7313a5085",
             "seed": "?k\nq0?\u0003N?*????#\u00060cNn*+\u001a??`\n??=S",
             "tags": "[\n  \"lavoro\",\n  \"amore\",\n  \"estate\",\n  \"relax\"\n]",
-            "followers": "[\n  \"Chiara\",\n  \"Andrea\"\n]",
-            "followed": "[\n  \"Fede\"\n]",
-            "listVotes": "[\n  7\n]",
+            "followers": "[\n  \"Chiara\",\n  \"Andrea\",\n  \"Lorena\"\n]",
+            "followed": "[\n  \"Fede\",\n  \"Lorena\"\n]",
+            "listVotes": "[\n  7,\n  8\n]",
             "blog": "[]",
-            "feed": "[\n  7\n]",
+            "feed": "[\n  4,\n  5,\n  6,\n  7,\n  8\n]",
             "wallet": "{\n  \"transactions\": [\n    \"+0.17328679513998632 - curator of post (id \\u003d 7) - date: Mon Jun 27 16:41:10 CEST 2022\"\n  ],\n  \"total\": 0.17328679513998632\n}"
       }
 ]
